@@ -9,7 +9,7 @@ WORKDIR /frontend
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install --silent
 
 # Copy app files
 COPY . .
