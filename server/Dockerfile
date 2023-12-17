@@ -1,11 +1,19 @@
-FROM node:20-alpine
+FROM node:14
 
-WORKDIR /app
+ADD package.json /tmp/package.json
 
-COPY package*.json /app/
-RUN npm install --silent
+ADD yarn.lock /tmp/yarn.lock
 
-COPY . /app/
+RUN rm -rf build
 
-EXPOSE 5000
-CMD [ "npm", "run","dev"]
+RUN cd /tmp && yarn install
+
+ADD ./ /src
+
+RUN rm -rf src/node_modules && cp -a /tmp/node_modules /src/
+
+WORKDIR /src
+
+RUN yarn build
+
+CMD ["node", "build/src/app.js"]
