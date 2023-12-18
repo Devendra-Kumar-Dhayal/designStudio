@@ -1,13 +1,22 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  padding: 0;
+  margin: 0;    
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.thin-outer-rectangle {
+  outline: 5px solid rgba(0, 0, 0, 0.4); /* Thin red outline with low opacity */
+  animation: pulse 1s infinite alternate; /* Example animation - modify as needed */
+}
+
+@keyframes pulse {
+  from {
+    outline-width: 2px;
+  }
+  to {
+    outline-width: 5px; /* Example increase in outline width */
+  }
 }
