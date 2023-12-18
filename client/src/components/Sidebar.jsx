@@ -20,6 +20,11 @@ const Sidebar = () => {
       text: "Dashboard",
       path: "/",
     },
+    {
+      icon: MdDashboardCustomize,
+      text: "Recents",
+      path: "/recents"
+    }
 
   ];
 

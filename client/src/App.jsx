@@ -3,6 +3,8 @@ import { Route, Routes } from "react-router-dom";
 import WorkSpace from "./pages/WorkSpace";
 import ProtectedLayout from "./components/loyout/ProtectedLayout";
 import Home from "./components/loyout/Home";
+import Recents from "./components/loyout/Recents";
+
 
 const App = () => {
   return (
@@ -10,6 +12,7 @@ const App = () => {
       <Routes>
         <Route element={<ProtectedLayout />}>
           <Route exact path="/" element={<Home />} />
+          <Route exact path="/recents" element = {<Recents/>} />
         </Route>
         <Route exact path="/workspace" element={<WorkSpace />} />
         {/* <Route element={<LoginLayout />}>
