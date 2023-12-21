@@ -1,19 +1,24 @@
-FROM node:14
+# Base image
+FROM node:20-alpine
 
-ADD package.json /tmp/package.json
+# Set working directory\
+RUN mkdir /app   
+WORKDIR /app
 
-ADD yarn.lock /tmp/yarn.lock
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-RUN rm -rf build
+# Install dependencies
+RUN npm install --legacy-peer-deps --silent
 
-RUN cd /tmp && yarn install
+# Copy app files
+COPY . .
 
-ADD ./ /src
+# # Build the app
+# RUN npm run build
 
-RUN rm -rf src/node_modules && cp -a /tmp/node_modules /src/
+# Expose the port
+EXPOSE 5000
 
-WORKDIR /src
-
-RUN yarn build
-
-CMD ["node", "build/src/app.js"]
+# Start the app
+CMD ["npm", "run","dev"]
