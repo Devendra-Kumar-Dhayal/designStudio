@@ -1,25 +1,22 @@
 import pino from "pino";
 import dayjs from "dayjs";
+// import pinoPretty from "pino-pretty";
 
-const transport = pino.transport({
-  target: 'pino-pretty',
-  options: { colorize: true }
-})
-
-const log = pino({
-  
-  base: {
-    pid: false,
+const logger = pino({
+  transport: {
+    target: "pino-pretty",
+    options: {
+      levelFirst: true,
+      translateTime: "SYS:dd-mm-yyyy HH:MM:ss",
+      colorize: true,
+      ignore: "pid,hostname",
+    },
   },
-  timestamp: () => `,"time":"${dayjs().format()}"`,
-}, transport)
 
-// const log = logger({
-//   prettyPrint: true,
-//   base: {
-//     pid: false,
-//   },
-//   timestamp: () => `,"time":"${dayjs().format()}"`,
-// });
+  //   base: {
+  //     pid: false,
+  //   },
+  //   timestamp: () => `,"time":${dayjs().format()}`,
+});
 
-export default log;
+export default logger;
