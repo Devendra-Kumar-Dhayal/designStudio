@@ -10,15 +10,14 @@ services:
     command: npm run dev
     volumes:
       - ./server/:/app
-      - /app/node_modules
+      # - /app/node_modules
     ports:
       - "5000:5000"
     depends_on:
       - mongo
     env_file: ./server/.env
     environment:
-      - NODE_ENV=development
-      - DB_CONNECTION=mongodb://mongo:27017/design-studio
+      - .env
     networks:
       - app-network
   mongo:
@@ -38,9 +37,12 @@ services:
     command: npm start
     volumes:
       - ./client/:/frontend
-      - /frontend/node_modules
+      # - /frontend/node_modules
     depends_on:
       - server
+    env_file: ./client/.env.local
+    environment:
+      - .env.local
     ports:
       - "3000:3000"
     networks:

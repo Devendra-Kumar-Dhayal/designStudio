@@ -5,4 +5,7 @@ export default {
   refreshTokenPublicKey: "REFRESH_PUBLIC_KEY",
   dbUri: "DB_CONNECTION",
   port: "PORT",
+  googleClientId: "GOOGLE_CLIENT_ID",
+  googleClientSecret: "GOOGLE_CLIENT_SECRET",
+  
 };

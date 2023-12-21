@@ -1,42 +1,19 @@
 import jwt from "jsonwebtoken";
 import config from "config";
-import { readFileSync } from "fs";
 
+const privateKey = config.get<string>("privateKey");
+const publicKey = config.get<string>("publicKey");
 
-
-
-
-
-export function signJwt(
-  object: Object,
-  keyName: "accessTokenPrivateKey" | "refreshTokenPrivateKey",
-  //keyName: "accessTokenPrivateKey",
-  options?: jwt.SignOptions | undefined
-) {
-  // const signingKey = Buffer.from(
-  //   config.get<string>(keyName),
-  //   "base64"
-  // ).toString("ascii");
-  const signingKey =  readFileSync('/Users/nevdread/dev/dellapi2/src/keys/private.pem', 'utf8');
-
-  return jwt.sign(object, signingKey, {
+export function signJwt(object: Object, options?: jwt.SignOptions | undefined) {
+  return jwt.sign(object, privateKey, {
     ...(options && options),
     algorithm: "RS256",
-    // algorithm: 'none',
   });
 }
 
-export function verifyJwt(
-  token: string,
-  keyName: "accessTokenPublicKey" | "refreshTokenPublicKey"
-) {
-  const publicKey = Buffer.from(config.get<string>(keyName), "base64").toString(
-    "ascii"
-  );
-
+export function verifyJwt(token: string) {
   try {
-    const pk =  readFileSync('/Users/nevdread/dev/dellapi2/src/keys/public.pem', 'utf8');
-    const decoded = jwt.verify(token, pk);
+    const decoded = jwt.verify(token, publicKey);
     return {
       valid: true,
       expired: false,
