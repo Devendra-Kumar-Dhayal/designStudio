@@ -1,11 +1,16 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Tldraw } from '@tldraw/tldraw'
+import { TLUiOverrides,Tldraw, track, useEditor } from '@tldraw/tldraw'
 import '@tldraw/tldraw/tldraw.css'
+
+import CustomUi from "./customUI";
+
 
 const WorkSpace = () => {
   return (
 		<div style={{ position: 'fixed', inset: 0 }}>
-			<Tldraw />
+			<Tldraw >
+				<CustomUi></CustomUi>
+			</Tldraw>
 		</div>
 	)
 }
