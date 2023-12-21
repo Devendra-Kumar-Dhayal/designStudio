@@ -15,7 +15,7 @@ import { signJwt } from "../utils/jwt.utils";
 import logger from "../utils/logger";
 
 const accessTokenCookieOptions: CookieOptions = {
-  maxAge: 900000, // 15 mins
+  maxAge: 86400000, // 1 day
   httpOnly: true,
   domain: "localhost",
   path: "/",

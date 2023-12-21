@@ -1,7 +1,7 @@
 export default {
   port: 5000,
   saltWorkFactor: 10,
-  accessTokenTtl: "15y",
+  accessTokenTtl: "1d",
   refreshTokenTtl: "1y",
   accessTokenPrivateKey: ``,
   accessTokenPublicKey: ``,
