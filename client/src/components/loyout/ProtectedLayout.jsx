@@ -23,11 +23,9 @@ const ProtectedLayout = () => {
   };
   
   useEffect(() => {
-    console.log("url",process.env)
     getUser();
   }, []);
 
-  console.log("protected");
   return (
     <div className="h-full min-h-screen w-full min-w-screen p-0 box-border overflow-y-scroll bg-[#F8F9FA] flex lg:gap-0 ">
       <div className="hidden lg:block">

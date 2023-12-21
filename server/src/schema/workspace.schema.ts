@@ -1,10 +1,10 @@
-import { object, number, string, TypeOf } from "zod";
+import { object, string, number, TypeOf } from "zod";
 
 /**
  * @openapi
  * components:
  *   schema:
- *     Product:
+ *     Workspace:
  *       type: object
  *       required:
  *        - title
@@ -24,7 +24,7 @@ import { object, number, string, TypeOf } from "zod";
  *         image:
  *           type: string
  *           default: "https://i.imgur.com/QlRphfQ.jpg"
- *     productResponse:
+ *     workspaceResponse:
  *       type: object
  *       properties:
  *         user:
@@ -39,7 +39,7 @@ import { object, number, string, TypeOf } from "zod";
  *           type: number
  *         image:
  *           type: string
- *         productId:
+ *         workspaceId:
  *           type: string
  *         createdAt:
  *           type: string
@@ -52,8 +52,7 @@ import { object, number, string, TypeOf } from "zod";
 
 const payload = {
   body: object({
-    elements: object({
-    }),
+    elements: object({}).array().optional(),
   }),
 };
 
@@ -65,24 +64,24 @@ const params = {
   }),
 };
 
-export const createProductSchema = object({
+export const createWorkspaceSchema = object({
   ...payload,
 });
 
-export const updateProductSchema = object({
+export const updateWorkspaceSchema = object({
   ...payload,
   ...params,
 });
 
-export const deleteProductSchema = object({
+export const deleteWorkspaceSchema = object({
   ...params,
 });
 
-export const getProductSchema = object({
+export const getWorkspaceSchema = object({
   ...params,
 });
 
-export type CreateProductInput = TypeOf<typeof createProductSchema>;
-export type UpdateProductInput = TypeOf<typeof updateProductSchema>;
-export type ReadProductInput = TypeOf<typeof getProductSchema>;
-export type DeleteProductInput = TypeOf<typeof deleteProductSchema>;
+export type CreateWorkspaceInput = TypeOf<typeof createWorkspaceSchema>;
+export type UpdateWorkspaceInput = TypeOf<typeof updateWorkspaceSchema>;
+export type ReadWorkspaceInput = TypeOf<typeof getWorkspaceSchema>;
+export type DeleteWorkspaceInput = TypeOf<typeof deleteWorkspaceSchema>;

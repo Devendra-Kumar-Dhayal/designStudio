@@ -11,10 +11,15 @@ import { restResponseTimeHistogram, startMetricsServer } from "./utils/metrics";
 import swaggerDocs from "./utils/swagger";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import router from "./routes";
 
 const port = config.get<number>("port");
 
+
 const app = express();
+
+app.use(express.json());
+app.use(cookieParser());
 
 app.use(
   cors({
@@ -23,35 +28,35 @@ app.use(
   })
 );
 
-app.use(cookieParser());
 
-app.use(express.json());
+
 
 app.use(deserializeUser);
+app.use(router)
 
-app.use(
-  responseTime((req: Request, res: Response, time: number) => {
-    if (req?.route?.path) {
-      restResponseTimeHistogram.observe(
-        {
-          method: req.method,
-          route: req.route.path,
-          status_code: res.statusCode,
-        },
-        time * 1000
-      );
-    }
-  })
-);
+// app.use(
+//   responseTime((req: Request, res: Response, time: number) => {
+//     if (req?.route?.path) {
+//       restResponseTimeHistogram.observe(
+//         {
+//           method: req.method,
+//           route: req.route.path,
+//           status_code: res.statusCode,
+//         },
+//         time * 1000
+//       );
+//     }
+//   })
+// );
 
 app.listen(port, async () => {
   logger.info(`App is running at http://localhost:${port}`);
 
   await connect();
 
-  routes(app);
+  // routes(app);
 
-  startMetricsServer();
+  // startMetricsServer();
 
-  swaggerDocs(app, port);
+  // swaggerDocs(app, port);
 });

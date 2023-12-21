@@ -81,6 +81,8 @@ export async function deleteSessionHandler(req: Request, res: Response) {
 
 
 export async function googleOauthHandler(req: Request, res: Response) {
+
+  console.log("googleOauthHandler")
   // get the code from qs
   const code = req.query.code as string;
 

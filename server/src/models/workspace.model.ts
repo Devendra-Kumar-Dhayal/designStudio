@@ -4,33 +4,35 @@ import { UserDocument } from "./user.model";
 
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
 
-export interface ProductInput {
-  user: UserDocument["_id"];
-  elements : object;
-  
+export interface WorkspaceInput {
+  // user: UserDocument["_id"];
+  elements: object;
 }
 
-export interface ProductDocument extends ProductInput, mongoose.Document {
+export interface WorkspaceDocument extends WorkspaceInput, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
 }
 
-const productSchema = new mongoose.Schema(
+const workspaceSchema = new mongoose.Schema(
   {
     workspaceId: {
       type: String,
       required: true,
       unique: true,
-      default: () => `product_${nanoid()}`,
+      default: () => `workspace_${nanoid()}`,
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    elements: { type: Object, required: true },
+    elements: { type: [Object], required: true },
   },
   {
     timestamps: true,
   }
 );
 
-const ProductModel = mongoose.model<ProductDocument>("Product", productSchema);
+const WorkspaceModel = mongoose.model<WorkspaceDocument>(
+  "Workspace",
+  workspaceSchema
+);
 
-export default ProductModel;
+export default WorkspaceModel;
