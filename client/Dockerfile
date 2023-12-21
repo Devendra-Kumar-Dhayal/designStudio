@@ -1,5 +1,5 @@
 # Base image
-FROM node:20-alpine
+FROM node:18-alpine
 
 # Set working directory\
 RUN mkdir /frontend   
@@ -9,7 +9,8 @@ WORKDIR /frontend
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --silent
+RUN npm install --legacy-peer-deps
+RUN npm install axios
 
 # Copy app files
 COPY . .

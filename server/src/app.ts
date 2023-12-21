@@ -9,10 +9,21 @@ import routes from "./routes";
 import deserializeUser from "./middleware/deserializeUser";
 import { restResponseTimeHistogram, startMetricsServer } from "./utils/metrics";
 import swaggerDocs from "./utils/swagger";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const port = config.get<number>("port");
 
 const app = express();
+
+app.use(
+  cors({
+    origin: config.get("origin"),
+    credentials: true,
+  })
+);
+
+app.use(cookieParser());
 
 app.use(express.json());
 

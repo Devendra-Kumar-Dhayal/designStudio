@@ -9,8 +9,12 @@ import {
   createUserSessionHandler,
   getUserSessionsHandler,
   deleteSessionHandler,
+  googleOauthHandler,
 } from "./controller/session.controller";
-import { createUserHandler } from "./controller/user.controller";
+import {
+  createUserHandler,
+  getCurrentUser,
+} from "./controller/user.controller";
 import requireUser from "./middleware/requireUser";
 import validateResource from "./middleware/validateResource";
 import {
@@ -63,6 +67,7 @@ function routes(app: Express) {
    */
   app.post("/api/users", validateResource(createUserSchema), createUserHandler);
 
+  app.get("/api/auth/user/me", requireUser, getCurrentUser);
   /**
    * @openapi
    * '/api/sessions':
@@ -117,6 +122,15 @@ function routes(app: Express) {
   app.get("/api/sessions", requireUser, getUserSessionsHandler);
 
   app.delete("/api/sessions", requireUser, deleteSessionHandler);
+
+  app.get("/api/sessions/oauth/google", googleOauthHandler);
+  app.get("/oauth/error", (req, res) => {
+    // Handle OAuth error here
+    const error = req.query.error;
+    console.log("error", error);
+    // Process error or redirect as needed
+    res.status(500).send(`OAuth Error: ${error}`);
+  });
 
   /**
    * @openapi
