@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@excalidraw/excalidraw": "^0.17.2",
+    "@jsplumb/browser-ui": "^6.2.10",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
