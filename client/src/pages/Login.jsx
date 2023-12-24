@@ -2,7 +2,6 @@ import React from "react";
 import getGoogleOAuthURL from "../utils/getGoogleUrl";
 
 const Login = () => {
-  console.log(getGoogleOAuthURL());
   const handleButtonClick = async () => {};
   return (
     <div className="flex items-center w-screen h-screen justify-center">

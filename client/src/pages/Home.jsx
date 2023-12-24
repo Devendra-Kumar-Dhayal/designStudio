@@ -14,7 +14,6 @@ const Home = () => {
           withCredentials: true,
         }
       );
-      console.log(res);
 
       if (res.status === 200) setRecents(res.data);
     };
@@ -30,7 +29,6 @@ const Home = () => {
         withCredentials: true,
       }
     );
-    console.log("res",res);
 
     if (res.status === 200) navigate({
       pathname:"/workspace",

@@ -82,20 +82,17 @@ export async function deleteSessionHandler(req: Request, res: Response) {
 
 export async function googleOauthHandler(req: Request, res: Response) {
 
-  console.log("googleOauthHandler")
   // get the code from qs
   const code = req.query.code as string;
 
   try {
     // get the id and access token with the code
     const { id_token, access_token } = await getGoogleOAuthTokens({ code });
-    console.log({ id_token, access_token });
 
     // get user with tokens
     const googleUser = await getGoogleUser({ id_token, access_token });
     //jwt.decode(id_token);
 
-    console.log({ googleUser });
 
     if (!googleUser.verified_email) {
       return res.status(403).send("Google account is not verified");

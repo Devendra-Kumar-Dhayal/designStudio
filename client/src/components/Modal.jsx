@@ -24,7 +24,6 @@ const Modal = ({ children, isOpen, setIsOpen, classes }) => {
       <div
         className=" w-screen h-full cursor-pointer "
         onClick={() => {
-          console.log("ssecond");
           setIsOpen(false);
         }}
       />
