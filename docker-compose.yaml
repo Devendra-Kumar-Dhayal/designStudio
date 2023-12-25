@@ -40,9 +40,9 @@ services:
       # - /frontend/node_modules
     depends_on:
       - server
-    env_file: ./client/.env.local
-    environment:
-      - .env.local
+    # env_file: ./client/.env.local
+    # environment:
+    #  - .env.local
     ports:
       - "3000:3000"
     networks:
