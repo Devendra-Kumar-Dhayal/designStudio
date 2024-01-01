@@ -9,7 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [forgotpassword] = useState("");
+  const [forgotpassword, setForgotPassword] = useState("");
   const HandleLogin = async () => {
     try {
       const response = await fetch("http://localhost:3000/login", {

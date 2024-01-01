@@ -158,7 +158,7 @@ const WorkSpace = () => {
     setElements(elementsCopy, true);
   };
   const handleDiscard = async () => {
-    setMeta(elements[selectedIdFormeta].options?.meta ||{})
+    setMeta(elements[selectedIdFormeta].options?.meta || {});
   };
 
   useEffect(() => {
@@ -240,7 +240,7 @@ const WorkSpace = () => {
 
     const { clientX, clientY } = getMouseCoordinates(event);
     const element = getElementAtPosition(clientX, clientY, elements);
-    console.log("double click", element, elements,tool);
+    console.log("double click", element, elements, tool);
 
     if (element) {
       setIsOpen(true);
@@ -265,8 +265,6 @@ const WorkSpace = () => {
       document.removeEventListener("keydown", undoRedoFunction);
     };
   }, [undo, redo]);
-
-  
 
   useEffect(() => {
     const panFunction = (event) => {
@@ -324,7 +322,7 @@ const WorkSpace = () => {
     document.addEventListener("keyup", handleKeyUp);
     window.addEventListener("resize", handleResize);
     window.addEventListener("wheel", panFunction);
-    
+
     //TODO: esc key drawing stop
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
@@ -344,9 +342,7 @@ const WorkSpace = () => {
       document.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("resize", handleResize);
     };
-  }, [tool]);
-
-
+  }, [tool, elements]);
 
   useEffect(() => {
     const textArea = textAreaRef.current;
@@ -651,6 +647,10 @@ const WorkSpace = () => {
       }
 
       const index = selectedElement?.id;
+      console.log("indx", index, elements);
+      if (index === elements.length) {
+        return
+      }
       const { id, type } = elements[index];
       if (action === "drawing" && adjustmentRequired(type)) {
         const { x1, y1, x2, y2 } = elements[index];
@@ -932,13 +932,13 @@ const WorkSpace = () => {
         style={{ position: "fixed", zIndex: 2, bottom: 0, padding: 10 }}
         className="w-fit flex gap-3"
       >
-        <button onClick={undo} className="p-2 bg-gray-200 rounded-lg">
+        <button onClick={undo} className="p-2 bg-gray-200 w-fit rounded-lg">
           <IoIosUndo />
         </button>
-        <button onClick={redo} className="p-2 bg-gray-200 rounded-lg">
+        <button onClick={redo} className="p-2 bg-gray-200 w-fit rounded-lg">
           <IoIosRedo />
         </button>
-        <button onClick={handleClear} className="p-2 bg-gray-200 rounded-lg">
+        <button onClick={handleClear} className="p-2 bg-gray-200 w-fit rounded-lg">
           Clear
         </button>
       </div>
