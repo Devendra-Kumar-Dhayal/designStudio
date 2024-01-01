@@ -9,10 +9,10 @@ const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [forgotpassword, setForgotPassword] = useState("");
+  const [forgotpassword] = useState("");
   const HandleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:3001/login", {
+      const response = await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
