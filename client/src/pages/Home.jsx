@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-const serverurl = 'http://localhost:5000';
 const Home = () => {
   const [recents, setRecents] = useState([]);
   const navigate = useNavigate();
@@ -9,7 +8,7 @@ const Home = () => {
   useEffect(() => {
     const getRecents = async () => {
       const res = await axios.get(
-        serverurl+`/api/workspacesrecent`,
+        `${process.env.REACT_APP_SERVER_URL}/api/workspacesrecent`,
         {
           withCredentials: true,
         }
@@ -23,7 +22,7 @@ const Home = () => {
   const handleNew = async () => {
 
     const res = await axios.post(
-      serverurl+`/api/workspaces`,
+      `${process.env.REACT_APP_SERVER_URL}/api/workspaces`,
       null,
       {
         withCredentials: true,
@@ -40,7 +39,7 @@ const Home = () => {
     <div className="w-full flex flex-col gap-4 ">
       <h1 className="text-3xl font-medium text-black">Dashboard</h1>
       <div className="min-h-[238px]   max-w-[1213px] bg-white gap-9 p-7 flex flex-row rounded-2xl">
-        {Array.from(Array(1)).map(() => {
+        {Array.from(Array(5)).map((_,index) => {
           return (
             <div
               className="w-[160px] h-[200px] bg-[#F8F9FA] p-3 rounded-xl flex flex-col justify-between shadow-md hover:bg-slate-100 cursor-pointer "
@@ -48,7 +47,7 @@ const Home = () => {
             >
               {" "}
               <div className="bg-white w-full h-[80%] rounded-lg   shadow-md"></div>
-              Template one
+              Template {index+1}
             </div>
           );
         })}

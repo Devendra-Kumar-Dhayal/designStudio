@@ -3,8 +3,7 @@ import config from "config";
 import logger from "./logger";
 
 async function connect() {
-  const dbUri = "mongodb://localhost:27017/design-studio";
-
+  const dbUri = config.get<string>("dbUri");
   try {
     await mongoose.connect(dbUri);
     logger.info("DB connected");

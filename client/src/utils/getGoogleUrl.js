@@ -2,9 +2,9 @@ function getGoogleOAuthURL() {
   const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
 
   const options = {
-    redirect_uri: "http://localhost:5000/api/sessions/oauth/google",
+    redirect_uri: process.env.REACT_APP_SERVER_REDIRECT_URL,
     googleOauthRedirectUrl: "http://localhost:5000/api/sessions/oauth/google",
-    client_id: "476380777181-rrsbbmsm7qrecnr7dhkmthfgksueck1l.apps.googleusercontent.com",
+    client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
     access_type: "offline",
     response_type: "code",
     prompt: "consent",

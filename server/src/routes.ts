@@ -5,7 +5,7 @@ import {
   getAllWorkspacesHandler,
   deleteWorkspaceHandler,
   updateWorkspaceHandler,
-  getAllWorkspacesRecentHandler
+  getAllWorkspacesRecentHandler,
 } from "./controller/workspace.controller";
 import {
   createUserSessionHandler,
@@ -28,148 +28,148 @@ import {
 } from "./schema/workspace.schema";
 import { createSessionSchema } from "./schema/session.schema";
 import { chooseRoleSchema, createUserSchema } from "./schema/user.schema";
-import express from 'express';
+import express from "express";
 import deserializeUser from "./middleware/deserializeUser";
 import requireDesigner from "./middleware/requireDesigner";
 
-
 const router = express.Router();
 
+/**
+ * @openapi
+ * '/api/users':
+ *  post:
+ *     tags:
+ *     - User
+ *     summary: Register a user
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/CreateUserInput'
+ *     responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/CreateUserResponse'
+ *      409:
+ *        description: Conflict
+ *      400:
+ *        description: Bad request
+ */
+router.post(
+  "/api/users",
+  validateResource(createUserSchema),
+  createUserHandler
+);
 
+router.get("/api/auth/user/me", requireUser, getCurrentUser);
+router.put(
+  "/api/auth/user/role",
+  validateResource(chooseRoleSchema),
+  requireUser,
+  setUserRole
+);
+/**
+ * @openapi
+ * '/api/sessions':
+ *  get:
+ *    tags:
+ *    - Session
+ *    summary: Get all sessions
+ *    responses:
+ *      200:
+ *        description: Get all sessions for current user
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/GetSessionResponse'
+ *      403:
+ *        description: Forbidden
+ *  post:
+ *    tags:
+ *    - Session
+ *    summary: Create a session
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/CreateSessionInput'
+ *    responses:
+ *      200:
+ *        description: Session created
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/CreateSessionResponse'
+ *      401:
+ *        description: Unauthorized
+ *  delete:
+ *    tags:
+ *    - Session
+ *    summary: Delete a session
+ *    responses:
+ *      200:
+ *        description: Session deleted
+ *      403:
+ *        description: Forbidden
+ */
+router.post(
+  "/api/sessions",
+  validateResource(createSessionSchema),
+  createUserSessionHandler
+);
 
+router.get("/api/sessions", requireUser, getUserSessionsHandler);
 
-  /**
-   * @openapi
-   * '/api/users':
-   *  post:
-   *     tags:
-   *     - User
-   *     summary: Register a user
-   *     requestBody:
-   *      required: true
-   *      content:
-   *        application/json:
-   *           schema:
-   *              $ref: '#/components/schemas/CreateUserInput'
-   *     responses:
-   *      200:
-   *        description: Success
-   *        content:
-   *          application/json:
-   *            schema:
-   *              $ref: '#/components/schemas/CreateUserResponse'
-   *      409:
-   *        description: Conflict
-   *      400:
-   *        description: Bad request
-   */
-  router.post("/api/users", validateResource(createUserSchema), createUserHandler);
+router.delete("/api/sessions", requireUser, deleteSessionHandler);
 
-  router.get("/api/auth/user/me", requireUser, getCurrentUser);
-  router.put("/api/auth/user/role",validateResource(chooseRoleSchema), requireUser, setUserRole);
-  /**
-   * @openapi
-   * '/api/sessions':
-   *  get:
-   *    tags:
-   *    - Session
-   *    summary: Get all sessions
-   *    responses:
-   *      200:
-   *        description: Get all sessions for current user
-   *        content:
-   *          application/json:
-   *            schema:
-   *              $ref: '#/components/schemas/GetSessionResponse'
-   *      403:
-   *        description: Forbidden
-   *  post:
-   *    tags:
-   *    - Session
-   *    summary: Create a session
-   *    requestBody:
-   *      required: true
-   *      content:
-   *        application/json:
-   *          schema:
-   *            $ref: '#/components/schemas/CreateSessionInput'
-   *    responses:
-   *      200:
-   *        description: Session created
-   *        content:
-   *          application/json:
-   *            schema:
-   *              $ref: '#/components/schemas/CreateSessionResponse'
-   *      401:
-   *        description: Unauthorized
-   *  delete:
-   *    tags:
-   *    - Session
-   *    summary: Delete a session
-   *    responses:
-   *      200:
-   *        description: Session deleted
-   *      403:
-   *        description: Forbidden
-   */
-  router.post(
-    "/api/sessions",
-    validateResource(createSessionSchema),
-    createUserSessionHandler
-  );
+router.get("/api/sessions/oauth/google", googleOauthHandler);
+router.get("/oauth/error", (req, res) => {
+  // Handle OAuth error here
+  const error = req.query.error;
+  console.log("error", error);
+  // Process error or redirect as needed
+  res.status(500).send(`OAuth Error: ${error}`);
+});
 
-  router.get("/api/sessions", requireUser, getUserSessionsHandler);
+// POST /api/workspaces - Create a new workspace
+router.post("/api/workspaces", [requireDesigner], createWorkspaceHandler);
 
-  router.delete("/api/sessions", requireUser, deleteSessionHandler);
+// GET /api/workspaces/{workspaceId} - Get a single workspace by its ID
+router.get(
+  "/api/workspaces/:workspaceId",
+  validateResource(getWorkspaceSchema),
+  getWorkspaceHandler
+);
 
-  router.get("/api/sessions/oauth/google", googleOauthHandler);
-  router.get("/oauth/error", (req, res) => {
-    // Handle OAuth error here
-    const error = req.query.error;
-    console.log("error", error);
-    // Process error or redirect as needed
-    res.status(500).send(`OAuth Error: ${error}`);
-  });
+// PUT /api/workspaces/{workspaceId} - Update a single workspace by its ID
+router.put(
+  "/api/workspaces/:workspaceId",
+  [requireDesigner, validateResource(updateWorkspaceSchema)],
+  updateWorkspaceHandler
+);
 
-  // POST /api/workspaces - Create a new workspace
-  router.post(
-    "/api/workspaces",
-    [requireDesigner],
-    createWorkspaceHandler
-  );
+// DELETE /api/workspaces/{workspaceId} - Delete a single workspace by its ID
+router.delete(
+  "/api/workspaces/:workspaceId",
+  [requireDesigner, validateResource(deleteWorkspaceSchema)],
+  deleteWorkspaceHandler
+);
 
-  // GET /api/workspaces/{workspaceId} - Get a single workspace by its ID
-  router.get(
-    "/api/workspaces/:workspaceId",
-    validateResource(getWorkspaceSchema),
-    getWorkspaceHandler
-  );
-
-  // PUT /api/workspaces/{workspaceId} - Update a single workspace by its ID
-  router.put(
-    "/api/workspaces/:workspaceId",
-    [requireDesigner, validateResource(updateWorkspaceSchema)],
-    updateWorkspaceHandler
-  );
-
-  // DELETE /api/workspaces/{workspaceId} - Delete a single workspace by its ID
-  router.delete(
-    "/api/workspaces/:workspaceId",
-    [requireDesigner, validateResource(deleteWorkspaceSchema)],
-    deleteWorkspaceHandler
-  );
-
-  // GET /api/workspaces - Get all workspaces
-  router.get(
-    "/api/workspacesrecent",
-    requireUser,
-    getAllWorkspacesRecentHandler // Implement getAllWorkspacesHandler to fetch all workspaces
-  );
-  router.get(
-    "/api/workspaces",
-    requireUser,
-    getAllWorkspacesHandler // Implement getAllWorkspacesHandler to fetch all workspaces
-  );
-
+// GET /api/workspaces - Get all workspaces
+router.get(
+  "/api/workspacesrecent",
+  requireUser,
+  getAllWorkspacesRecentHandler // Implement getAllWorkspacesHandler to fetch all workspaces
+);
+router.get(
+  "/api/workspaces",
+  requireUser,
+  getAllWorkspacesHandler // Implement getAllWorkspacesHandler to fetch all workspaces
+);
 
 export default router;
