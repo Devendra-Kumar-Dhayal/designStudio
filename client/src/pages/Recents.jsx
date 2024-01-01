@@ -11,10 +11,7 @@ const Recents = () => {
       const res = await axios.get(
         `${process.env.REACT_APP_SERVER_URL}/api/workspacesrecent`,
         {
-          widhCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          withCredentials: true,
         }
       );
 
