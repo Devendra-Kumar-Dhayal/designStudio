@@ -12,14 +12,20 @@ import rough from "roughjs/bundled/rough.esm";
 import Modal from "../components/Modal";
 import useHistory from "../components/hooks/useHistory";
 import usePressedKeys from "../components/hooks/usePressedKeys";
-import { attachLineToShape, attachLineToShapeCircle } from "../utils/attachShapes";
+import {
+  attachLineToShape,
+  attachLineToShapeCircle,
+} from "../utils/attachShapes";
 import { fixedWidth, threshold } from "../utils/constants";
 import createElement from "../utils/createElement";
 import { drawElement } from "../utils/drawElement";
 import { cn } from "../utils/functions";
-import { detectShapesNearLineEndpoint, getElementAtPosition, nearEuclidean } from "../utils/positionFunctions";
+import {
+  detectShapesNearLineEndpoint,
+  getElementAtPosition,
+  nearEuclidean,
+} from "../utils/positionFunctions";
 import updateElement from "../utils/updateElement";
-
 
 const color = ["#FF0000", "#FFFFFF", "#000000", "#00FF00", "#0000FF"];
 
@@ -54,10 +60,6 @@ const Draw = [
   },
 ];
 
-
-
-
-
 const cursorForPosition = (position) => {
   switch (position) {
     case "tl":
@@ -91,9 +93,8 @@ const resizedCoordinates = (clientX, clientY, position, coordinates) => {
   }
 };
 
-
-
-const adjustmentRequired = (type) => ["line", "rectangle","circle"].includes(type);
+const adjustmentRequired = (type) =>
+  ["line", "rectangle", "circle"].includes(type);
 
 const WorkSpace = () => {
   const [elements, setElements, undo, redo] = useHistory([]);
@@ -106,6 +107,9 @@ const WorkSpace = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIdFormeta, setSelectedIdFormeta] = useState();
   const [meta, setMeta] = useState({});
+  const [isDesigner, setisDesigner] = useState(true);
+  const [key, setkey] = useState("");
+  const [value, setValue] = useState("");
   const [startPanMousePosition, setStartPanMousePosition] = useState({
     x: 0,
     y: 0,
@@ -119,10 +123,12 @@ const WorkSpace = () => {
   const pressedKeys = usePressedKeys();
   const navigate = useNavigate();
 
+  // const handleSetElements = (newElement) => {
+  //   console.log("coming Element",newElement)
+  //   setElements(newElement);
+  // };
 
-  const handleSetElements =(newElement)=>{
-    setElements(newElement)
-  }
+  // console.log("first element", elements);
 
   const getUser = async () => {
     try {
@@ -130,15 +136,30 @@ const WorkSpace = () => {
         withCredentials: true,
       });
       if (!user) navigate("/login");
+      if (user.data.user.role !== "designer") {
+        setisDesigner(false);
+      }
     } catch (error) {
       console.log(error);
       navigate("/login");
     }
   };
 
-  useEffect(() => {
-    // Function to extract wid from URL search params
+  const handleSave = async () => {
+    const elementsCopy = [...elements];
 
+    elementsCopy[selectedIdFormeta] = {
+      ...elementsCopy[selectedIdFormeta],
+      options: {
+        ...elementsCopy[selectedIdFormeta].options,
+        meta,
+      },
+    };
+    setElements(elementsCopy, true);
+  };
+  const handleDiscard = async () => {};
+
+  useEffect(() => {
     getUser();
 
     const searchParams = new URLSearchParams(window.location.search);
@@ -228,11 +249,16 @@ const WorkSpace = () => {
     if (tool !== "selection") return;
     const { clientX, clientY } = getMouseCoordinates(event);
     const element = getElementAtPosition(clientX, clientY, elements);
+    console.log(
+      "double click",
+      element,
+      elements
+    )
 
     if (element) {
       setIsOpen(true);
       setSelectedIdFormeta(element.id);
-      setMeta(element.options?.meta ?? { Name: "" });
+      setMeta(element.options?.meta || {});
     }
   };
 
@@ -326,7 +352,6 @@ const WorkSpace = () => {
   }, [action, selectedElement]);
 
   const handleClear = () => {
-
     setElements([]);
     localStorage.removeItem("canvasElements");
   };
@@ -405,7 +430,6 @@ const WorkSpace = () => {
       setAction(tool === "text" ? "writing" : "drawing");
     }
   };
- 
 
   const handleMouseMove = (event) => {
     const { clientX, clientY } = getMouseCoordinates(event);
@@ -481,7 +505,8 @@ const WorkSpace = () => {
         ];
         if (options?.depends) {
           options.depends.map((item) => {
-            const line = elements[item.element];
+            console.log("elementt", elements, item?.element);
+            const line = elements[item?.element];
             const { x, y } = attachLineToShape(elements[id], line, item.start);
             let updated = {
               id: item.element,
@@ -504,7 +529,7 @@ const WorkSpace = () => {
             elementsToUpdate.push(updated);
           });
         }
-        updateElement(elementsToUpdate, elements, handleSetElements, selectedColor);
+        updateElement(elementsToUpdate, elements, setElements, selectedColor);
       } else if (selectedElement.type === "circle") {
         const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
           selectedElement;
@@ -525,7 +550,7 @@ const WorkSpace = () => {
         ];
         if (options?.depends) {
           options.depends.map((item) => {
-            const line = elements[item.element];
+            const line = elements[item?.element];
             const { x, y } = attachLineToShapeCircle(
               elements[id],
               line,
@@ -552,7 +577,7 @@ const WorkSpace = () => {
             elementsToUpdate.push(updated);
           });
         }
-        updateElement(elementsToUpdate, elements, handleSetElements, selectedColor);
+        updateElement(elementsToUpdate, elements, setElements, selectedColor);
       } else {
         const { id, x1, x2, y1, y2, type, offsetX, offsetY } = selectedElement;
         const width = x2 - x1;
@@ -574,7 +599,7 @@ const WorkSpace = () => {
             },
           ],
           elements,
-          handleSetElements,
+          setElements,
           selectedColor
         );
       }
@@ -589,20 +614,22 @@ const WorkSpace = () => {
       );
 
       if (type === "line") {
-        detectShapesNearLineEndpoint(clientX, clientY, elements,setSelectedIndex);
-        
+        detectShapesNearLineEndpoint(
+          clientX,
+          clientY,
+          elements,
+          setSelectedIndex
+        );
       }
-
 
       updateElement(
         [{ id, x1, y1, x2, y2, type, options: {} }],
         elements,
-        handleSetElements,
+        setElements,
         selectedColor
       );
     }
   };
-
 
   const handleMouseUp = (event) => {
     const { clientX, clientY } = getMouseCoordinates(event);
@@ -623,7 +650,7 @@ const WorkSpace = () => {
         updateElement(
           [{ id, x1, y1, x2, y2, type, options: {} }],
           elements,
-          handleSetElements,
+          setElements,
           selectedColor
         );
       }
@@ -635,7 +662,7 @@ const WorkSpace = () => {
           updateElement(
             [elements[index]],
             elements,
-            handleSetElements,
+            setElements,
             selectedColor
           );
           return;
@@ -702,7 +729,7 @@ const WorkSpace = () => {
                   rect,
                 ],
                 elements,
-                handleSetElements,
+                setElements,
                 selectedColor
               );
             } else {
@@ -720,7 +747,7 @@ const WorkSpace = () => {
                   rect,
                 ],
                 elements,
-                handleSetElements,
+                setElements,
                 selectedColor
               );
             }
@@ -793,7 +820,7 @@ const WorkSpace = () => {
                   rect,
                 ],
                 elements,
-                handleSetElements,
+                setElements,
                 selectedColor
               );
             } else {
@@ -811,7 +838,7 @@ const WorkSpace = () => {
                   rect,
                 ],
                 elements,
-                handleSetElements,
+                setElements,
                 selectedColor
               );
             }
@@ -853,7 +880,7 @@ const WorkSpace = () => {
         },
       ],
       elements,
-      handleSetElements,
+      setElements,
       selectedColor
     );
   };
@@ -861,36 +888,38 @@ const WorkSpace = () => {
   return (
     <div>
       <div className="fixed top-5 left-5 z-50 items-center gap-2 flex flex-col justify-center bg-gray-300 rounded-lg p-2">
-        {Draw.map((item, index) => {
-          return (
-            <button
-              className={cn(
-                " bg-white p-1 w-full text-xs flex justify-center flex-col rounded-lg items-center text-black",
-                tool === item.type && "bg-blue-600 text-white"
-              )}
-              onClick={() => setTool(item.type)}
-              key={index}
-            >
-              <item.icon className="w-5  h-5 " />
-            </button>
-          );
-        })}
+        {isDesigner &&
+          Draw.map((item, index) => {
+            return (
+              <button
+                className={cn(
+                  " bg-white p-1 w-full text-xs flex justify-center flex-col rounded-lg items-center text-black",
+                  tool === item.type && "bg-blue-600 text-white"
+                )}
+                onClick={() => setTool(item.type)}
+                key={index}
+              >
+                <item.icon className="w-5  h-5 " />
+              </button>
+            );
+          })}
       </div>
       <div className="fixed top-5 right-5 z-50 items-center gap-2 flex flex-col justify-center bg-gray-300 rounded-lg p-2">
-        {color.map((item, index) => {
-          return (
-            <button
-              className={cn(
-                " bg-white p-1 w-10 h-10  text-xs flex justify-center flex-col rounded-lg items-center text-black border border-black",
-                selectedColor === item && "border-2 border-blue-600",
-                `bg-[${item}]`
-              )}
-              onClick={() => setselectedColor(item)}
-              key={index}
-              style={{ backgroundColor: item }}
-            ></button>
-          );
-        })}
+        {isDesigner &&
+          color.map((item, index) => {
+            return (
+              <button
+                className={cn(
+                  " bg-white p-1 w-10 h-10  text-xs flex justify-center flex-col rounded-lg items-center text-black border border-black",
+                  selectedColor === item && "border-2 border-blue-600",
+                  `bg-[${item}]`
+                )}
+                onClick={() => setselectedColor(item)}
+                key={index}
+                style={{ backgroundColor: item }}
+              ></button>
+            );
+          })}
       </div>
       <div
         style={{ position: "fixed", zIndex: 2, bottom: 0, padding: 10 }}
@@ -933,15 +962,61 @@ const WorkSpace = () => {
         setIsOpen={setIsOpen}
         classes={"p-4 flex flex-col gap-4"}
       >
-        {"helloooo" + meta}
-        {Object.entries(meta).map((key, value) => {
-          <div className="w-full flex gap-3">
-            <h2 className="text-white bg-slate-600 rounded-lg border-white outline-2 outline-slate-600">
+        <div className="w-full rounded-lg border border-gray-400 flex flex-col gap-2 shadow-sm py-4 px-6">
+          <h1 className="text-base font-bold">Add</h1>
+          <div className="flex flex-row gap-4">
+            <input
+              type="text"
+              placeholder="Key"
+              className="w-1/3 rounded-lg border border-gray-400 p-4"
+              value={key}
+              onChange={(e) => setkey(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Value"
+              className="w-2/3 rounded-lg border border-gray-400 p-4"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
+            <button
+              className="bg-blue-600 text-white rounded-lg p-2"
+              onClick={() => {
+                setMeta((prevState) => ({
+                  ...prevState,
+                  [key]: value,
+                }));
+                setkey("");
+                setValue("");
+              }}
+            >
+              Add
+            </button>
+          </div>
+        </div>
+        {Object.entries(meta).map(([key, value]) => (
+          <div className="w-full flex gap-2">
+            <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
               {key}
-              {"hello"}
             </h2>
-          </div>;
-        })}
+            <p className="w-4/5 bg-gray-300 p-2 rounded-lg">{value}</p>
+          </div>
+        ))}
+
+        <div className="flex flex-row gap-3">
+          <button
+            onClick={handleSave}
+            className="p-2 bg-blue-500 hover:bg-blue-600 rounded-lg"
+          >
+            Save
+          </button>
+          <button
+            onClick={handleDiscard}
+            className="p-2 bg-red-500 hover:bg-red-600 rounded-lg"
+          >
+            Discard
+          </button>
+        </div>
       </Modal>
       <canvas
         id="canvas"

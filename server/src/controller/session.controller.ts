@@ -7,6 +7,7 @@ import {
 } from "../service/session.service";
 import {
   findAndUpdateUser,
+  findUserOrCreate,
   getGoogleOAuthTokens,
   getGoogleUser,
   validatePassword,
@@ -27,7 +28,6 @@ const refreshTokenCookieOptions: CookieOptions = {
   ...accessTokenCookieOptions,
   maxAge: 3.154e10, // 1 year
 };
-
 
 export async function createUserSessionHandler(req: Request, res: Response) {
   // Validate the user's password
@@ -52,7 +52,7 @@ export async function createUserSessionHandler(req: Request, res: Response) {
     { ...user, session: session._id },
     { expiresIn: config.get("refreshTokenTtl") } // 15 minutes
   );
- res.cookie("accessToken", accessToken, accessTokenCookieOptions);
+  res.cookie("accessToken", accessToken, accessTokenCookieOptions);
 
   res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
   // return access & refresh tokens
@@ -79,10 +79,9 @@ export async function deleteSessionHandler(req: Request, res: Response) {
   });
 }
 
-
 export async function googleOauthHandler(req: Request, res: Response) {
-
   // get the code from qs
+  console.log("handler");
   const code = req.query.code as string;
 
   try {
@@ -93,27 +92,31 @@ export async function googleOauthHandler(req: Request, res: Response) {
     const googleUser = await getGoogleUser({ id_token, access_token });
     //jwt.decode(id_token);
 
-
     if (!googleUser.verified_email) {
       return res.status(403).send("Google account is not verified");
     }
 
+    console.log("here");
+
     // upsert the user
-    const user = await findAndUpdateUser(
+    const user = await findUserOrCreate(
       {
         email: googleUser.email,
       },
       {
         email: googleUser.email,
         name: googleUser.name,
-        picture: googleUser.picture,
+        googleId: googleUser.id,
       },
       {
         upsert: true,
         new: true,
+        returnOriginal: false,
       }
     );
-    if(!user) return res.status(401).send("User not found");
+
+    console.log("user", user);
+    if (!user) return res.status(401).send("User not found");
 
     // create a session
     // create a session
@@ -121,15 +124,15 @@ export async function googleOauthHandler(req: Request, res: Response) {
 
     // create an access token
 
-     const accessToken = signJwt(
-    { ...user, session: session._id },
-    { expiresIn: config.get("accessTokenTtl") } // 15 minutes,
-  );
+    const accessToken = signJwt(
+      { ...user, session: session._id },
+      { expiresIn: config.get("accessTokenTtl") } // 15 minutes,
+    );
 
-  // create a refresh token
-  const refreshToken = signJwt(
-    { ...user, session: session._id },
-    { expiresIn: config.get("refreshTokenTtl") } // 1 year
+    // create a refresh token
+    const refreshToken = signJwt(
+      { ...user, session: session._id },
+      { expiresIn: config.get("refreshTokenTtl") } // 1 year
     );
 
     // set cookies
@@ -140,7 +143,8 @@ export async function googleOauthHandler(req: Request, res: Response) {
     // redirect back to client
     res.redirect(config.get("origin"));
   } catch (error) {
-    logger.error(error, "Failed to authorize Google user");
+    console.log(error)
+    logger.error(error, "Failed to authorize Google userf");
     return res.redirect(`${config.get("origin")}/oauth/error`);
   }
 }

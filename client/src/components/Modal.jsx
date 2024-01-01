@@ -14,7 +14,7 @@ const Modal = ({ children, isOpen, setIsOpen, classes }) => {
     >
       <div
         className={cn(
-          "   top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-fit  absolute bg-white md:w-5/6 w-[90%]  shadow-xl delay-400 duration-500 ease-in-out transition-all transform  rounded-3xl  ",
+          "   top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-fit  absolute bg-white   md:w-5/6 w-[90%]  shadow-xl delay-400 duration-500 ease-in-out transition-all transform  rounded-3xl  ",
 
           classes
         )}

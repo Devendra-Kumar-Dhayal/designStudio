@@ -1,9 +1,4 @@
-import {
-  
-  FilterQuery,
-  QueryOptions,
-  UpdateQuery,
-} from "mongoose";
+import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
 import { omit } from "lodash";
 import qs from "qs";
 import UserModel, { UserDocument, UserInput } from "../models/user.model";
@@ -15,7 +10,6 @@ export async function createUser(input: UserInput) {
     const useremail = input.email;
 
     const isuser = await UserModel.findOne({ useremail });
-    console.log(isuser);
     if (isuser != null) {
       throw new Error("User already exists");
     } else {
@@ -64,7 +58,6 @@ export async function getGoogleOAuthTokens({
 }: {
   code: string;
 }): Promise<GoogleTokensResult> {
-
   const url = "https://oauth2.googleapis.com/token";
 
   const values = {
@@ -74,6 +67,7 @@ export async function getGoogleOAuthTokens({
     redirect_uri: config.get("googleOauthRedirectUrl"),
     grant_type: "authorization_code",
   };
+
 
   try {
     const res = await axios.post<GoogleTokensResult>(
@@ -108,8 +102,8 @@ export async function getGoogleUser({
   id_token,
   access_token,
 }: {
-  id_token:string;
-  access_token:string;
+  id_token: string;
+  access_token: string;
 }): Promise<GoogleUserResult> {
   try {
     const res = await axios.get<GoogleUserResult>(
@@ -132,5 +126,49 @@ export async function findAndUpdateUser(
   update: UpdateQuery<UserDocument>,
   options: QueryOptions = {}
 ) {
+
+  console.log("update",update)
   return UserModel.findOneAndUpdate(query, update, options);
+}
+
+export async function findUserOrCreate(
+  query: FilterQuery<UserDocument>,
+  update: UpdateQuery<UserDocument>,
+  options: QueryOptions = {}
+) {
+  const existingUser = await UserModel.findOne(query);
+
+  if (!existingUser) {
+    const newUser = await UserModel.create(update);
+    return newUser;
+  }
+
+  return existingUser;
+
+  // If the user already exists, you can choose to update the user or perform any other action.
+  // For example, you can uncomment the following code to update the user:
+
+  // const updatedUser = await UserModel.findOneAndUpdate(query, update, options);
+  // return updatedUser;
+}
+
+export async function chooseRole(userId: string, role: string) {
+  console.log("first", role, userId);
+  try {
+    const user = await UserModel.findOneAndUpdate(
+      {
+        _id: userId,
+      },
+      {
+        role: role,
+      }
+    );
+
+    console.log("first", user);
+
+    return user;
+  } catch (error: any) {
+    logger.error(error, "Error updating user role");
+    throw new Error(error.message);
+  }
 }

@@ -58,8 +58,19 @@ export const createUserSchema = object({
     path: ["passwordConfirmation"],
   }),
 });
+export const chooseRoleSchema = object({
+  body: object({
+    role: string({
+      required_error: "Role is required",
+    }).refine((value) => value === "viewer" || value === "designer", {
+      message: "Invalid role",
+      path: ["role"],
+    }),
+  }),
+});
 
 export type CreateUserInput = Omit<
   TypeOf<typeof createUserSchema>,
   "body.passwordConfirmation"
 >;
+export type ChooseUserRoleInput = TypeOf<typeof chooseRoleSchema>;

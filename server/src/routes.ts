@@ -16,6 +16,7 @@ import {
 import {
   createUserHandler,
   getCurrentUser,
+  setUserRole,
 } from "./controller/user.controller";
 import requireUser from "./middleware/requireUser";
 import validateResource from "./middleware/validateResource";
@@ -26,9 +27,10 @@ import {
   updateWorkspaceSchema,
 } from "./schema/workspace.schema";
 import { createSessionSchema } from "./schema/session.schema";
-import { createUserSchema } from "./schema/user.schema";
+import { chooseRoleSchema, createUserSchema } from "./schema/user.schema";
 import express from 'express';
 import deserializeUser from "./middleware/deserializeUser";
+import requireDesigner from "./middleware/requireDesigner";
 
 
 const router = express.Router();
@@ -64,6 +66,7 @@ const router = express.Router();
   router.post("/api/users", validateResource(createUserSchema), createUserHandler);
 
   router.get("/api/auth/user/me", requireUser, getCurrentUser);
+  router.put("/api/auth/user/role",validateResource(chooseRoleSchema), requireUser, setUserRole);
   /**
    * @openapi
    * '/api/sessions':
@@ -131,7 +134,7 @@ const router = express.Router();
   // POST /api/workspaces - Create a new workspace
   router.post(
     "/api/workspaces",
-    [requireUser],
+    [requireDesigner],
     createWorkspaceHandler
   );
 
@@ -145,14 +148,14 @@ const router = express.Router();
   // PUT /api/workspaces/{workspaceId} - Update a single workspace by its ID
   router.put(
     "/api/workspaces/:workspaceId",
-    [requireUser, validateResource(updateWorkspaceSchema)],
+    [requireDesigner, validateResource(updateWorkspaceSchema)],
     updateWorkspaceHandler
   );
 
   // DELETE /api/workspaces/{workspaceId} - Delete a single workspace by its ID
   router.delete(
     "/api/workspaces/:workspaceId",
-    [requireUser, validateResource(deleteWorkspaceSchema)],
+    [requireDesigner, validateResource(deleteWorkspaceSchema)],
     deleteWorkspaceHandler
   );
 

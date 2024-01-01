@@ -1,7 +1,8 @@
 import { fixedHeight, fixedWidth } from "./constants";
 import createElement from "./createElement";
 
-const updateElement = async (elementsToUpdate,elements,setElements,selectedColor) => {
+const updateElement = async (elementsToUpdate,elements,setElements,selectedColor,overwrite=false) => {
+  console.log("elements",elements)
   const elementsCopy = [...elements];
 
   elementsToUpdate.map((element) => {
@@ -90,9 +91,9 @@ const updateElement = async (elementsToUpdate,elements,setElements,selectedColor
         throw new Error(`Type not recognised: ${type}`);
     }
   });
-  localStorage.setItem("canvasElements", JSON.stringify(elementsCopy));
+  // localStorage.setItem("canvasElements", JSON.stringify(elementsCopy));
 
-  setElements(elementsCopy);
+  setElements(elementsCopy,true);
 };
 
 export default updateElement;

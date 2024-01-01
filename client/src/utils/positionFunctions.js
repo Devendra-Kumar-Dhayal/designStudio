@@ -17,7 +17,7 @@ export const highlightNearbyElements = (element) => {
       w + 8,
       h + 8,
       {
-        stroke: "rgba(37, 37, 37, 0.5)",
+        stroke: "rgba(0,223,255, 0.9)",
         roughness: 0,
         strokeWidth: 5,
       }
@@ -31,7 +31,7 @@ export const highlightNearbyElements = (element) => {
         element.y1,
         fixedWidth + (threshold - 2),
         {
-          stroke: "rgba(37, 37, 37, 0.5)",
+          stroke: "rgba(0,223,255, 0.9)",
           roughness: 0,
           strokeWidth: 5,
         }
