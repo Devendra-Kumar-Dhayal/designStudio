@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+const serverurl = 'http://localhost:5000';
 const Home = () => {
   const [recents, setRecents] = useState([]);
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ const Home = () => {
   useEffect(() => {
     const getRecents = async () => {
       const res = await axios.get(
-        `${process.env.REACT_APP_SERVER_URL}/api/workspacesrecent`,
+        serverurl+`/api/workspacesrecent`,
         {
           withCredentials: true,
         }
@@ -23,7 +23,7 @@ const Home = () => {
   const handleNew = async () => {
 
     const res = await axios.post(
-      `${process.env.REACT_APP_SERVER_URL}/api/workspaces`,
+      serverurl+`/api/workspaces`,
       null,
       {
         withCredentials: true,
@@ -40,15 +40,15 @@ const Home = () => {
     <div className="w-full flex flex-col gap-4 ">
       <h1 className="text-3xl font-medium text-black">Dashboard</h1>
       <div className="min-h-[238px]   max-w-[1213px] bg-white gap-9 p-7 flex flex-row rounded-2xl">
-        {Array.from(Array(5)).map(() => {
+        {Array.from(Array(1)).map(() => {
           return (
             <div
-              className="w-full h-[200px] bg-[#F8F9FA] p-3 rounded-xl flex flex-col justify-between shadow-md hover:bg-slate-100 cursor-pointer "
+              className="w-[160px] h-[200px] bg-[#F8F9FA] p-3 rounded-xl flex flex-col justify-between shadow-md hover:bg-slate-100 cursor-pointer "
               onClick={handleNew}
             >
               {" "}
               <div className="bg-white w-full h-[80%] rounded-lg   shadow-md"></div>
-              Workspce
+              Template one
             </div>
           );
         })}
