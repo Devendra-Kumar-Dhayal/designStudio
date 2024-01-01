@@ -39,7 +39,7 @@ const Recents = () => {
       </div>
       
     </div>
-    
+
   );
 };
 
