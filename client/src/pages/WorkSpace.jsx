@@ -128,7 +128,7 @@ const WorkSpace = () => {
   //   setElements(newElement);
   // };
 
-  // console.log("first element", elements);
+  console.log("first element", elements);
 
   const getUser = async () => {
     try {
@@ -157,7 +157,9 @@ const WorkSpace = () => {
     };
     setElements(elementsCopy, true);
   };
-  const handleDiscard = async () => {};
+  const handleDiscard = async () => {
+    setMeta(elements[selectedIdFormeta].options?.meta ||{})
+  };
 
   useEffect(() => {
     getUser();
@@ -206,9 +208,14 @@ const WorkSpace = () => {
         }
       }
     };
+    updateWorkspace();
+    document.addEventListener("dblclick", handleDoubleClick);
+
+    return () => {
+      document.removeEventListener("dblclick", handleDoubleClick);
+    };
 
     // Trigger PUT request when 'elements' state changes
-    updateWorkspace();
   }, [elements, wid]);
 
   useLayoutEffect(() => {
@@ -228,6 +235,20 @@ const WorkSpace = () => {
     context.restore();
   }, [elements, action, selectedElement, panOffset]);
 
+  const handleDoubleClick = (event) => {
+    if (tool !== "selection") return;
+
+    const { clientX, clientY } = getMouseCoordinates(event);
+    const element = getElementAtPosition(clientX, clientY, elements);
+    console.log("double click", element, elements,tool);
+
+    if (element) {
+      setIsOpen(true);
+      setSelectedIdFormeta(element.id);
+      setMeta(element.options?.meta || {});
+    }
+  };
+
   useEffect(() => {
     const undoRedoFunction = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "z") {
@@ -245,22 +266,7 @@ const WorkSpace = () => {
     };
   }, [undo, redo]);
 
-  const handleDoubleClick = (event) => {
-    if (tool !== "selection") return;
-    const { clientX, clientY } = getMouseCoordinates(event);
-    const element = getElementAtPosition(clientX, clientY, elements);
-    console.log(
-      "double click",
-      element,
-      elements
-    )
-
-    if (element) {
-      setIsOpen(true);
-      setSelectedIdFormeta(element.id);
-      setMeta(element.options?.meta || {});
-    }
-  };
+  
 
   useEffect(() => {
     const panFunction = (event) => {
@@ -318,7 +324,7 @@ const WorkSpace = () => {
     document.addEventListener("keyup", handleKeyUp);
     window.addEventListener("resize", handleResize);
     window.addEventListener("wheel", panFunction);
-    document.addEventListener("dblclick", handleDoubleClick);
+    
     //TODO: esc key drawing stop
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
@@ -337,9 +343,10 @@ const WorkSpace = () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("resize", handleResize);
-      document.removeEventListener("dblclick", handleDoubleClick);
     };
   }, [tool]);
+
+
 
   useEffect(() => {
     const textArea = textAreaRef.current;

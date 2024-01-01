@@ -3,9 +3,8 @@ export default {
   accessTokenPublicKey: "ACCESS_TOKEN_PUBLIC_KEY",
   refreshTokenPrivateKey: "REFRESH_PRIVATE_KEY",
   refreshTokenPublicKey: "REFRESH_PUBLIC_KEY",
-  dbUri: "mongodb://localhost:27017/design-studio",
+  dbUri: "DB_CONNECTION",
   port: "PORT",
   googleClientId: "GOOGLE_CLIENT_ID",
   googleClientSecret: "GOOGLE_CLIENT_SECRET",
-  
 };
