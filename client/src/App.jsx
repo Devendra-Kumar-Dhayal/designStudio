@@ -1,11 +1,10 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React from "react";
 import { Route, Routes } from "react-router-dom";
-import WorkSpace from "./pages/WorkSpace";
 import ProtectedLayout from "./components/loyout/ProtectedLayout";
 import Home from "./pages/Home";
-import Recents from "./pages/Recents";
 import Login from "./pages/Login";
-import axios from "axios";
+import Recents from "./pages/Recents";
+import WorkSpace from "./pages/WorkSpace";
 
 
 const App = () => {

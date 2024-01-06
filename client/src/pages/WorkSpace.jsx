@@ -97,7 +97,8 @@ const adjustmentRequired = (type) =>
   ["line", "rectangle", "circle"].includes(type);
 
 const WorkSpace = () => {
-  const [elements, setElements, undo, redo] = useHistory([]);
+  // const [elements, setElements, undo, redo] = useHistory([]);
+  const [elements, setElements] = useState([])
   const [action, setAction] = useState("none");
   const [selectedColor, setselectedColor] = useState(color[0]);
   const [tool, setTool] = useState("selection");
@@ -249,22 +250,22 @@ const WorkSpace = () => {
     }
   };
 
-  useEffect(() => {
-    const undoRedoFunction = (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "z") {
-        if (event.shiftKey) {
-          redo();
-        } else {
-          undo();
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const undoRedoFunction = (event) => {
+  //     if ((event.metaKey || event.ctrlKey) && event.key === "z") {
+  //       if (event.shiftKey) {
+  //         redo();
+  //       } else {
+  //         undo();
+  //       }
+  //     }
+  //   };
 
-    document.addEventListener("keydown", undoRedoFunction);
-    return () => {
-      document.removeEventListener("keydown", undoRedoFunction);
-    };
-  }, [undo, redo]);
+  //   document.addEventListener("keydown", undoRedoFunction);
+  //   return () => {
+  //     document.removeEventListener("keydown", undoRedoFunction);
+  //   };
+  // }, [undo, redo]);
 
   useEffect(() => {
     const panFunction = (event) => {
@@ -391,7 +392,7 @@ const WorkSpace = () => {
           setSelectedElement({ ...element, offsetX, offsetY });
         }
 
-        setElements((prevState) => prevState);
+        // setElements((prevState) => prevState);
 
         if (element.position === "inside") {
           setAction("moving");
@@ -411,6 +412,7 @@ const WorkSpace = () => {
       }
     } else if (tool === "meta") return;
     else {
+
       const id = elements.length;
       const element = createElement(
         id,
@@ -456,6 +458,7 @@ const WorkSpace = () => {
     }
 
     if (action === "drawing") {
+  
       const index = elements.length - 1;
       const { x1, y1, type } = elements[index];
       updateElement(
@@ -477,6 +480,7 @@ const WorkSpace = () => {
       );
     } else if (action === "moving") {
       if (selectedElement.type === "pencil") {
+
         const newPoints = selectedElement.points.map((_, index) => ({
           x: clientX - selectedElement.xOffsets[index],
           y: clientY - selectedElement.yOffsets[index],
@@ -532,7 +536,7 @@ const WorkSpace = () => {
             elementsToUpdate.push(updated);
           });
         }
-        updateElement(elementsToUpdate, elements, setElements, selectedColor);
+        updateElement(elementsToUpdate, elements, setElements, selectedColor,false);
       } else if (selectedElement.type === "circle") {
         const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
           selectedElement;
@@ -580,7 +584,7 @@ const WorkSpace = () => {
             elementsToUpdate.push(updated);
           });
         }
-        updateElement(elementsToUpdate, elements, setElements, selectedColor);
+        updateElement(elementsToUpdate, elements, setElements, selectedColor,false);
       } else {
         const { id, x1, x2, y1, y2, type, offsetX, offsetY } = selectedElement;
         const width = x2 - x1;
@@ -648,8 +652,8 @@ const WorkSpace = () => {
 
       const index = selectedElement?.id;
       console.log("indx", index, elements);
-      if (index === elements.length) {
-        return
+      if (!elements || index === elements.length) {
+        return;
       }
       const { id, type } = elements[index];
       if (action === "drawing" && adjustmentRequired(type)) {
@@ -932,13 +936,16 @@ const WorkSpace = () => {
         style={{ position: "fixed", zIndex: 2, bottom: 0, padding: 10 }}
         className="w-fit flex gap-3"
       >
-        <button onClick={undo} className="p-2 bg-gray-200 w-fit rounded-lg">
+        {/* <button onClick={undo} className="p-2 bg-gray-200 w-fit rounded-lg">
           <IoIosUndo />
         </button>
         <button onClick={redo} className="p-2 bg-gray-200 w-fit rounded-lg">
           <IoIosRedo />
-        </button>
-        <button onClick={handleClear} className="p-2 bg-gray-200 w-fit rounded-lg">
+        </button> */}
+        <button
+          onClick={handleClear}
+          className="p-2 bg-gray-200 w-fit rounded-lg"
+        >
           Clear
         </button>
       </div>
