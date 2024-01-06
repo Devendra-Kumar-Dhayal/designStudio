@@ -24,7 +24,7 @@ export const highlightNearbyElements = (element) => {
     );
     roughCanvas.draw(g);
   }
-  if (element.type === "circle") {
+  if (element.type === "circle"||element.type === "kafka"||element.type === "boomi") {
     try {
       const g = roughCanvas.circle(
         element.x1,
@@ -40,6 +40,7 @@ export const highlightNearbyElements = (element) => {
     } catch (error) {
     }
   }
+  
 };
 
 
@@ -72,6 +73,20 @@ export const positionWithinElement = (x, y, element) => {
       const inside = x >= x1 && x <= x2 && y >= y1 && y <= y2 ? "inside" : null;
       return topLeft || topRight || bottomLeft || bottomRight || inside;
     case "circle":
+      return Math.pow(x - x1, 2) +
+        Math.pow(y - y1, 2) -
+        Math.pow(fixedWidth / 2 + threshold, 2) <=
+        0
+        ? "inside"
+        : null;
+    case "kafka":
+      return Math.pow(x - x1, 2) +
+        Math.pow(y - y1, 2) -
+        Math.pow(fixedWidth / 2 + threshold, 2) <=
+        0
+        ? "inside"
+        : null;
+    case "boomi":
       return Math.pow(x - x1, 2) +
         Math.pow(y - y1, 2) -
         Math.pow(fixedWidth / 2 + threshold, 2) <=
@@ -124,6 +139,8 @@ export  function detectShapesNearLineEndpoint(x, y, elements,setSelectedIndex) {
    //TODO: this set ain't working
    elementsType.add("rectangle");
    elementsType.add("circle");
+   elementsType.add("kafka");
+   elementsType.add("boomi");
 
    elements?.map((element) => {
      if (!element && !element.type) return false;
@@ -135,7 +152,7 @@ export  function detectShapesNearLineEndpoint(x, y, elements,setSelectedIndex) {
          shapesNearEndpoint.push(element.id);
        }
        return true;
-     } else if (element.type === "circle") {
+     } else if (element.type === "circle"||element.type === "kafka"||element.type === "boomi") {
        const { type, x1, x2, y1, y2 } = element;
        if (
          Math.pow(x - x1, 2) +

@@ -51,6 +51,14 @@ const Draw = [
     icon: TbCircle,
   },
   {
+    type: "kafka",
+    icon: TbCircle,
+  },
+  {
+    type: "boomi",
+    icon: TbCircle,
+  },
+  {
     type: "pencil",
     icon: LuPencil,
   },
@@ -94,7 +102,7 @@ const resizedCoordinates = (clientX, clientY, position, coordinates) => {
 };
 
 const adjustmentRequired = (type) =>
-  ["line", "rectangle", "circle"].includes(type);
+  ["line", "rectangle", "circle","kafka","boomi",].includes(type);
 
 const WorkSpace = () => {
   const [elements, setElements, undo, redo] = useHistory([]);
@@ -508,7 +516,7 @@ const WorkSpace = () => {
         ];
         if (options?.depends) {
           options.depends.map((item) => {
-            console.log("elementt", elements, item?.element);
+            console.log("element", elements, item?.element);
             const line = elements[item?.element];
             const { x, y } = attachLineToShape(elements[id], line, item.start);
             let updated = {
@@ -533,7 +541,7 @@ const WorkSpace = () => {
           });
         }
         updateElement(elementsToUpdate, elements, setElements, selectedColor);
-      } else if (selectedElement.type === "circle") {
+      } else if (selectedElement.type === "circle" ) {
         const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
           selectedElement;
         const width = x2 - x1;
@@ -675,7 +683,7 @@ const WorkSpace = () => {
           return;
         }
 
-        if (elements[selectedIndex].type === "circle") {
+        if (elements[selectedIndex].type === "circle" ||elements[selectedIndex].type === "kafka" ||elements[selectedIndex].type === "boomi" ) {
           if (
             selectedIndex !== null &&
             Math.pow(clientX - elements[selectedIndex].x1, 2) +
@@ -762,6 +770,7 @@ const WorkSpace = () => {
             setAction("none");
           }
         }
+        
         if (elements[selectedIndex].type === "rectangle") {
           if (
             selectedIndex !== null &&
