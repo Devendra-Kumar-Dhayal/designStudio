@@ -41,7 +41,6 @@ const createElement = (id, x1, y1, x2, y2, type, color, options) => {
         x2: x1 + fixedWidth / 2,
         y2: y1 + fixedHeight / 2,
         type,
-        text: "boomi",
         roughElement: roughElementCirle,
         arrow: [x2],
         options,
