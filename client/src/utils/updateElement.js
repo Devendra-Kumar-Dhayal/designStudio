@@ -1,7 +1,9 @@
 import { fixedHeight, fixedWidth } from "./constants";
 import createElement from "./createElement";
 
-const updateElement = async (elementsToUpdate,elements,setElements,selectedColor,overwrite=false) => {
+const updateElement = async (elementsToUpdate,elements,setElements,selectedColor,overwrite=true) => {
+  if (!elements) return;
+
   console.log("elements",elements)
   const elementsCopy = [...elements];
 
@@ -127,7 +129,7 @@ const updateElement = async (elementsToUpdate,elements,setElements,selectedColor
   });
   // localStorage.setItem("canvasElements", JSON.stringify(elementsCopy));
 
-  setElements(elementsCopy,true);
+  setElements(elementsCopy,overwrite);
 };
 
 export default updateElement;

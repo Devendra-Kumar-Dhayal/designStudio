@@ -11,11 +11,19 @@ const useHistory = (initialState) => {
     const newState =
       typeof action === "function" ? action(history[index]) : action;
     if (overwrite) {
+      console.log("action",action)
+      // if(typeof action === "function"){
+      //   return
+      // }
       const historyCopy = [...history];
       historyCopy[index] = newState;
       setHistory(historyCopy);
     } else {
-      const updatedState = [...history].slice(0, index + 1);
+      console.log("action", action);
+      // if (typeof action === "function") {
+      //   return;
+      // }
+      const updatedState = [...history].slice(Math.max(history.length - 10, 0));
       setHistory([...updatedState, newState]);
       setIndex((prevState) => prevState + 1);
     }
