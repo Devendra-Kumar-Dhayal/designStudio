@@ -129,14 +129,14 @@ export  function detectShapesNearLineEndpoint(x, y, elements,setSelectedIndex) {
      if (!element && !element.type) return false;
 
      if (element.type === "rectangle") {
-       const {  x1, x2, y1, y2 } = element;
+       const { type, x1, x2, y1, y2 } = element;
 
        if (nearEuclidean(x, y, x1, y1, x2, y2, threshold)) {
          shapesNearEndpoint.push(element.id);
        }
        return true;
      } else if (element.type === "circle") {
-       const {  x1, y1 } = element;
+       const { type, x1, y1 ,x2,y2 } = element;
        if (
          Math.pow(x - x1, 2) +
            Math.pow(y - y1, 2) -

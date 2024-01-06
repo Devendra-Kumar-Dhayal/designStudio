@@ -74,7 +74,7 @@ export const attachLineToShape = (shape, line, start) => {
 };
 
 export const attachLineToShapeCircle = (shape, line, start) => {
-  const { x1, y1 } = shape; // Circle's coordinates
+  const { x1, y1, x2, y2 } = shape; // Circle's coordinates
   const { x1: lx1, y1: ly1, x2: lx2, y2: ly2 } = line;
 
   // Calculate the circle's center coordinates
