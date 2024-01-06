@@ -43,7 +43,7 @@ const updateElement = async (elementsToUpdate,elements,setElements,selectedColor
           options,
         };
 
-        
+
 
         elementsCopy[id] = object;
         break;
@@ -63,6 +63,40 @@ const updateElement = async (elementsToUpdate,elements,setElements,selectedColor
           options,
         };
         elementsCopy[id] = objectc;
+        break;
+      case "kafka":
+        let cek = createElement(
+          id,
+          x1,
+          y1,
+          x1 + fixedWidth,
+          y1 + fixedHeight,
+          type,
+          selectedColor,
+          options
+        );
+        let objectk = {
+          ...cek,
+          options,
+        };
+        elementsCopy[id] = objectk;
+        break;
+      case "boomi":
+        let ceb = createElement(
+          id,
+          x1,
+          y1,
+          x1 + fixedWidth,
+          y1 + fixedHeight,
+          type,
+          selectedColor,
+          options
+        );
+        let objectb = {
+          ...ceb,
+          options,
+        };
+        elementsCopy[id] = objectb;
         break;
       case "pencil":
         elementsCopy[id].points = [

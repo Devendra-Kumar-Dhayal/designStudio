@@ -70,6 +70,22 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
       }
 
       break;
+    case "kafka":
+      roughCanvas.draw(element.roughElement);
+      context.font = "24px sans-serif";
+      context.fillText(element.text, element.x1 -26, element.y1+10);
+      if (element.id === selectedIndex) {
+        highlightNearbyElements(element);
+      }
+      break;
+    case "boomi":
+      roughCanvas.draw(element.roughElement);
+      context.font = "24px sans-serif";
+      context.fillText(element.text, element.x1 -26, element.y1+10);
+      if (element.id === selectedIndex) {
+        highlightNearbyElements(element);
+      }
+      break;
     case "pencil":
       context.beginPath();
       context.moveTo(element.points[0].x, element.points[0].y);
