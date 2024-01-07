@@ -141,12 +141,8 @@ const WorkSpace = () => {
   const pressedKeys = usePressedKeys();
   const navigate = useNavigate();
 
-  // const handleSetElements = (newElement) => {
-  //   console.log("coming Element",newElement)
-  //   setElements(newElement);
-  // };
+  
 
-  console.log("first element", elements);
 
   const getUser = async () => {
     try {
@@ -158,7 +154,6 @@ const WorkSpace = () => {
         setisDesigner(false);
       }
     } catch (error) {
-      console.log(error);
       navigate("/login");
     }
   };
@@ -261,7 +256,6 @@ const WorkSpace = () => {
 
     const { clientX, clientY } = getMouseCoordinates(event);
     const element = getElementAtPosition(clientX, clientY, elements);
-    console.log("double click", element, elements, tool);
 
     if (element) {
       setIsOpen(true);
@@ -497,7 +491,6 @@ const WorkSpace = () => {
         selectedColor
       );
     } else if (action === "moving") {
-      console.log("moving");
       if (selectedElement.type === "pencil") {
         const newPoints = selectedElement.points.map((_, index) => ({
           x: clientX - selectedElement.xOffsets[index],
@@ -511,7 +504,6 @@ const WorkSpace = () => {
 
         setElements(elementsCopy, true);
       } else if (selectedElement.type === "line") {
-        console.log("updated line");
         const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
           selectedElement;
         const width = x2 - x1;
@@ -519,7 +511,6 @@ const WorkSpace = () => {
         const newX1 = clientX - offsetX;
         const newY1 = clientY - offsetY;
         const elementsDepending = options.depending;
-        console.log(elementsDepending);
         let elementsToUpdate = [
           {
             id,
@@ -537,7 +528,6 @@ const WorkSpace = () => {
         if (elementsDepending) {
           elementsDepending.forEach((item) => {
             const element = elements[item.element];
-            console.log("element", element);
             const options = element.options;
             const depends = options.depends;
             const obj = {
@@ -547,7 +537,6 @@ const WorkSpace = () => {
                 depends: depends.filter((dep) => dep.element !== id),
               },
             };
-            console.log("obj", obj);
             elementsToUpdate.push(obj);
           });
         }
@@ -578,7 +567,6 @@ const WorkSpace = () => {
         ];
         if (options?.depends) {
           options.depends.map((item) => {
-            console.log("element", elements, item?.element);
             const line = elements[item?.element];
             const { x, y } = attachLineToShape(elements[id], line, item.start);
             let updated = {
@@ -690,7 +678,6 @@ const WorkSpace = () => {
         );
       }
     } else if (action === "resizing") {
-      console.log("resizing");
       const { id, type, position, ...coordinates } = selectedElement;
 
       const { x1, y1, x2, y2 } = resizedCoordinates(
@@ -731,7 +718,6 @@ const WorkSpace = () => {
       }
 
       const index = selectedElement?.id;
-      console.log("indx", index, elements);
       if (!elements || index === elements.length) {
         return;
       }
