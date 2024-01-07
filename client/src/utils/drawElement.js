@@ -58,6 +58,29 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
         element.roughElement.options.stroke,
         element
       );
+
+      if(text){
+        const cx = (element.x1 + element.x2) / 2;
+        const cy = (element.y1 + element.y2) / 2;
+        const textWidth = context.measureText(text).width;
+        const textHeight = 24; // Adjust the height as needed
+        const padding = 5; // Adjust the padding as needed
+
+        // Draw white background
+        // context.fillStyle = "white";
+        // context.fillRect(cx - textWidth / 2 -4*padding , cy - textHeight / 2  , 2*(textWidth +padding), textHeight + 2 * padding);
+
+        // Draw text
+        context.font = "24px sans-serif";
+        context.textAlign = "center";
+        context.fillStyle = "black"; // Adjust the text color as needed
+        context.fillText(
+          text,
+          cx,
+          cy+10,
+          Math.pow(Math.pow(element.x1 - element.x2, 2) + Math.pow(element.y1 - element.y2, 2), 1 / 2)
+        );
+      }
       break;
     case "rectangle":
       roughCanvas.draw(element.roughElement);
