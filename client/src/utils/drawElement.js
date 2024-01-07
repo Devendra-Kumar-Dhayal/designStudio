@@ -1,5 +1,6 @@
 import rough from "roughjs/bundled/rough.esm";
 import { highlightNearbyElements } from "./positionFunctions";
+import { fixedWidth } from "./constants";
 
 const generator = rough.generator();
 
@@ -44,6 +45,8 @@ const drawArrow = (roughCanvas, fromX, fromY, toX, toY, color, element) => {
 };
 
 export const drawElement = (context, roughCanvas, element, selectedIndex) => {
+  const text = element?.options?.meta?.common?.label ?? "";
+
   switch (element?.type) {
     case "line":
       drawArrow(
@@ -61,20 +64,52 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
       if (element.id === selectedIndex) {
         highlightNearbyElements(element);
       }
+
       
 
+      if(!!text){
+        const textWidth = context.measureText(text).width;
+        const x = element.x1 + (element.width - textWidth) / 2 - 30;
+        const y = element.y1 + element.height / 2;
+        const elementWidth = Math.abs(element.y1 - element.y2);
+        
+        context.font = "24px sans-serif";
+        context.textAlign="center"
+        context.fillText(
+          text,
+          element.x1 +(elementWidth/2)  ,
+          element.y1 + elementWidth / 2+5,
+          fixedWidth-20
+        );
+      }
       break;
+
     case "circle":
       roughCanvas.draw(element.roughElement);
       if (element.id === selectedIndex) {
         highlightNearbyElements(element);
+      }
+      if (!!text) {
+        const textWidth = context.measureText(text).width;
+        const x = element.x1 + (element.width - textWidth) / 2 - 30;
+        const y = element.y1 + element.height / 2;
+        const elementWidth = Math.abs(element.y1 - element.y2);
+
+        context.font = "24px sans-serif";
+        context.textAlign = "center";
+        context.fillText(
+          text,
+          element.x1 +5,
+          element.y1 +10,
+          fixedWidth - 20
+        );
       }
 
       break;
     case "kafka":
       roughCanvas.draw(element.roughElement);
       context.font = "24px sans-serif";
-      context.fillText(element.text, element.x1 -26, element.y1+10);
+      context.fillText(element.text, element.x1 - 26, element.y1 + 10);
       if (element.id === selectedIndex) {
         highlightNearbyElements(element);
       }
@@ -82,7 +117,7 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
     case "boomi":
       roughCanvas.draw(element.roughElement);
       context.font = "24px sans-serif";
-      context.fillText(element.text, element.x1 -26, element.y1+10);
+      context.fillText(element.text, element.x1 - 26, element.y1 + 10);
       if (element.id === selectedIndex) {
         highlightNearbyElements(element);
       }
