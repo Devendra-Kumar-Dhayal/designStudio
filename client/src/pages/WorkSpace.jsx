@@ -27,8 +27,15 @@ import {
 } from "../utils/positionFunctions";
 import updateElement from "../utils/updateElement";
 import useDebounce from "../components/hooks/useDebounce";
+import { set } from "lodash";
 
 const color = ["#FF0000", "#FFFFFF", "#000000", "#00FF00", "#0000FF"];
+
+const SammpleObject = {
+  label: "",
+  description: "",
+  owner: "",
+};
 
 const Draw = [
   {
@@ -259,7 +266,7 @@ const WorkSpace = () => {
     if (element) {
       setIsOpen(true);
       setSelectedIdFormeta(element.id);
-      setMeta(element.options?.meta || {});
+      setMeta(element.options?.meta || { common: { ...SammpleObject } });
     }
   };
 
@@ -490,7 +497,7 @@ const WorkSpace = () => {
         selectedColor
       );
     } else if (action === "moving") {
-      console.log("moving")
+      console.log("moving");
       if (selectedElement.type === "pencil") {
         const newPoints = selectedElement.points.map((_, index) => ({
           x: clientX - selectedElement.xOffsets[index],
@@ -504,7 +511,7 @@ const WorkSpace = () => {
 
         setElements(elementsCopy, true);
       } else if (selectedElement.type === "line") {
-        console.log("updated line")
+        console.log("updated line");
         const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
           selectedElement;
         const width = x2 - x1;
@@ -683,7 +690,7 @@ const WorkSpace = () => {
         );
       }
     } else if (action === "resizing") {
-      console.log("resizing")
+      console.log("resizing");
       const { id, type, position, ...coordinates } = selectedElement;
 
       const { x1, y1, x2, y2 } = resizedCoordinates(
@@ -703,7 +710,7 @@ const WorkSpace = () => {
       }
 
       updateElement(
-        [{ id, x1, y1, x2, y2, type, options:selectedElement.options }],
+        [{ id, x1, y1, x2, y2, type, options: selectedElement.options }],
         elements,
         setElements,
         selectedColor
@@ -772,9 +779,7 @@ const WorkSpace = () => {
             );
             //TODO: opt in drawing
 
-
             const depending = elements[index].options?.depending ?? [];
-
 
             const opt = {
               depending: [
@@ -785,7 +790,6 @@ const WorkSpace = () => {
                 },
               ],
             };
-
 
             const depends = elements[selectedIndex]?.options?.depends
               ? elements[selectedIndex].options.depends.filter(
@@ -1066,6 +1070,30 @@ const WorkSpace = () => {
       >
         <div className="w-full rounded-lg border border-gray-400 flex flex-col gap-2 shadow-sm py-4 px-6">
           <h1 className="text-base font-bold">Add</h1>
+          <div className="flex flex-col gap-4">
+            {meta.common &&
+              Object.entries(meta?.common).map(([key, value]) => (
+                <div className="w-full flex gap-2">
+                  <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
+                    {key.toUpperCase()}:
+                  </h2>
+                  <input
+                    value={value}
+                    placeholder={`${key}`}
+                    onChange={(e) => {
+                      setMeta((prevState) => ({
+                        ...prevState,
+                        common: {
+                          ...prevState.common,
+                          [key]: e.target.value,
+                        },
+                      }));
+                    }}
+                    className="w-4/5 p-5 bg-gray-300  rounded-lg"
+                  />
+                </div>
+              ))}
+          </div>
           <div className="flex flex-row gap-4">
             <input
               type="text"
@@ -1086,7 +1114,9 @@ const WorkSpace = () => {
               onClick={() => {
                 setMeta((prevState) => ({
                   ...prevState,
-                  [key]: value,
+                  other: {
+                    [key]: value,
+                  },
                 }));
                 setkey("");
                 setValue("");
@@ -1096,14 +1126,15 @@ const WorkSpace = () => {
             </button>
           </div>
         </div>
-        {Object.entries(meta).map(([key, value]) => (
-          <div className="w-full flex gap-2">
-            <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
-              {key}
-            </h2>
-            <p className="w-4/5 bg-gray-300 p-2 rounded-lg">{value}</p>
-          </div>
-        ))}
+        {meta.other &&
+          Object.entries(meta?.other).map(([key, value]) => (
+            <div className="w-full flex gap-2">
+              <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
+                {key}
+              </h2>
+              <p className="w-4/5 bg-gray-300 p-2 rounded-lg">{value}</p>
+            </div>
+          ))}
 
         <div className="flex flex-row gap-3">
           <button

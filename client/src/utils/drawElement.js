@@ -61,6 +61,7 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
       if (element.id === selectedIndex) {
         highlightNearbyElements(element);
       }
+      
 
       break;
     case "circle":
