@@ -3,7 +3,6 @@ function getGoogleOAuthURL() {
 
   const options = {
     redirect_uri: process.env.REACT_APP_SERVER_REDIRECT_URL,
-    googleOauthRedirectUrl: "http://localhost:5000/api/sessions/oauth/google",
     client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
     access_type: "offline",
     response_type: "code",

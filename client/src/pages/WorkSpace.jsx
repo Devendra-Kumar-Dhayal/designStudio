@@ -19,7 +19,7 @@ import {
 import { fixedWidth, threshold } from "../utils/constants";
 import createElement from "../utils/createElement";
 import { drawElement } from "../utils/drawElement";
-import { cn } from "../utils/functions";
+import { BASEURL, cn } from "../utils/functions";
 import {
   detectShapesNearLineEndpoint,
   getElementAtPosition,
@@ -141,12 +141,9 @@ const WorkSpace = () => {
   const pressedKeys = usePressedKeys();
   const navigate = useNavigate();
 
-  
-
-
   const getUser = async () => {
     try {
-      const user = await axios.get(`http://localhost:5000/api/auth/user/me`, {
+      const user = await axios.get(`${BASEURL}/api/auth/user/me`, {
         withCredentials: true,
       });
       if (!user) navigate("/login");
@@ -184,7 +181,7 @@ const WorkSpace = () => {
       const fetchWorkspaceData = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/workspaces/${workspaceId}`,
+            `${BASEURL}/api/workspaces/${workspaceId}`,
             {
               withCredentials: true,
             }
@@ -208,7 +205,7 @@ const WorkSpace = () => {
       if (wid) {
         try {
           await axios.put(
-            `http://localhost:5000/api/workspaces/${wid}`,
+            `${BASEURL}/api/workspaces/${wid}`,
             {
               elements: elements,
             },
