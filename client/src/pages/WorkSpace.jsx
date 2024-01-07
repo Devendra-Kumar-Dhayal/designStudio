@@ -26,6 +26,7 @@ import {
   nearEuclidean,
 } from "../utils/positionFunctions";
 import updateElement from "../utils/updateElement";
+import useDebounce from "../components/hooks/useDebounce";
 
 const color = ["#FF0000", "#FFFFFF", "#000000", "#00FF00", "#0000FF"];
 
@@ -99,6 +100,7 @@ const adjustmentRequired = (type) =>
 const WorkSpace = () => {
   // const [elements, setElements, undo, redo] = useHistory([]);
   const [elements, setElements] = useState([])
+  const debouncedElements = useDebounce(elements,1000)
   const [action, setAction] = useState("none");
   const [selectedColor, setselectedColor] = useState(color[0]);
   const [tool, setTool] = useState("selection");
@@ -210,14 +212,18 @@ const WorkSpace = () => {
       }
     };
     updateWorkspace();
+    
+
+    // Trigger PUT request when 'elements' state changes
+  }, [debouncedElements, wid]);
+
+  useEffect(()=>{
     document.addEventListener("dblclick", handleDoubleClick);
 
     return () => {
       document.removeEventListener("dblclick", handleDoubleClick);
     };
-
-    // Trigger PUT request when 'elements' state changes
-  }, [elements, wid]);
+  },[elements])
 
   useLayoutEffect(() => {
     const canvas = document.getElementById("canvas");
