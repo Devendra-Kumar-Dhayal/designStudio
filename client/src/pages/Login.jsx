@@ -22,11 +22,9 @@ const Login = () => {
 
       if (response.ok) {
         // Handle successful login
-        console.log("Login successful!");
         navigate("/dashboard");
       } else {
         // Handle login failure
-        console.error("Login failed");
       }
     } catch (error) {
       console.error("Error during login:", error);

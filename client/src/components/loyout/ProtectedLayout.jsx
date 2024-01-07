@@ -7,24 +7,34 @@ import Modal from "../Modal";
 
 const ProtectedLayout = () => {
   const [isOpen, setisOpen] = useState(false);
+  const [isVerified, setIsVerified] = useState(false)
   const navigate = useNavigate();
 
-  const getUser = async () => {
-    try {
-      const res = await axios.get(`http://localhost:5000/api/auth/user/me`, {
-        withCredentials: true,
-      });
-      console.log(res.data.user, res.data.user.role);
-      if (!res.data.user) navigate("/login");
-      // if(use)
-      if (!res.data.user.role) {
-        setisOpen(true);
-      }
-    } catch (error) {
-      console.log(error);
-      navigate("/login");
-    }
-  };
+ const getUser = async () => {
+   try {
+     const user = await axios.get(`http://localhost:5000/api/auth/user/me`, {
+       withCredentials: true,
+       
+     });
+
+
+
+     if (user.status === 403) {
+       navigate("/login");
+       return; // Exit the function here
+     }
+     else if(user.status===200){
+        setIsVerified(true)
+     }
+
+     // Continue with normal flow if user status is not 403
+     // ...
+   } catch (error) {
+     // This block will handle other errors
+     navigate("/login");
+   }
+ };
+
 
   const handleRole = async (role) => {
     try {
@@ -79,7 +89,7 @@ const ProtectedLayout = () => {
         <div className="min-h-screen mt-4 w-0 border-l  border-gray-300"></div>
         <div className="flex w-full flex-col  gap-6  md:mb-auto h-fit px-4">
           <Navbar />
-          <Outlet />
+          {isVerified&&<Outlet />}
         </div>
       </div>
     </>

@@ -22,7 +22,6 @@ const createElement = (id, x1, y1, x2, y2, type, color, options) => {
               fillStyle: "solid",
               strokeWidth: 2,
             });
-            console.log("createrect",roughElement)
       const object= { id, x1, y1, x2, y2, type, roughElement, arrow: [x2], options };
      
       return object

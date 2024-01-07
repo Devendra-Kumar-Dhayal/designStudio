@@ -44,10 +44,11 @@ const Home = () => {
             <div
               className="w-[160px] h-[200px] bg-[#F8F9FA] p-3 rounded-xl flex flex-col justify-between shadow-md hover:bg-slate-100 cursor-pointer "
               onClick={handleNew}
+              key={index}
             >
               {" "}
               <div className="bg-white w-full h-[80%] rounded-lg   shadow-md"></div>
-              Template {index+1}
+              Template {index + 1}
             </div>
           );
         })}
@@ -55,7 +56,7 @@ const Home = () => {
       <div></div>
       <h1 className="text-3xl font-medium text-black">Recents</h1>
       <div className="min-h-[238px]   max-w-[1213px] bg-white gap-9 p-7 flex flex-col rounded-2xl">
-        {recents.map((recent) => {
+        {recents.map((recent,index) => {
           return (
             <div
               className="w-full h-[50px] bg-[#F8F9FA] p-3 rounded-xl flex flex-col justify-between shadow-md hover:bg-slate-100 cursor-pointer "
@@ -65,6 +66,7 @@ const Home = () => {
                   search: `?wid=${recent._id}`,
                 });
               }}
+              key={index}
             >
               {" "}
               Workspace
