@@ -103,12 +103,12 @@ const resizedCoordinates = (clientX, clientY, position, coordinates) => {
 };
 
 const adjustmentRequired = (type) =>
-  ["line", "rectangle", "circle","kafka","boomi",].includes(type);
+  ["line", "rectangle", "circle", "kafka", "boomi"].includes(type);
 
 const WorkSpace = () => {
   // const [elements, setElements, undo, redo] = useHistory([]);
-  const [elements, setElements] = useState([])
-  const debouncedElements = useDebounce(elements,1000)
+  const [elements, setElements] = useState([]);
+  const debouncedElements = useDebounce(elements, 1000);
   const [action, setAction] = useState("none");
   const [selectedColor, setselectedColor] = useState(color[0]);
   const [tool, setTool] = useState("selection");
@@ -220,18 +220,17 @@ const WorkSpace = () => {
       }
     };
     updateWorkspace();
-    
 
     // Trigger PUT request when 'elements' state changes
   }, [debouncedElements, wid]);
 
-  useEffect(()=>{
+  useEffect(() => {
     document.addEventListener("dblclick", handleDoubleClick);
 
     return () => {
       document.removeEventListener("dblclick", handleDoubleClick);
     };
-  },[elements])
+  }, [elements]);
 
   useLayoutEffect(() => {
     const canvas = document.getElementById("canvas");
@@ -426,7 +425,6 @@ const WorkSpace = () => {
       }
     } else if (tool === "meta") return;
     else {
-
       const id = elements.length;
       const element = createElement(
         id,
@@ -472,7 +470,6 @@ const WorkSpace = () => {
     }
 
     if (action === "drawing") {
-  
       const index = elements.length - 1;
       const { x1, y1, type } = elements[index];
       updateElement(
@@ -493,8 +490,8 @@ const WorkSpace = () => {
         selectedColor
       );
     } else if (action === "moving") {
+      console.log("moving")
       if (selectedElement.type === "pencil") {
-
         const newPoints = selectedElement.points.map((_, index) => ({
           x: clientX - selectedElement.xOffsets[index],
           y: clientY - selectedElement.yOffsets[index],
@@ -506,6 +503,54 @@ const WorkSpace = () => {
         };
 
         setElements(elementsCopy, true);
+      } else if (selectedElement.type === "line") {
+        console.log("updated line")
+        const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
+          selectedElement;
+        const width = x2 - x1;
+        const height = y2 - y1;
+        const newX1 = clientX - offsetX;
+        const newY1 = clientY - offsetY;
+        const elementsDepending = options.depending;
+        console.log(elementsDepending);
+        let elementsToUpdate = [
+          {
+            id,
+            x1: newX1,
+            y1: newY1,
+            x2: newX1 + width,
+            y2: newY1 + height,
+            type,
+            options: {
+              ...options,
+              depending: [],
+            },
+          },
+        ];
+        if (elementsDepending) {
+          elementsDepending.forEach((item) => {
+            const element = elements[item.element];
+            console.log("element", element);
+            const options = element.options;
+            const depends = options.depends;
+            const obj = {
+              ...element,
+              options: {
+                ...element.options,
+                depends: depends.filter((dep) => dep.element !== id),
+              },
+            };
+            console.log("obj", obj);
+            elementsToUpdate.push(obj);
+          });
+        }
+        updateElement(
+          elementsToUpdate,
+          elements,
+          setElements,
+          selectedColor,
+          false
+        );
       } else if (selectedElement.type === "rectangle") {
         const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
           selectedElement;
@@ -551,9 +596,14 @@ const WorkSpace = () => {
           });
         }
 
-        updateElement(elementsToUpdate, elements, setElements, selectedColor,false);
+        updateElement(
+          elementsToUpdate,
+          elements,
+          setElements,
+          selectedColor,
+          false
+        );
       } else if (selectedElement.type === "circle") {
-
         const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
           selectedElement;
         const width = x2 - x1;
@@ -600,7 +650,13 @@ const WorkSpace = () => {
             elementsToUpdate.push(updated);
           });
         }
-        updateElement(elementsToUpdate, elements, setElements, selectedColor,false);
+        updateElement(
+          elementsToUpdate,
+          elements,
+          setElements,
+          selectedColor,
+          false
+        );
       } else {
         const { id, x1, x2, y1, y2, type, offsetX, offsetY } = selectedElement;
         const width = x2 - x1;
@@ -627,6 +683,7 @@ const WorkSpace = () => {
         );
       }
     } else if (action === "resizing") {
+      console.log("resizing")
       const { id, type, position, ...coordinates } = selectedElement;
 
       const { x1, y1, x2, y2 } = resizedCoordinates(
@@ -646,7 +703,7 @@ const WorkSpace = () => {
       }
 
       updateElement(
-        [{ id, x1, y1, x2, y2, type, options: {} }],
+        [{ id, x1, y1, x2, y2, type, options:selectedElement.options }],
         elements,
         setElements,
         selectedColor
@@ -695,7 +752,11 @@ const WorkSpace = () => {
           return;
         }
 
-        if (elements[selectedIndex].type === "circle" ||elements[selectedIndex].type === "kafka" ||elements[selectedIndex].type === "boomi" ) {
+        if (
+          elements[selectedIndex].type === "circle" ||
+          elements[selectedIndex].type === "kafka" ||
+          elements[selectedIndex].type === "boomi"
+        ) {
           if (
             selectedIndex !== null &&
             Math.pow(clientX - elements[selectedIndex].x1, 2) +
@@ -711,14 +772,24 @@ const WorkSpace = () => {
             );
             //TODO: opt in drawing
 
+            console.log("depending called",selectedIndex,index,elements[index]);
+
+            const depending = elements[index].options?.depending ?? [];
+
+            console.log("depending", depending);
+
             const opt = {
               depending: [
+                ...depending,
                 {
                   element: selectedIndex,
                   start,
                 },
               ],
             };
+
+            console.log("opt", opt);
+
             const depends = elements[selectedIndex]?.options?.depends
               ? elements[selectedIndex].options.depends.filter(
                   (item) => item.element !== id
@@ -782,7 +853,7 @@ const WorkSpace = () => {
             setAction("none");
           }
         }
-        
+
         if (elements[selectedIndex].type === "rectangle") {
           if (
             selectedIndex !== null &&
