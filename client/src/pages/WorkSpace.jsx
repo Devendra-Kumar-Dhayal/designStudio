@@ -772,11 +772,9 @@ const WorkSpace = () => {
             );
             //TODO: opt in drawing
 
-            console.log("depending called",selectedIndex,index,elements[index]);
 
             const depending = elements[index].options?.depending ?? [];
 
-            console.log("depending", depending);
 
             const opt = {
               depending: [
@@ -788,7 +786,6 @@ const WorkSpace = () => {
               ],
             };
 
-            console.log("opt", opt);
 
             const depends = elements[selectedIndex]?.options?.depends
               ? elements[selectedIndex].options.depends.filter(
@@ -874,8 +871,11 @@ const WorkSpace = () => {
             );
             //TODO: opt in drawing
 
+            const depending = elements[index].options?.depending ?? [];
+
             const opt = {
               depending: [
+                ...depending,
                 {
                   element: selectedIndex,
                   start,
