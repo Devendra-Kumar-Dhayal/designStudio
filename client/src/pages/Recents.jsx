@@ -21,7 +21,7 @@ const Recents = () => {
   }, []);
   return (
     <div className="w-full flex flex-col gap-4 ">
-      <h1 className="text-3xl font-medium text-black">Dashboard</h1>
+      <h1 className="text-3xl font-medium text-black">Recents</h1>
       <div className="min-h-[238px]   max-w-[1213px] bg-white gap-9 p-7 flex flex-col rounded-2xl">
         {recents.map((recent, index) => {
           return (
