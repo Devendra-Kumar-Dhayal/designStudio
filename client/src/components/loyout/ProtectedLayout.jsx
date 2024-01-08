@@ -4,6 +4,7 @@ import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import axios from "axios";
 import Modal from "../Modal";
+import { BASEURL } from "../../utils/functions";
 
 const ProtectedLayout = () => {
   const [isOpen, setisOpen] = useState(false);
@@ -12,7 +13,7 @@ const ProtectedLayout = () => {
 
  const getUser = async () => {
    try {
-     const user = await axios.get(`http://localhost:5000/api/auth/user/me`, {
+     const user = await axios.get(`${BASEURL}/api/auth/user/me`, {
        withCredentials: true,
        
      });
@@ -39,7 +40,7 @@ const ProtectedLayout = () => {
   const handleRole = async (role) => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/auth/user/role`,
+        `${BASEURL}/api/auth/user/role`,
         { role },
         {
           withCredentials: true,

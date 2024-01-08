@@ -7,6 +7,7 @@ const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
 export interface WorkspaceInput {
   // user: UserDocument["_id"];
   elements: object;
+  meta: object; // Added meta field
 }
 
 export interface WorkspaceDocument extends WorkspaceInput, mongoose.Document {
@@ -24,10 +25,12 @@ const workspaceSchema = new mongoose.Schema(
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     elements: { type: [Object], required: true },
+    meta: { type: Object }, // Added meta field
   },
   {
     timestamps: true,
-  }
+  },
+  
 );
 
 const WorkspaceModel = mongoose.model<WorkspaceDocument>(
