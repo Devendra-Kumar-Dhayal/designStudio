@@ -5,15 +5,17 @@ import WorkspaceModel, {
 } from "../models/workspace.model"; // Changed import from ProductModel to WorkspaceModel
 
 import { databaseResponseTimeHistogram } from "../utils/metrics";
+import { CreateWorkspaceInput } from "../schema/workspace.schema";
 
-export async function createWorkspace() {
+export async function createWorkspace(input:CreateWorkspaceInput) {
   const metricsLabels = {
     operation: "createWorkspace",
   };
+  const {meta } = input;
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await WorkspaceModel.create({ elements: [] });
+    const result = await WorkspaceModel.create({ elements: [] ,meta});
     timer({ ...metricsLabels, success: "true" });
     return result;
   } catch (e) {

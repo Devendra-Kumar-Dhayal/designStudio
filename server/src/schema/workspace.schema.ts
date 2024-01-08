@@ -53,6 +53,7 @@ import { object, string, number, TypeOf } from "zod";
 const payload = {
   body: object({
     elements: object({}).array().optional(),
+    meta: object({}).optional(), // Added meta field
   }),
 };
 
@@ -81,7 +82,9 @@ export const getWorkspaceSchema = object({
   ...params,
 });
 
-export type CreateWorkspaceInput = TypeOf<typeof createWorkspaceSchema>;
+export type CreateWorkspaceInput = TypeOf<typeof createWorkspaceSchema>[
+  "body"
+];
 export type UpdateWorkspaceInput = TypeOf<typeof updateWorkspaceSchema>;
 export type ReadWorkspaceInput = TypeOf<typeof getWorkspaceSchema>;
 export type DeleteWorkspaceInput = TypeOf<typeof deleteWorkspaceSchema>;

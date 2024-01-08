@@ -12,13 +12,12 @@ import {
 } from "../service/workspace.service"; // Adjusted service functions for workspace
 
 export async function createWorkspaceHandler(
-  req: Request<{}, {}, {}>,
+  req: Request<{},{}, CreateWorkspaceInput, {}>,
   res: Response
 ) {
   const userId = res.locals.user._id;
-  const body = req.body;
 
-  const workspace = await createWorkspace();
+  const workspace = await createWorkspace(req.body);
 
   return res.send(workspace);
 }
