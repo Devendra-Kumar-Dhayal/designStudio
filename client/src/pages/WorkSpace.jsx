@@ -28,6 +28,7 @@ import {
 import updateElement from "../utils/updateElement";
 import useDebounce from "../components/hooks/useDebounce";
 import { set } from "lodash";
+import { IconKafka,IconBoomi,IconApp_C,IconApp_R } from "./Icons";
 
 const color = ["#FF0000", "#FFFFFF", "#000000", "#00FF00", "#0000FF"];
 
@@ -52,19 +53,19 @@ const Draw = [
   },
   {
     type: "rectangle",
-    icon: TbRectangleFilled,
+    icon: IconApp_R,
   },
   {
     type: "circle",
-    icon: TbCircle,
+    icon: IconApp_C,
   },
   {
     type: "kafka",
-    icon: TbCircle,
+    icon: IconKafka,
   },
   {
     type: "boomi",
-    icon: TbCircle,
+    icon: IconBoomi,
   },
   {
     type: "pencil",
@@ -598,7 +599,7 @@ const WorkSpace = () => {
           selectedColor,
           false
         );
-      } else if (selectedElement.type === "circle") {
+      } else if (selectedElement.type === "circle"||selectedElement.type === "kafka"||selectedElement.type === "boomi") {
         const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
           selectedElement;
         const width = x2 - x1;
