@@ -53,11 +53,11 @@ const Draw = [
   },
   {
     type: "rectangle",
-    icon: IconApp_R,
+    icon: TbRectangleFilled,
   },
   {
     type: "circle",
-    icon: IconApp_C,
+    icon: TbCircle,
   },
   {
     type: "kafka",
