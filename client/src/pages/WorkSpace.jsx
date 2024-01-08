@@ -28,7 +28,8 @@ import {
 import updateElement from "../utils/updateElement";
 import useDebounce from "../components/hooks/useDebounce";
 import { set } from "lodash";
-import { IconKafka,IconBoomi,IconApp_C,IconApp_R } from "./Icons";
+import { IconKafka, IconBoomi, IconApp_C, IconApp_R } from "./Icons";
+import { MdDataObject } from "react-icons/md";
 
 const color = ["#FF0000", "#FFFFFF", "#000000", "#00FF00", "#0000FF"];
 
@@ -116,6 +117,8 @@ const adjustmentRequired = (type) =>
 const WorkSpace = () => {
   // const [elements, setElements, undo, redo] = useHistory([]);
   const [elements, setElements] = useState([]);
+  const [isMounted, setIsMounted] = useState(false)
+  const [workspaceMeta, setworkspaceMeta] = useState({});
   const debouncedElements = useDebounce(elements, 1000);
   const [action, setAction] = useState("none");
   const [selectedColor, setselectedColor] = useState(color[0]);
@@ -129,6 +132,7 @@ const WorkSpace = () => {
   const [isDesigner, setisDesigner] = useState(true);
   const [key, setkey] = useState("");
   const [value, setValue] = useState("");
+  const [isWorkSpaceMeta, setIsWorkSpaceMeta] = useState(false)
   const [startPanMousePosition, setStartPanMousePosition] = useState({
     x: 0,
     y: 0,
@@ -157,6 +161,27 @@ const WorkSpace = () => {
   };
 
   const handleSave = async () => {
+    if(isWorkSpaceMeta){
+      if (wid) {
+        try {
+          const resp = await axios.put(
+            `${BASEURL}/api/workspaces/${wid}`,
+            {
+              meta,
+            },
+            {
+              withCredentials: true,
+            }
+          );
+          if(resp.status===200){
+            setworkspaceMeta(resp.data.meta)
+          }
+        } catch (error) {
+          console.error("Error updating elements:", error);
+        }
+      }
+      return;
+    }
     const elementsCopy = [...elements];
 
     elementsCopy[selectedIdFormeta] = {
@@ -187,8 +212,15 @@ const WorkSpace = () => {
               withCredentials: true,
             }
           );
+
+          console.log("response".response)
           if (response.data && response.data.elements) {
             setElements(response.data.elements);
+            
+            setworkspaceMeta(response.data.meta);
+            setTimeout(() => {
+              setIsMounted(true)
+            }, 1500);
           }
         } catch (error) {
           console.error("Error fetching workspace data:", error);
@@ -202,6 +234,7 @@ const WorkSpace = () => {
   useEffect(() => {
     // PUT request to update elements whenever 'elements' state changes
     if (!wid) return;
+    if(!isMounted) return;
     const updateWorkspace = async () => {
       if (wid) {
         try {
@@ -596,7 +629,11 @@ const WorkSpace = () => {
           selectedColor,
           false
         );
-      } else if (selectedElement.type === "circle"||selectedElement.type === "kafka"||selectedElement.type === "boomi") {
+      } else if (
+        selectedElement.type === "circle" ||
+        selectedElement.type === "kafka" ||
+        selectedElement.type === "boomi"
+      ) {
         const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
           selectedElement;
         const width = x2 - x1;
@@ -990,6 +1027,18 @@ const WorkSpace = () => {
               </button>
             );
           })}
+        <button
+          className={cn(
+            " bg-white p-1 w-full text-xs flex justify-center flex-col rounded-lg items-center text-black"
+          )}
+          onClick={() => {
+            setIsWorkSpaceMeta(true);
+            setMeta(workspaceMeta)
+            setIsOpen(true)
+          }}
+        >
+          <MdDataObject className="w-5  h-5 " />
+        </button>
       </div>
       <div className="fixed top-5 right-5 z-50 items-center gap-2 flex flex-col justify-center bg-gray-300 rounded-lg p-2">
         {isDesigner &&
@@ -1099,6 +1148,7 @@ const WorkSpace = () => {
                 setMeta((prevState) => ({
                   ...prevState,
                   other: {
+                    ...prevState.other,
                     [key]: value,
                   },
                 }));
