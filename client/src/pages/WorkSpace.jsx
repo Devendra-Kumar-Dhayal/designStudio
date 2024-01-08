@@ -117,7 +117,7 @@ const adjustmentRequired = (type) =>
 const WorkSpace = () => {
   // const [elements, setElements, undo, redo] = useHistory([]);
   const [elements, setElements] = useState([]);
-  const [isMounted, setIsMounted] = useState(false)
+  const [isMounted, setIsMounted] = useState(false);
   const [workspaceMeta, setworkspaceMeta] = useState({});
   const debouncedElements = useDebounce(elements, 1000);
   const [action, setAction] = useState("none");
@@ -132,7 +132,7 @@ const WorkSpace = () => {
   const [isDesigner, setisDesigner] = useState(true);
   const [key, setkey] = useState("");
   const [value, setValue] = useState("");
-  const [isWorkSpaceMeta, setIsWorkSpaceMeta] = useState(false)
+  const [isWorkSpaceMeta, setIsWorkSpaceMeta] = useState(false);
   const [startPanMousePosition, setStartPanMousePosition] = useState({
     x: 0,
     y: 0,
@@ -161,7 +161,7 @@ const WorkSpace = () => {
   };
 
   const handleSave = async () => {
-    if(isWorkSpaceMeta){
+    if (isWorkSpaceMeta) {
       if (wid) {
         try {
           const resp = await axios.put(
@@ -173,8 +173,8 @@ const WorkSpace = () => {
               withCredentials: true,
             }
           );
-          if(resp.status===200){
-            setworkspaceMeta(resp.data.meta)
+          if (resp.status === 200) {
+            setworkspaceMeta(resp.data.meta);
           }
         } catch (error) {
           console.error("Error updating elements:", error);
@@ -213,13 +213,13 @@ const WorkSpace = () => {
             }
           );
 
-          console.log("response".response)
+          console.log("response".response);
           if (response.data && response.data.elements) {
             setElements(response.data.elements);
-            
+
             setworkspaceMeta(response.data.meta);
             setTimeout(() => {
-              setIsMounted(true)
+              setIsMounted(true);
             }, 1500);
           }
         } catch (error) {
@@ -234,7 +234,7 @@ const WorkSpace = () => {
   useEffect(() => {
     // PUT request to update elements whenever 'elements' state changes
     if (!wid) return;
-    if(!isMounted) return;
+    if (!isMounted) return;
     const updateWorkspace = async () => {
       if (wid) {
         try {
@@ -521,6 +521,15 @@ const WorkSpace = () => {
         setElements,
         selectedColor
       );
+      if (elements[index].type === "line") {
+        // console.log("line");
+        detectShapesNearLineEndpoint(
+          clientX,
+          clientY,
+          elements,
+          setSelectedIndex
+        );
+      }
     } else if (action === "moving") {
       if (selectedElement.type === "pencil") {
         const newPoints = selectedElement.points.map((_, index) => ({
@@ -759,12 +768,208 @@ const WorkSpace = () => {
       const { id, type } = elements[index];
       if (action === "drawing" && adjustmentRequired(type)) {
         const { x1, y1, x2, y2 } = elements[index];
-        updateElement(
-          [{ id, x1, y1, x2, y2, type, options: {} }],
-          elements,
-          setElements,
-          selectedColor
-        );
+        
+        if (selectedIndex === null) {
+          setAction("none");
+          updateElement(
+            [{ id, x1, y1, x2, y2, type, options: {} }],
+            elements,
+            setElements,
+            selectedColor
+          );
+          return;
+        }
+
+        if (
+          elements[selectedIndex].type === "circle" ||
+          elements[selectedIndex].type === "kafka" ||
+          elements[selectedIndex].type === "boomi"
+        ) {
+          if (
+            selectedIndex !== null &&
+            Math.pow(clientX - elements[selectedIndex].x1, 2) +
+              Math.pow(clientY - elements[selectedIndex].y1, 2) -
+              Math.pow(fixedWidth / 2 + threshold, 2) <=
+              0
+          ) {
+            const start = clientX === x1;
+            const updatedCoordinates = attachLineToShapeCircle(
+              elements[selectedIndex],
+              elements[index],
+              start
+            );
+            //TODO: opt in drawing
+
+            const depending = elements[index].options?.depending ?? [];
+
+            const opt = {
+              depending: [
+                ...depending,
+                {
+                  element: selectedIndex,
+                  start,
+                },
+              ],
+            };
+
+            const depends = elements[selectedIndex]?.options?.depends
+              ? elements[selectedIndex].options.depends.filter(
+                  (item) => item.element !== id
+                )
+              : [];
+            depends.push({
+              element: id,
+              start,
+            });
+
+            const rect = {
+              id: selectedIndex,
+              x1: elements[selectedIndex].x1,
+              y1: elements[selectedIndex].y1,
+              x2: elements[selectedIndex].x2,
+              y2: elements[selectedIndex].y2,
+              type: elements[selectedIndex].type,
+              options: {
+                ...elements[selectedIndex].options,
+                depends,
+              },
+            };
+            if (start) {
+              updateElement(
+                [
+                  {
+                    id,
+                    x1: updatedCoordinates.x,
+                    y1: updatedCoordinates.y,
+                    x2,
+                    y2,
+                    type,
+                    options: opt,
+                  },
+                  rect,
+                ],
+                elements,
+                setElements,
+                selectedColor
+              );
+            } else {
+              updateElement(
+                [
+                  {
+                    id,
+                    x1,
+                    y1,
+                    x2: updatedCoordinates.x,
+                    y2: updatedCoordinates.y,
+                    type,
+                    options: opt,
+                  },
+                  rect,
+                ],
+                elements,
+                setElements,
+                selectedColor
+              );
+            }
+            setSelectedIndex(null);
+            setAction("none");
+          }
+        }
+
+        if (elements[selectedIndex].type === "rectangle") {
+          if (
+            selectedIndex !== null &&
+            nearEuclidean(
+              clientX,
+              clientY,
+              elements[selectedIndex].x1,
+              elements[selectedIndex].y1,
+              elements[selectedIndex].x2,
+              elements[selectedIndex].y2
+            )
+          ) {
+            const start = clientX === x1;
+            const updatedCoordinates = attachLineToShape(
+              elements[selectedIndex],
+              elements[index],
+              start
+            );
+            //TODO: opt in drawing
+
+            const depending = elements[index].options?.depending ?? [];
+
+            const opt = {
+              depending: [
+                ...depending,
+                {
+                  element: selectedIndex,
+                  start,
+                },
+              ],
+            };
+            const depends = elements[selectedIndex].options.depends
+              ? elements[selectedIndex].options.depends.filter(
+                  (item) => item.element !== id
+                )
+              : [];
+            depends.push({
+              element: id,
+              start,
+            });
+
+            const rect = {
+              id: selectedIndex,
+              x1: elements[selectedIndex].x1,
+              y1: elements[selectedIndex].y1,
+              x2: elements[selectedIndex].x2,
+              y2: elements[selectedIndex].y2,
+              type: elements[selectedIndex].type,
+              options: {
+                ...elements[selectedIndex].options,
+                depends,
+              },
+            };
+            if (start) {
+              updateElement(
+                [
+                  {
+                    id,
+                    x1: updatedCoordinates.x,
+                    y1: updatedCoordinates.y,
+                    x2,
+                    y2,
+                    type,
+                    options: opt,
+                  },
+                  rect,
+                ],
+                elements,
+                setElements,
+                selectedColor
+              );
+            } else {
+              updateElement(
+                [
+                  {
+                    id,
+                    x1,
+                    y1,
+                    x2: updatedCoordinates.x,
+                    y2: updatedCoordinates.y,
+                    type,
+                    options: opt,
+                  },
+                  rect,
+                ],
+                elements,
+                setElements,
+                selectedColor
+              );
+            }
+            setSelectedIndex(null);
+            setAction("none");
+          }
+        }
       }
       if (action === "resizing" && adjustmentRequired(type)) {
         const { x1, y1, x2, y2 } = elements[index];
@@ -1033,8 +1238,8 @@ const WorkSpace = () => {
           )}
           onClick={() => {
             setIsWorkSpaceMeta(true);
-            setMeta(workspaceMeta)
-            setIsOpen(true)
+            setMeta(workspaceMeta);
+            setIsOpen(true);
           }}
         >
           <MdDataObject className="w-5  h-5 " />
