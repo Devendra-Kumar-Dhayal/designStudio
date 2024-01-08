@@ -448,6 +448,7 @@ const WorkSpace = () => {
     } else if (tool === "deletion") {
       const element = getElementAtPosition(clientX, clientY, elements);
       if (element) {
+        console.log(element)
         if (element.position === "inside") {
           const temp = elements.filter((el) => el.id !== element.id);
 
@@ -751,6 +752,11 @@ const WorkSpace = () => {
 
   const handleMouseUp = (event) => {
     const { clientX, clientY } = getMouseCoordinates(event);
+    if (tool === "deletion") {
+      setTool("selection");
+
+      return;
+    }
     if (selectedElement) {
       if (
         selectedElement.type === "text" &&
@@ -768,7 +774,7 @@ const WorkSpace = () => {
       const { id, type } = elements[index];
       if (action === "drawing" && adjustmentRequired(type)) {
         const { x1, y1, x2, y2 } = elements[index];
-        
+
         if (selectedIndex === null) {
           setAction("none");
           updateElement(
@@ -777,6 +783,8 @@ const WorkSpace = () => {
             setElements,
             selectedColor
           );
+          setTool("selection");
+
           return;
         }
 
@@ -873,6 +881,7 @@ const WorkSpace = () => {
             }
             setSelectedIndex(null);
             setAction("none");
+            setTool("selection");
           }
         }
 
@@ -968,6 +977,7 @@ const WorkSpace = () => {
             }
             setSelectedIndex(null);
             setAction("none");
+            setTool("selection");
           }
         }
       }
@@ -982,6 +992,8 @@ const WorkSpace = () => {
             setElements,
             selectedColor
           );
+          setTool("selection");
+
           return;
         }
 
@@ -1078,6 +1090,7 @@ const WorkSpace = () => {
             }
             setSelectedIndex(null);
             setAction("none");
+            setTool("selection");
           }
         }
 
@@ -1173,6 +1186,7 @@ const WorkSpace = () => {
             }
             setSelectedIndex(null);
             setAction("none");
+            setTool("selection");
           }
         }
       }
@@ -1190,6 +1204,7 @@ const WorkSpace = () => {
 
     setAction("none");
     setSelectedElement(null);
+    setTool("selection");
   };
 
   const handleBlur = (event) => {
