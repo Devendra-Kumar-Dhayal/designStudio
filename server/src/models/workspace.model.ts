@@ -17,14 +17,9 @@ export interface WorkspaceDocument extends WorkspaceInput, mongoose.Document {
 
 const workspaceSchema = new mongoose.Schema(
   {
-    workspaceId: {
-      type: String,
-      required: true,
-      unique: true,
-      default: () => `workspace_${nanoid()}`,
-    },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+   
     elements: { type: [Object], required: true },
+    project: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
     meta: { type: Object }, // Added meta field
   },
   {
