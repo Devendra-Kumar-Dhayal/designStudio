@@ -19,7 +19,7 @@ const workspaceSchema = new mongoose.Schema(
   {
    
     elements: { type: [Object], required: true },
-    project: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
+    project: { type: mongoose.Schema.Types.ObjectId, ref: "Project",required:true },
     meta: { type: Object }, // Added meta field
   },
   {
