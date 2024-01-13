@@ -27,6 +27,9 @@ const ProtectedLayout = () => {
      else if(user.status===200){
         setIsVerified(true)
      }
+     if (!user.data.user.role) {
+       setisOpen(true);
+     }
 
      // Continue with normal flow if user status is not 403
      // ...
