@@ -170,12 +170,7 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-3">
-        {/* <div className="flex items-center justify-center w-[40px] h-[40px] bg-white rounded-xl">
-          <FaQuestion className="w-[24px] h-[24px]" alt="" />
-        </div> */}
-        {/* <div className="flex items-center justify-center w-[40px] h-[40px] bg-white rounded-xl">
-          <FaRegBell className="w-[24px] h-[24px]" alt="" />
-        </div> */}
+        
 
         <RxAvatar alt="" className="w-[24px] h-[24px]" />
 

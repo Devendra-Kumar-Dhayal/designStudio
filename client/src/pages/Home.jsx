@@ -1,7 +1,8 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
+import { ProjectContext } from "../components/ProjectContext";
 
 const SammpleObject = {
   label: "",
@@ -15,42 +16,40 @@ const Home = () => {
   const [key, setkey] = useState("");
   const [value, setValue] = useState("");
 
+  const { selectedProjectId } = useContext(ProjectContext);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const getRecents = async () => {
       const res = await axios.get(
-        `${process.env.REACT_APP_SERVER_URL}/api/workspacesrecent`,
+        `${process.env.REACT_APP_SERVER_URL}/api/project/${selectedProjectId}`,
         {
           withCredentials: true,
         }
       );
 
-      if (res.status === 200) setRecents(res.data);
+      console.log("res", res);
+
+      if (res.status === 200) setRecents(res.data.workspaces);
     };
-    getRecents();
-  }, []);
-  console.log("meta",meta)
+    selectedProjectId && getRecents();
+  }, [selectedProjectId]);
+  console.log("meta", meta);
 
   const handleNew = async () => {
+    if(!selectedProjectId){
+      alert("Select Project Id to Continue")
+      return
+    }
     setMeta({ common: { ...SammpleObject } });
     setIsOpen(true);
   };
 
   const handleSave = async () => {
-    // const elementsCopy = [...elements];
-
-    // elementsCopy[selectedIdFormeta] = {
-    //   ...elementsCopy[selectedIdFormeta],
-    //   options: {
-    //     ...elementsCopy[selectedIdFormeta].options,
-    //     meta,
-    //   },
-    // };
-    // setElements(elementsCopy, true);
     const res = await axios.post(
       `${process.env.REACT_APP_SERVER_URL}/api/workspaces`,
-      { meta },
+      { projectId: selectedProjectId, meta },
       {
         withCredentials: true,
       }
@@ -75,7 +74,7 @@ const Home = () => {
           <div className="flex flex-col gap-4">
             {meta.common &&
               Object.entries(meta?.common).map(([key, value]) => (
-                <div className="w-full flex gap-2">
+                <div className="w-full flex gap-2" key={key}>
                   <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
                     {key.toUpperCase()}:
                   </h2>

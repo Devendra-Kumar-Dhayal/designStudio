@@ -5,28 +5,38 @@ import WorkspaceModel, {
 } from "../models/workspace.model"; // Changed import from ProductModel to WorkspaceModel
 
 import { databaseResponseTimeHistogram } from "../utils/metrics";
-import { CreateProjectInput, CreateWorkspaceInput } from "../schema/workspace.schema";
+import {
+  CreateProjectInput,
+  CreateWorkspaceInput,
+} from "../schema/workspace.schema";
 import ProjectModel from "../models/project.model";
+import logger from "../utils/logger";
 
-export async function createWorkspace(input:CreateWorkspaceInput) {
-  const metricsLabels = {
-    operation: "createWorkspace",
-  };
-  const {meta } = input;
+export async function createWorkspace(input: CreateWorkspaceInput) {
+  const { meta, projectId } = input;
 
-  const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await WorkspaceModel.create({ elements: [] ,meta});
-    timer({ ...metricsLabels, success: "true" });
-    return result;
+    logger.info("one");
+
+    const createdWorkspace = await WorkspaceModel.create({
+      elements: [],
+      meta,
+      project: projectId,
+    });
+
+    logger.info("two");
+    await ProjectModel.updateOne(
+      { _id: projectId },
+      { $push: { workspaces: createdWorkspace._id } }
+    );
+    return createdWorkspace;
   } catch (e) {
-    timer({ ...metricsLabels, success: "false" });
     throw e;
   }
 }
 
 export async function findWorkspace(
-  query: { workspaceId :string},
+  query: { workspaceId: string },
   options: QueryOptions = { lean: true }
 ) {
   const metricsLabels = {
@@ -35,11 +45,15 @@ export async function findWorkspace(
 
   const timer = databaseResponseTimeHistogram.startTimer();
   try {
-    const result = await WorkspaceModel.findOne({
-      _id: query.workspaceId,
-    }, {}, options); // Changed ProductModel to WorkspaceModel
+    const result = await WorkspaceModel.findOne(
+      {
+        _id: query.workspaceId,
+      },
+      {},
+      options
+    ); // Changed ProductModel to WorkspaceModel
     timer({ ...metricsLabels, success: "true" });
-    console.log("result",result)
+    console.log("result", result);
     return result;
   } catch (e) {
     timer({ ...metricsLabels, success: "false" });
@@ -83,28 +97,28 @@ export async function findAllWorkspaces({ limit }: { limit?: number }) {
   }
 }
 
-
 // export async function createNewProject()
 
-export async function findAllProjects(){
+export async function findAllProjects() {
   try {
     const projects = await ProjectModel.find({});
     return projects;
-  } catch (error) {
-    throw error
-  }
-}
-
-
-export async function findproject({projectId}: {projectId:string}){
-  try {
-    const project = await ProjectModel.findOne({_id:projectId}).populate({path:"workspace",select:'_id meta'})
-    return project;
   } catch (error) {
     throw error;
   }
 }
 
+export async function findproject({ projectId }: { projectId: string }) {
+  try {
+    const project = await ProjectModel.findOne({ _id: projectId }).populate({
+      path: "workspaces",
+      select: "_id meta",
+    });
+    return project;
+  } catch (error) {
+    throw error;
+  }
+}
 
 export async function createProject(input: CreateProjectInput) {
   try {

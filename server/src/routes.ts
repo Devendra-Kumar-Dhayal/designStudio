@@ -191,6 +191,6 @@ router.post("/api/project/", [
 createProjectHandler);
 
 
-router.get("/api/project/", [requireUser], findAllProjectsHandler);
+router.get("/api/project", [requireUser], findAllProjectsHandler);
 
 export default router;
