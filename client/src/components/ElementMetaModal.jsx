@@ -13,6 +13,7 @@ const ElementMetaModal = ({
   onOpenChange,
   handleDiscard,
   handleSave,
+  handleLabelSave,
   selectedProjectId,
   wid,
 }) => {
@@ -66,8 +67,16 @@ const ElementMetaModal = ({
       if (res.status === 404) {
       }
       console.log(res);
-      setName(res.data.name);
+      setMeta((prevState) => ({
+        ...prevState,
+        common: {
+          ...prevState.common,
+          label: res.data.name,
+        },
+      }));
+      setName("");
       setIsLoading(false);
+      handleLabelSave(res.data.name);
     } catch (error) {
       console.log(error.response.data);
       toast.error(error.response.data);
@@ -76,12 +85,22 @@ const ElementMetaModal = ({
 
   const handleNameAdd = () => {
     const bool = toShow.workspaces.some((w) => w.workspaceId.includes(wid));
-    if(bool){
-      toast.error("Two elements in same workspace cannot have same name")
-      return
+    if (bool) {
+      toast.error("Two elements in same workspace cannot have same name");
+      return;
     }
+    setMeta((prevState) => ({
+      ...prevState,
+      common: {
+        ...prevState.common,
+        label: toShow.name,
+      },
+    }));
+    setName("");
+    setIsLoading(false);
+    handleLabelSave(toShow.name);
   };
- 
+
   return (
     <Modal
       isOpen={isOpen}

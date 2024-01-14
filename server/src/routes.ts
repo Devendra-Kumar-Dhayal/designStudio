@@ -202,6 +202,11 @@ router.post(
   [requireUser, validateResource(createProjectElementSchema)],
   createProjectElementHandler
 );
+router.put(
+  "/api/projectelement",
+  [requireUser, validateResource(createProjectElementSchema)],
+  createProjectElementHandler
+);
 
 router.get(
   "/api/projectelement",

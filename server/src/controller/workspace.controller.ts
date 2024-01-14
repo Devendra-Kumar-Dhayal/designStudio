@@ -17,7 +17,8 @@ import {
   createProject,
   findAllProjects,
   findProjectElement,
-  createProjectElement, // New service function for fetching all workspaces
+  createProjectElement,
+  createOrUpdateProjectElement, // New service function for fetching all workspaces
 } from "../service/workspace.service"; // Adjusted service functions for workspace
 
 export async function createWorkspaceHandler(
@@ -153,6 +154,36 @@ export async function createProjectElementHandler(
 
     const input = req.body
     const existing = await findProjectElement({projectId:input!.projectId??"",name:input!.name??""});
+    console.log("inside service2");
+
+    if(existing){
+      throw new Error("Name already exists")
+    }
+    console.log("inside service3");
+
+    const project = await createProjectElement(req.body);
+  
+    return res.status(201).send(project);
+  } catch (error:any) {
+    console.log(error,error.message)
+    return res.status(404).send(error.message);
+  }
+
+}
+export async function updateProjectElementHandler(
+  req: Request<{}, {}, CreateProjectElementInput, {}>,
+  res: Response
+) {
+  
+
+  try {
+    console.log("inside service1");
+
+    const input = req.body
+    const existing = await createOrUpdateProjectElement({
+      projectId: input!.projectId ?? "",
+      name: input!.name ?? "",
+    });
     console.log("inside service2");
 
     if(existing){

@@ -39,6 +39,7 @@ import { MdDataObject } from "react-icons/md";
 import { Input, useDisclosure } from "@nextui-org/react";
 import { ProjectContext } from "../components/ProjectContext";
 import ElementMetaModal from "../components/ElementMetaModal";
+import { toast } from "sonner";
 
 const color = ["#FF0000", "#FFFFFF", "#000000", "#00FF00", "#0000FF"];
 
@@ -171,6 +172,9 @@ const WorkSpace = () => {
   };
 
   const handleSave = async () => {
+    setTimeout(() => {
+      
+    }, (1));
     if (isWorkSpaceMeta) {
       if (wid) {
         try {
@@ -202,7 +206,28 @@ const WorkSpace = () => {
       },
     };
     setElements(elementsCopy, true);
+    toast("saved");
+
   };
+
+  const handleLabelSave = async (label)=>{
+    const elementsCopy = [...elements];
+
+    elementsCopy[selectedIdFormeta] = {
+      ...elementsCopy[selectedIdFormeta],
+      options: {
+        ...elementsCopy[selectedIdFormeta].options,
+        meta: {
+          ...elementsCopy[selectedIdFormeta].options.meta,
+          common: {
+            ...elementsCopy[selectedIdFormeta].options.common,
+            label,
+          },
+        },
+      },
+    };
+    setElements(elementsCopy, true);
+  }
   const handleDiscard = async () => {
     setMeta(elements[selectedIdFormeta].options?.meta || {});
   };
@@ -1329,6 +1354,7 @@ const WorkSpace = () => {
         setMeta={setMeta}
         onOpenChange={onOpenChange}
         handleSave={handleSave}
+        handleLabelSave={handleLabelSave}
         handleDiscard={handleDiscard}
         selectedProjectId={selectedProjectId}
         wid={wid}

@@ -2,7 +2,7 @@ import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
 import WorkspaceModel, {
   WorkspaceDocument,
   WorkspaceInput,
-} from "../models/workspace.model"; 
+} from "../models/workspace.model";
 
 import { databaseResponseTimeHistogram } from "../utils/metrics";
 import {
@@ -15,6 +15,7 @@ import ProjectModel from "../models/project.model";
 import logger from "../utils/logger";
 import ProjectElementModel from "../models/projectElements.model";
 import { arrayBuffer } from "stream/consumers";
+import e from "express";
 
 export async function createWorkspace(input: CreateWorkspaceInput) {
   const { meta, projectId } = input;
@@ -132,14 +133,15 @@ export async function createProject(input: CreateProjectInput) {
   }
 }
 
-
-export async function createProjectElement(input:CreateProjectElementInput){
+export async function createProjectElement(input: CreateProjectElementInput) {
   try {
-    const arr = input.workspaces ? input.workspaces.map(workspace => ({
-        workspaceId: workspace.workspaceId,
-        meta: workspace.meta,
-      })) : [];
-    console.log("inside service",input.workspaces,arr)
+    const arr = input.workspaces
+      ? input.workspaces.map((workspace) => ({
+          workspaceId: workspace.workspaceId,
+          meta: workspace.meta,
+        }))
+      : [];
+    console.log("inside service", input.workspaces, arr);
 
     const projectElement = await ProjectElementModel.create({
       name: input.name,
@@ -148,15 +150,125 @@ export async function createProjectElement(input:CreateProjectElementInput){
     });
     return projectElement;
   } catch (error) {
-    throw error
-    
+    throw error;
   }
 }
 
-export async function findProjectElement(input:GetProjectElementInput){
+export async function createOrUpdateProjectElement(
+  input: CreateProjectElementInput
+) {
+  try {
+    // Check if a project element with the given name and projectId already exists
+    const existingProjectElement = await ProjectElementModel.findOne({
+      name: input.name,
+      project: input.projectId,
+    });
+
+    // If it exists, update the workspaces
+    if (existingProjectElement) {
+      const updatedWorkspaces = input.workspaces
+        ? input.workspaces.map((workspace) => ({
+            workspaceId: workspace.workspaceId,
+            meta: workspace.meta,
+          }))
+        : [];
+
+      // Merge the existing workspaces with the updated workspaces, keeping only unique ones based on workspaceId
+      const mergedWorkspaces = [
+        ...existingProjectElement.workspaces,
+        ...updatedWorkspaces,
+      ].reduce((acc, workspace) => {
+        // Explicit type check to handle union types
+        if ("workspaceId" in workspace) {
+          const existingWorkspaceIndex = acc.findIndex(
+            (w) => w.workspaceId === workspace.workspaceId
+          );
+
+          if (existingWorkspaceIndex === -1) {
+            acc.push(workspace);
+          } else {
+            acc[existingWorkspaceIndex] = workspace;
+          }
+        }
+
+        return acc;
+      }, [] as { workspaceId: string; meta: any }[]);
+
+      // Update the project element with the merged workspaces
+      const updated = await ProjectElementModel.findOneAndUpdate(
+        {
+          _id: existingProjectElement._id,
+        },
+        {
+          workspaces: mergedWorkspaces,
+        },
+        { new: true } // Return the updated document
+      );
+
+      return updated;
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+
+export async function removeWorkspaceFromProjectElement(
+  projectId: string,
+  name: string,
+  workspaceIdToRemove: string
+) {
+  try {
+    // Find the project element with the given name and projectId
+    const existingProjectElement = await ProjectElementModel.findOne({
+      name,
+      project: projectId,
+    });
+
+    if (!existingProjectElement) {
+      throw new Error("Project element not found");
+    }
+
+    // Remove the specified workspaceId from the workspaces array
+    const updatedWorkspaces = existingProjectElement.workspaces
+      .map((workspace) => {
+        if (
+          //@ts-ignore
+          workspace.workspaceId === workspaceIdToRemove
+        ) {
+          // Exclude the workspace with the specified workspaceId
+          return undefined;
+        }
+        return workspace;
+      })
+      .filter(Boolean); // Remove undefined entries
+
+    // Update the project element with the modified workspaces
+    const updated = await ProjectElementModel.findOneAndUpdate(
+      {
+        _id: existingProjectElement._id,
+      },
+      {
+        workspaces: updatedWorkspaces,
+      },
+      { new: true } // Return the updated document
+    );
+
+    return updated;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+
+
+
+export async function findProjectElement(input: GetProjectElementInput) {
   const projectElement = await ProjectElementModel.findOne({
-    project:input.projectId,
-    name:input.name,
+    project: input.projectId,
+    name: input.name,
   });
   return projectElement;
 }
