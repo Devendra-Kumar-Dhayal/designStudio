@@ -88,13 +88,12 @@ export const getWorkspaceSchema = object({
   ...params,
 });
 
-
 const projectPayload = {
   body: object({
     workspaces: object({}).array().optional(),
     meta: object({}).optional(), // Added meta field
   }),
-}
+};
 
 const projectParams = {
   params: object({
@@ -102,10 +101,16 @@ const projectParams = {
       required_error: "projectId is required",
     }),
   }),
-}
+};
 
 export const createProjectSchema = object({
-  ...projectPayload,
+  body: object({
+    workspaces: object({}).array().optional(),
+    meta: object({}).optional(),
+    name: string({
+      required_error: "name is required",
+    }), // Added meta field
+  }),
 });
 
 export const updateProjectSchema = object({
@@ -121,17 +126,12 @@ export const getProjectSchema = object({
   ...projectParams,
 });
 
-export type CreateWorkspaceInput = TypeOf<typeof createWorkspaceSchema>[
-  "body"
-];
+export type CreateWorkspaceInput = TypeOf<typeof createWorkspaceSchema>["body"];
 export type UpdateWorkspaceInput = TypeOf<typeof updateWorkspaceSchema>;
 export type ReadWorkspaceInput = TypeOf<typeof getWorkspaceSchema>;
 export type DeleteWorkspaceInput = TypeOf<typeof deleteWorkspaceSchema>;
 
-
-export type CreateProjectInput = TypeOf<typeof createProjectSchema>[
-  "body"
-];
+export type CreateProjectInput = TypeOf<typeof createProjectSchema>["body"];
 
 export type UpdateProjectInput = TypeOf<typeof updateProjectSchema>;
 export type DeleteProjectInput = TypeOf<typeof deleteProjectSchema>;

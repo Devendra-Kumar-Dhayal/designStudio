@@ -4,36 +4,136 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { FaQuestion } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 
+import {
+  Button,
+  Select,
+  SelectItem,
+  useDisclosure,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+} from "@nextui-org/react";
+import { IoMdAdd } from "react-icons/io";
+
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaRegBell } from "react-icons/fa";
 import { RxAvatar } from "react-icons/rx";
+import { ProjectContext } from "./ProjectContext";
+import axios from "axios";
+import { BASEURL } from "../utils/functions";
+import { set } from "lodash";
 
 const Navbar = () => {
   const [search, setsearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [name, setName] = useState("")
+  const { selectedProjectId, setSelectedProjectId } =
+    useContext(ProjectContext);
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const selected = selectedProjectId ? [selectedProjectId] : [];
+
+  useEffect(() => {
+    getAllProjects();
+  }, []);
+
+  const getAllProjects = async () => {
+    try {
+      const res = await axios.get(`${BASEURL}/api/project`, {
+        withCredentials: true,
+      });
+      console.log("resp", res);
+      setProjects(res.data.projects);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCreateNewProject = async (onClose) => {
+
+    try {
+      const res = await axios.post(`${BASEURL}/api/project`,{
+        name,
+      }, {
+        withCredentials: true,
+      });
+      console.log("resp", res);
+      if(res.status===201){
+        setProjects([...projects, res.data])
+        setSelectedProjectId(res.data._id)
+        setName("")
+
+        onClose();
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error)
+    }
+  };
 
   return (
     <div className="flex justify-between py-2 my-4 items-center">
-      {/* <div className=" lg:hidden w-[17px] h-full flex items-center justify-center">
-        <svg
-          className="w-full h-full my-auto"
-          viewBox="0 0 15 15"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M1.5 3C1.22386 3 1 3.22386 1 3.5C1 3.77614 1.22386 4 1.5 4H13.5C13.7761 4 14 3.77614 14 3.5C14 3.22386 13.7761 3 13.5 3H1.5ZM1 7.5C1 7.22386 1.22386 7 1.5 7H13.5C13.7761 7 14 7.22386 14 7.5C14 7.77614 13.7761 8 13.5 8H1.5C1.22386 8 1 7.77614 1 7.5ZM1 11.5C1 11.2239 1.22386 11 1.5 11H13.5C13.7761 11 14 11.2239 14 11.5C14 11.7761 13.7761 12 13.5 12H1.5C1.22386 12 1 11.7761 1 11.5Z"
-            fill="currentColor"
-            fillRule="evenodd"
-            clipRule="evenodd"
-          ></path>
-        </svg>
-      </div> */}
-      
-
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Create Project
+              </ModalHeader>
+              <ModalBody>
+                <Input
+                  value={name}
+                  onValueChange={setName}
+                  type="text"
+                  label="Name"
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={() => handleCreateNewProject(onClose)}
+                >
+                  Create
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <Select
+        variant="faded"
+        placeholder="Select a project"
+        className="max-w-[250px]"
+        selectedKeys={[...selected]}
+      >
+        {
+          projects?.map((project) => (
+            <SelectItem
+              key={project._id}
+              onClick={() => setSelectedProjectId(project._id)}
+            >
+              {project.name}
+            </SelectItem>
+          ))
+        }
+        <SelectItem key={"add"}>
+          <Button className="w-full  flex flex-row gap-2" onClick={onOpen}>
+            <IoMdAdd />
+            Add New
+          </Button>
+        </SelectItem>
+      </Select>
       <div className="relative flex ml-2  rounded-full bg py-2 px-5 bg-[#D8EEFF] w-[56%] justify-between items-center">
         <FaSearch className="w-[17px] h-[17px]" />
         <input
@@ -68,6 +168,7 @@ const Navbar = () => {
           </div>
         )}
       </div>
+
       <div className="flex items-center gap-3">
         {/* <div className="flex items-center justify-center w-[40px] h-[40px] bg-white rounded-xl">
           <FaQuestion className="w-[24px] h-[24px]" alt="" />

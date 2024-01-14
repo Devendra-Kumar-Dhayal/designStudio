@@ -6,6 +6,9 @@ import {
   deleteWorkspaceHandler,
   updateWorkspaceHandler,
   getAllWorkspacesRecentHandler,
+  createProjectHandler,
+  findProjectByIdHandler,
+  findAllProjectsHandler,
 } from "./controller/workspace.controller";
 import {
   createUserSessionHandler,
@@ -174,22 +177,20 @@ router.get(
   getAllWorkspacesHandler // Implement getAllWorkspacesHandler to fetch all workspaces
 );
 
-router.post("/api/project/", [
-  requireDesigner,
-  validateResource(createProjectSchema),
-]);
+
 
 router.get("/api/project/:projectId", [
   requireUser,
-  validateResource(getProjectSchema),
-]);
+  validateResource(getProjectSchema)],
+  findProjectByIdHandler
+);
 router.post("/api/project/", [
   requireDesigner,
   validateResource(createProjectSchema),
-]);
-router.get("/api/project/", [
-  requireUser,
-]);
+],
+createProjectHandler);
 
+
+router.get("/api/project/", [requireUser], findAllProjectsHandler);
 
 export default router;

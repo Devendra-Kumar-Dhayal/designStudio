@@ -18,8 +18,6 @@ const ProtectedLayout = () => {
        
      });
 
-
-
      if (user.status === 403) {
        navigate("/login");
        return; // Exit the function here

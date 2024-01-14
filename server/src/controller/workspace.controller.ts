@@ -12,7 +12,8 @@ import {
   findWorkspace,
   findAllWorkspaces,
   findproject,
-  createProject, // New service function for fetching all workspaces
+  createProject,
+  findAllProjects, // New service function for fetching all workspaces
 } from "../service/workspace.service"; // Adjusted service functions for workspace
 
 export async function createWorkspaceHandler(
@@ -107,9 +108,9 @@ export async function getAllWorkspacesRecentHandler(
 
 
 export async function findAllProjectsHandler(req: Request, res: Response) {
-  const projects = await findAllWorkspaces({}); // Implement logic to fetch all workspaces
+  const projects = await findAllProjects(); // Implement logic to fetch all workspaces
 
-  return res.send(projects);
+  return res.send({projects});
 }
 
 export async function findProjectByIdHandler(
@@ -136,6 +137,6 @@ export async function createProjectHandler(
 
   const project = await createProject(req.body);
 
-  return res.send(project);
+  return res.status(201).send(project);
 
 }

@@ -17,10 +17,6 @@ const App = () => {
         </Route>
         <Route exact path="/workspace" element={<WorkSpace />} />
         <Route exact path="/login" element={<Login/>} />
-        {/* <Route element={<LoginLayout />}>
-        <Route exact path="/signup" element={<Signup />} />
-        <Route exact path="/forgot" element={<ForgotPassword />} />
-      </Route> */}
       </Routes>
     </div>
   );

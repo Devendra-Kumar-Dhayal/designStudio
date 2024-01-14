@@ -16,7 +16,8 @@ export interface ProjectDocument extends ProjectInput, mongoose.Document {
 const projectSchema = new mongoose.Schema(
   {
     workspaces: { type: [mongoose.Schema.Types.ObjectId], ref: "Workspace" },
-    meta: { type: Object }, // Added meta field
+    meta: { type: Object },
+    name:{type:String,required:true} // Added meta field
   },
   {
     timestamps: true,
