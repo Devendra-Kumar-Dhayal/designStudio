@@ -136,3 +136,44 @@ export type CreateProjectInput = TypeOf<typeof createProjectSchema>["body"];
 export type UpdateProjectInput = TypeOf<typeof updateProjectSchema>;
 export type DeleteProjectInput = TypeOf<typeof deleteProjectSchema>;
 export type GetProjectInput = TypeOf<typeof getProjectSchema>;
+
+
+//projectElement
+
+const workspaceSchema = object({
+  workspaceId: string(),
+  meta: object({
+      // Define your meta properties here
+    })
+    .optional(),
+});
+
+const projectElementPayload = {
+  body: object({
+    workspaces: workspaceSchema.array().optional(),
+    name: string({ required_error: "Name is required" }),
+    projectId: string({ required_error: "projectId is required" }),
+    // type: string({ required_error: "type is required" }),
+  }),
+};
+const projectElementQuery = {
+  query: object({
+    workspaces: object({ workspace: string({}) })
+      .array()
+      .optional(),
+
+    name: string({ required_error: "Name is required" }),
+    projectId: string({ required_error: "projectId is required" }),
+  }),
+};
+
+export const createProjectElementSchema = object({
+  ...projectElementPayload
+})
+export const getProjectElementSchema = object({
+  ...projectElementQuery,
+});
+
+export type CreateProjectElementInput = TypeOf<typeof createProjectElementSchema>["body"];
+export type GetProjectElementInput = TypeOf<typeof getProjectElementSchema>["query"];
+

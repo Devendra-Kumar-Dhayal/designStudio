@@ -9,6 +9,8 @@ import {
   createProjectHandler,
   findProjectByIdHandler,
   findAllProjectsHandler,
+  createProjectElementHandler,
+  getProjectElementHandler,
 } from "./controller/workspace.controller";
 import {
   createUserSessionHandler,
@@ -24,9 +26,11 @@ import {
 import requireUser from "./middleware/requireUser";
 import validateResource from "./middleware/validateResource";
 import {
+  createProjectElementSchema,
   createProjectSchema,
   createWorkspaceSchema,
   deleteWorkspaceSchema,
+  getProjectElementSchema,
   getProjectSchema,
   getWorkspaceSchema,
   updateWorkspaceSchema,
@@ -192,5 +196,17 @@ createProjectHandler);
 
 
 router.get("/api/project", [requireUser], findAllProjectsHandler);
+
+router.post(
+  "/api/projectelement",
+  [requireUser, validateResource(createProjectElementSchema)],
+  createProjectElementHandler
+);
+
+router.get(
+  "/api/projectelement",
+  [requireUser, validateResource(getProjectElementSchema)],
+  getProjectElementHandler
+);
 
 export default router;

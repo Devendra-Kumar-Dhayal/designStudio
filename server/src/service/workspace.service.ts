@@ -2,15 +2,19 @@ import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
 import WorkspaceModel, {
   WorkspaceDocument,
   WorkspaceInput,
-} from "../models/workspace.model"; // Changed import from ProductModel to WorkspaceModel
+} from "../models/workspace.model"; 
 
 import { databaseResponseTimeHistogram } from "../utils/metrics";
 import {
+  CreateProjectElementInput,
   CreateProjectInput,
   CreateWorkspaceInput,
+  GetProjectElementInput,
 } from "../schema/workspace.schema";
 import ProjectModel from "../models/project.model";
 import logger from "../utils/logger";
+import ProjectElementModel from "../models/projectElements.model";
+import { arrayBuffer } from "stream/consumers";
 
 export async function createWorkspace(input: CreateWorkspaceInput) {
   const { meta, projectId } = input;
@@ -53,7 +57,6 @@ export async function findWorkspace(
       options
     ); // Changed ProductModel to WorkspaceModel
     timer({ ...metricsLabels, success: "true" });
-    console.log("result", result);
     return result;
   } catch (e) {
     timer({ ...metricsLabels, success: "false" });
@@ -127,4 +130,33 @@ export async function createProject(input: CreateProjectInput) {
   } catch (error) {
     throw error;
   }
+}
+
+
+export async function createProjectElement(input:CreateProjectElementInput){
+  try {
+    const arr = input.workspaces ? input.workspaces.map(workspace => ({
+        workspaceId: workspace.workspaceId,
+        meta: workspace.meta,
+      })) : [];
+    console.log("inside service",input.workspaces,arr)
+
+    const projectElement = await ProjectElementModel.create({
+      name: input.name,
+      project: input.projectId,
+      workspaces: arr,
+    });
+    return projectElement;
+  } catch (error) {
+    throw error
+    
+  }
+}
+
+export async function findProjectElement(input:GetProjectElementInput){
+  const projectElement = await ProjectElementModel.findOne({
+    project:input.projectId,
+    name:input.name,
+  });
+  return projectElement;
 }

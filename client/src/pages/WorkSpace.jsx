@@ -1,5 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { BsFillCursorFill } from "react-icons/bs";
 import { CiText } from "react-icons/ci";
 import { FiArrowUpRight } from "react-icons/fi";
@@ -30,11 +36,13 @@ import useDebounce from "../components/hooks/useDebounce";
 import { set } from "lodash";
 import { IconKafka, IconBoomi, IconApp_C, IconApp_R } from "./Icons";
 import { MdDataObject } from "react-icons/md";
+import { Input, useDisclosure } from "@nextui-org/react";
+import { ProjectContext } from "../components/ProjectContext";
+import ElementMetaModal from "../components/ElementMetaModal";
 
 const color = ["#FF0000", "#FFFFFF", "#000000", "#00FF00", "#0000FF"];
 
 const SammpleObject = {
-  label: "",
   description: "",
   owner: "",
 };
@@ -119,6 +127,7 @@ const WorkSpace = () => {
   const [elements, setElements] = useState([]);
   const [isMounted, setIsMounted] = useState(false);
   const [workspaceMeta, setworkspaceMeta] = useState({});
+  const [selectedProjectId, setSelectedProjectId] = useState("")
   const debouncedElements = useDebounce(elements, 1000);
   const [action, setAction] = useState("none");
   const [selectedColor, setselectedColor] = useState(color[0]);
@@ -126,17 +135,16 @@ const WorkSpace = () => {
   const [selectedElement, setSelectedElement] = useState(null);
   const [panOffset, setPanOffset] = React.useState({ x: 0, y: 0 });
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
+
   const [selectedIdFormeta, setSelectedIdFormeta] = useState();
   const [meta, setMeta] = useState({});
   const [isDesigner, setisDesigner] = useState(true);
-  const [key, setkey] = useState("");
-  const [value, setValue] = useState("");
   const [isWorkSpaceMeta, setIsWorkSpaceMeta] = useState(false);
   const [startPanMousePosition, setStartPanMousePosition] = useState({
     x: 0,
     y: 0,
   });
+
   const [canvasSize, setCanvasSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -145,6 +153,8 @@ const WorkSpace = () => {
   const textAreaRef = useRef();
   const pressedKeys = usePressedKeys();
   const navigate = useNavigate();
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const getUser = async () => {
     try {
@@ -216,7 +226,7 @@ const WorkSpace = () => {
           console.log("response".response);
           if (response.data && response.data.elements) {
             setElements(response.data.elements);
-
+            setSelectedProjectId(response.data.project);
             setworkspaceMeta(response.data.meta);
             setTimeout(() => {
               setIsMounted(true);
@@ -289,7 +299,7 @@ const WorkSpace = () => {
     const element = getElementAtPosition(clientX, clientY, elements);
 
     if (element) {
-      setIsOpen(true);
+      onOpen();
       setSelectedIdFormeta(element.id);
       setMeta(element.options?.meta || { common: { ...SammpleObject } });
     }
@@ -448,7 +458,7 @@ const WorkSpace = () => {
     } else if (tool === "deletion") {
       const element = getElementAtPosition(clientX, clientY, elements);
       if (element) {
-        console.log(element)
+        console.log(element);
         if (element.position === "inside") {
           const temp = elements.filter((el) => el.id !== element.id);
 
@@ -773,9 +783,9 @@ const WorkSpace = () => {
       }
       const { id, type } = elements[index];
       if (action === "drawing" && adjustmentRequired(type)) {
-        setIsOpen(true);
+        onOpen();
         setSelectedIdFormeta(id);
-        setMeta( { common: { ...SammpleObject } });
+        setMeta({ common: { ...SammpleObject } });
         const { x1, y1, x2, y2 } = elements[index];
 
         if (selectedIndex === null) {
@@ -1257,7 +1267,7 @@ const WorkSpace = () => {
           onClick={() => {
             setIsWorkSpaceMeta(true);
             setMeta(workspaceMeta);
-            setIsOpen(true);
+            onOpen();
           }}
         >
           <MdDataObject className="w-5  h-5 " />
@@ -1284,12 +1294,6 @@ const WorkSpace = () => {
         style={{ position: "fixed", zIndex: 2, bottom: 0, padding: 10 }}
         className="w-fit flex gap-3"
       >
-        {/* <button onClick={undo} className="p-2 bg-gray-200 w-fit rounded-lg">
-          <IoIosUndo />
-        </button>
-        <button onClick={redo} className="p-2 bg-gray-200 w-fit rounded-lg">
-          <IoIosRedo />
-        </button> */}
         <button
           onClick={handleClear}
           className="p-2 bg-gray-200 w-fit rounded-lg"
@@ -1319,95 +1323,16 @@ const WorkSpace = () => {
         />
       ) : null}
 
-      <Modal
+      <ElementMetaModal
+        meta={meta}
         isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        classes={"p-4 flex flex-col gap-4"}
-      >
-        <div className="w-full rounded-lg border border-gray-400 flex flex-col gap-2 shadow-sm py-4 px-6">
-          <h1 className="text-base font-bold">Add</h1>
-          <div className="flex flex-col gap-4">
-            {meta.common &&
-              Object.entries(meta?.common).map(([key, value]) => (
-                <div className="w-full flex gap-2">
-                  <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
-                    {key.toUpperCase()}:
-                  </h2>
-                  <input
-                    value={value}
-                    placeholder={`${key}`}
-                    onChange={(e) => {
-                      setMeta((prevState) => ({
-                        ...prevState,
-                        common: {
-                          ...prevState.common,
-                          [key]: e.target.value,
-                        },
-                      }));
-                    }}
-                    className="w-4/5 p-5 bg-gray-300  rounded-lg"
-                  />
-                </div>
-              ))}
-          </div>
-          <div className="flex flex-row gap-4">
-            <input
-              type="text"
-              placeholder="Key"
-              className="w-1/3 rounded-lg border border-gray-400 p-4"
-              value={key}
-              onChange={(e) => setkey(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Value"
-              className="w-2/3 rounded-lg border border-gray-400 p-4"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
-            <button
-              className="bg-blue-600 text-white rounded-lg p-2"
-              onClick={() => {
-                setMeta((prevState) => ({
-                  ...prevState,
-                  other: {
-                    ...prevState.other,
-                    [key]: value,
-                  },
-                }));
-                setkey("");
-                setValue("");
-              }}
-            >
-              Add
-            </button>
-          </div>
-        </div>
-        {meta.other &&
-          Object.entries(meta?.other).map(([key, value]) => (
-            <div className="w-full flex gap-2">
-              <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
-                {key}
-              </h2>
-              <p className="w-4/5 bg-gray-300 p-2 rounded-lg">{value}</p>
-            </div>
-          ))}
-
-        <div className="flex flex-row gap-3">
-          <button
-            onClick={handleSave}
-            className="p-2 bg-blue-500 hover:bg-blue-600 rounded-lg"
-          >
-            Save
-          </button>
-          <button
-            onClick={handleDiscard}
-            className="p-2 bg-red-500 hover:bg-red-600 rounded-lg"
-          >
-            Discard
-          </button>
-        </div>
-      </Modal>
+        setMeta={setMeta}
+        onOpenChange={onOpenChange}
+        handleSave={handleSave}
+        handleDiscard={handleDiscard}
+        selectedProjectId={selectedProjectId}
+        wid={wid}
+      />
       <canvas
         id="canvas"
         width={canvasSize.width}

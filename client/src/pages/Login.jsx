@@ -1,6 +1,3 @@
-// Login.css
-// import "./css/login.css";
-// Login.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Googleauth from "./GoogleAuth";

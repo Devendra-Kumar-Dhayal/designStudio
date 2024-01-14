@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import {
+  CreateProjectElementInput,
   CreateProjectInput,
   CreateWorkspaceInput,
+  GetProjectElementInput,
   GetProjectInput,
   UpdateWorkspaceInput,
 } from "../schema/workspace.schema";
@@ -13,7 +15,9 @@ import {
   findAllWorkspaces,
   findproject,
   createProject,
-  findAllProjects, // New service function for fetching all workspaces
+  findAllProjects,
+  findProjectElement,
+  createProjectElement, // New service function for fetching all workspaces
 } from "../service/workspace.service"; // Adjusted service functions for workspace
 
 export async function createWorkspaceHandler(
@@ -37,13 +41,11 @@ export async function updateWorkspaceHandler(
   const update = req.body;
   
   const workspace = await findWorkspace({ workspaceId });
-  console.log("inside handler",workspace)
 
   if (!workspace) {
     return res.sendStatus(404);
   }
 
-  console.log("inside handler three");
 
 
   const updatedWorkspace = await findAndUpdateWorkspace(
@@ -53,7 +55,6 @@ export async function updateWorkspaceHandler(
       new: true,
     }
   );
-  console.log("inside handler 4",updatedWorkspace);
 
 
   return res.send(updatedWorkspace);
@@ -100,7 +101,6 @@ export async function getAllWorkspacesRecentHandler(
   req: Request,
   res: Response
 ) {
-  console.log("getRecents");
   const workspaces = await findAllWorkspaces({ limit: 25 }); // Implement logic to fetch all workspaces
 
   return res.send( workspaces);
@@ -139,4 +139,52 @@ export async function createProjectHandler(
 
   return res.status(201).send(project);
 
+}
+
+
+export async function createProjectElementHandler(
+  req: Request<{}, {}, CreateProjectElementInput, {}>,
+  res: Response
+) {
+  
+
+  try {
+    console.log("inside service1");
+
+    const input = req.body
+    const existing = await findProjectElement({projectId:input!.projectId??"",name:input!.name??""});
+    console.log("inside service2");
+
+    if(existing){
+      throw new Error("Name already exists")
+    }
+    console.log("inside service3");
+
+    const project = await createProjectElement(req.body);
+  
+    return res.status(201).send(project);
+  } catch (error:any) {
+    console.log(error,error.message)
+    return res.status(404).send(error.message);
+  }
+
+}
+
+
+export async function getProjectElementHandler(
+  req:Request<{}, {}, {}, GetProjectElementInput>,
+  res:Response
+){
+  // const projectId = req.params.projectId;
+  try {
+    const project = await findProjectElement(req.query);
+  
+    if (!project) {
+      return res.sendStatus(200);
+    }
+  
+    return res.status(200).send(project);
+  } catch (error) {
+    return res.status(404)
+  }
 }
