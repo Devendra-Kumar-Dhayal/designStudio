@@ -28,6 +28,7 @@ import { ProjectContext } from "./ProjectContext";
 import axios from "axios";
 import { BASEURL } from "../utils/functions";
 import { set } from "lodash";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const [search, setsearch] = useState("");
@@ -75,7 +76,7 @@ const Navbar = () => {
       }
     } catch (error) {
       console.log(error);
-      alert(error)
+      toast.error(error)
     }
   };
 

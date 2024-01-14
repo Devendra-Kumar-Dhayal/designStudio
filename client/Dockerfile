@@ -10,7 +10,7 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install --legacy-peer-deps
-RUN npm install axios
+# RUN npm install axios
 
 # Copy app files
 COPY . .

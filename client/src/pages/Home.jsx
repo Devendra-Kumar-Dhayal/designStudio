@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import { ProjectContext } from "../components/ProjectContext";
+import { toast } from "sonner";
 
 const SammpleObject = {
   label: "",
@@ -39,7 +40,7 @@ const Home = () => {
 
   const handleNew = async () => {
     if(!selectedProjectId){
-      alert("Select Project Id to Continue")
+      toast.error("Select Project to Continue")
       return
     }
     setMeta({ common: { ...SammpleObject } });

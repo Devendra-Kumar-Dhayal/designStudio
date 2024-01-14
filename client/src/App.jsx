@@ -5,18 +5,21 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Recents from "./pages/Recents";
 import WorkSpace from "./pages/WorkSpace";
+import { Toaster, toast } from "sonner";
+
 
 
 const App = () => {
   return (
     <div className="w-screen min-h-screen  ">
+      <Toaster />
       <Routes>
         <Route element={<ProtectedLayout />}>
           <Route exact path="/" element={<Home />} />
-          <Route exact path="/recents" element = {<Recents/>} />
+          <Route exact path="/recents" element={<Recents />} />
         </Route>
         <Route exact path="/workspace" element={<WorkSpace />} />
-        <Route exact path="/login" element={<Login/>} />
+        <Route exact path="/login" element={<Login />} />
       </Routes>
     </div>
   );

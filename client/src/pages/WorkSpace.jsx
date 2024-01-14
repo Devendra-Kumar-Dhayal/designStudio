@@ -773,6 +773,9 @@ const WorkSpace = () => {
       }
       const { id, type } = elements[index];
       if (action === "drawing" && adjustmentRequired(type)) {
+        setIsOpen(true);
+        setSelectedIdFormeta(id);
+        setMeta( { common: { ...SammpleObject } });
         const { x1, y1, x2, y2 } = elements[index];
 
         if (selectedIndex === null) {
