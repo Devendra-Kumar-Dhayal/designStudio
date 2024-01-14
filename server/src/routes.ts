@@ -21,8 +21,10 @@ import {
 import requireUser from "./middleware/requireUser";
 import validateResource from "./middleware/validateResource";
 import {
+  createProjectSchema,
   createWorkspaceSchema,
   deleteWorkspaceSchema,
+  getProjectSchema,
   getWorkspaceSchema,
   updateWorkspaceSchema,
 } from "./schema/workspace.schema";
@@ -171,5 +173,20 @@ router.get(
   requireUser,
   getAllWorkspacesHandler // Implement getAllWorkspacesHandler to fetch all workspaces
 );
+
+router.post("/api/project/", [
+  requireDesigner,
+  validateResource(createProjectSchema),
+]);
+
+router.get("/api/project/:projectId", [
+  requireUser,
+  validateResource(getProjectSchema),
+]);
+router.post("/api/project/", [
+  requireDesigner,
+  validateResource(createProjectSchema),
+]);
+
 
 export default router;
