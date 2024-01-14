@@ -187,6 +187,9 @@ router.post("/api/project/", [
   requireDesigner,
   validateResource(createProjectSchema),
 ]);
+router.get("/api/project/", [
+  requireUser,
+]);
 
 
 export default router;

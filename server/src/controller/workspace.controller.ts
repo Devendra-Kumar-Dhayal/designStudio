@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import {
+  CreateProjectInput,
   CreateWorkspaceInput,
+  GetProjectInput,
   UpdateWorkspaceInput,
 } from "../schema/workspace.schema";
 import {
@@ -8,7 +10,9 @@ import {
   deleteWorkspace,
   findAndUpdateWorkspace,
   findWorkspace,
-  findAllWorkspaces, // New service function for fetching all workspaces
+  findAllWorkspaces,
+  findproject,
+  createProject, // New service function for fetching all workspaces
 } from "../service/workspace.service"; // Adjusted service functions for workspace
 
 export async function createWorkspaceHandler(
@@ -99,4 +103,39 @@ export async function getAllWorkspacesRecentHandler(
   const workspaces = await findAllWorkspaces({ limit: 25 }); // Implement logic to fetch all workspaces
 
   return res.send( workspaces);
+}
+
+
+export async function findAllProjectsHandler(req: Request, res: Response) {
+  const projects = await findAllWorkspaces({}); // Implement logic to fetch all workspaces
+
+  return res.send(projects);
+}
+
+export async function findProjectByIdHandler(
+  req: Request<GetProjectInput['params'],{},{}>,
+  res: Response
+) {
+  const projectId = req.params.projectId;
+  const project = await findproject({ projectId });
+
+  if (!project) {
+    return res.sendStatus(404);
+  }
+
+  return res.send(project);
+}
+
+
+export async function createProjectHandler(
+  req: Request<{}, {}, CreateProjectInput, {}>,
+  res: Response
+) {
+  const userId = res.locals.user._id;
+  
+
+  const project = await createProject(req.body);
+
+  return res.send(project);
+
 }

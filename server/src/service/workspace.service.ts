@@ -5,7 +5,8 @@ import WorkspaceModel, {
 } from "../models/workspace.model"; // Changed import from ProductModel to WorkspaceModel
 
 import { databaseResponseTimeHistogram } from "../utils/metrics";
-import { CreateWorkspaceInput } from "../schema/workspace.schema";
+import { CreateProjectInput, CreateWorkspaceInput } from "../schema/workspace.schema";
+import ProjectModel from "../models/project.model";
 
 export async function createWorkspace(input:CreateWorkspaceInput) {
   const metricsLabels = {
@@ -84,3 +85,32 @@ export async function findAllWorkspaces({ limit }: { limit?: number }) {
 
 
 // export async function createNewProject()
+
+export async function findAllProjects(){
+  try {
+    const projects = await ProjectModel.find({});
+    return projects;
+  } catch (error) {
+    throw error
+  }
+}
+
+
+export async function findproject({projectId}: {projectId:string}){
+  try {
+    const project = await ProjectModel.findOne({_id:projectId}).populate({path:"workspace",select:'_id meta'})
+    return project;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+export async function createProject(input: CreateProjectInput) {
+  try {
+    const project = await ProjectModel.create(input);
+    return project;
+  } catch (error) {
+    throw error;
+  }
+}

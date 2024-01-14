@@ -17,7 +17,7 @@ const Navbar = () => {
 
   return (
     <div className="flex justify-between py-2 my-4 items-center">
-      <div className=" lg:hidden w-[17px] h-full flex items-center justify-center">
+      {/* <div className=" lg:hidden w-[17px] h-full flex items-center justify-center">
         <svg
           className="w-full h-full my-auto"
           viewBox="0 0 15 15"
@@ -31,7 +31,8 @@ const Navbar = () => {
             clipRule="evenodd"
           ></path>
         </svg>
-      </div>
+      </div> */}
+      
 
       <div className="relative flex ml-2  rounded-full bg py-2 px-5 bg-[#D8EEFF] w-[56%] justify-between items-center">
         <FaSearch className="w-[17px] h-[17px]" />
@@ -68,12 +69,12 @@ const Navbar = () => {
         )}
       </div>
       <div className="flex items-center gap-3">
-        <div className="flex items-center justify-center w-[40px] h-[40px] bg-white rounded-xl">
+        {/* <div className="flex items-center justify-center w-[40px] h-[40px] bg-white rounded-xl">
           <FaQuestion className="w-[24px] h-[24px]" alt="" />
-        </div>
-        <div className="flex items-center justify-center w-[40px] h-[40px] bg-white rounded-xl">
+        </div> */}
+        {/* <div className="flex items-center justify-center w-[40px] h-[40px] bg-white rounded-xl">
           <FaRegBell className="w-[24px] h-[24px]" alt="" />
-        </div>
+        </div> */}
 
         <RxAvatar alt="" className="w-[24px] h-[24px]" />
 

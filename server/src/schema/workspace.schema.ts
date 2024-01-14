@@ -135,4 +135,4 @@ export type CreateProjectInput = TypeOf<typeof createProjectSchema>[
 
 export type UpdateProjectInput = TypeOf<typeof updateProjectSchema>;
 export type DeleteProjectInput = TypeOf<typeof deleteProjectSchema>;
-export type ReadProjectInput = TypeOf<typeof getProjectSchema>;
+export type GetProjectInput = TypeOf<typeof getProjectSchema>;
