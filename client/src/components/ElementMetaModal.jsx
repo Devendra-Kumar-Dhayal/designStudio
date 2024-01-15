@@ -83,22 +83,44 @@ const ElementMetaModal = ({
     }
   };
 
-  const handleNameAdd = () => {
+  const handleNameAdd = async() => {
     const bool = toShow.workspaces.some((w) => w.workspaceId.includes(wid));
     if (bool) {
       toast.error("Two elements in same workspace cannot have same name");
       return;
     }
-    setMeta((prevState) => ({
-      ...prevState,
-      common: {
-        ...prevState.common,
-        label: toShow.name,
+    let currentWorkspaces= toShow.workspaces
+    currentWorkspaces.push({workspaceId:wid})
+
+    const res = await axios.put(
+      `${BASEURL}/api/projectelement`,
+      {
+        projectId: selectedProjectId,
+        name: toShow.name,
+        workspaces: currentWorkspaces,
       },
-    }));
-    setName("");
-    setIsLoading(false);
-    handleLabelSave(toShow.name);
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(res);
+    if(res.status===200){
+
+      setMeta((prevState) => ({
+        ...prevState,
+        common: {
+          ...prevState.common,
+          label: toShow.name,
+        },
+      }));
+      setName("");
+      setIsLoading(false);
+      handleLabelSave(toShow.name);
+    }
+
+
+
+
   };
 
   return (

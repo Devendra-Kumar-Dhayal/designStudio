@@ -40,6 +40,60 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
   }
 }
 
+export async function convertWorkspace(query: { workspaceId: string }) {
+  //fetch all the elements from workspace
+  const result = await WorkspaceModel.findOne({
+    _id: query.workspaceId,
+  });
+
+  const elements = result?.elements ?? [];
+
+  //for each element in workspace find the project element
+  console.log("inside service");
+  //@ts-ignore
+  elements.forEach(async (element) => {
+    console.log(element);
+    const projectElement = await ProjectElementModel.findOne({
+      project: result?.project,
+      name: element.options.meta.common.label,
+    });
+
+    if (!projectElement) {
+      throw new Error("Project element not found");
+    }
+
+    // Remove the specified workspaceId from the workspaces array
+    //@ts-ignore
+    const updatedWorkspaces = projectElement.workspaces.filter((workspace) => {
+      //@ts-ignore
+
+      console.log(workspace, workspace.workspaceId.toString(), typeof workspace.workspaceId,query.workspaceId, workspace.workspaceId.toString() !== query.workspaceId);
+      //@ts-ignore
+
+      return workspace.workspaceId.toString() !== query.workspaceId;
+    });
+
+    updatedWorkspaces.push({
+      //@ts-ignore
+      workspaceId: query.workspaceId,
+      meta: element,
+      isSubmitted: true,
+    });
+
+    // Update the project element with the modified workspaces
+    const updated = await ProjectElementModel.findOneAndUpdate(
+      {
+        _id: projectElement._id,
+      },
+      {
+        workspaces: updatedWorkspaces,
+      }
+    );
+
+    return updated;
+  });
+}
+
 export async function findWorkspace(
   query: { workspaceId: string },
   options: QueryOptions = { lean: true }
@@ -173,46 +227,23 @@ export async function createOrUpdateProjectElement(
           }))
         : [];
 
-      // Merge the existing workspaces with the updated workspaces, keeping only unique ones based on workspaceId
-      const mergedWorkspaces = [
-        ...existingProjectElement.workspaces,
-        ...updatedWorkspaces,
-      ].reduce((acc, workspace) => {
-        // Explicit type check to handle union types
-        if ("workspaceId" in workspace) {
-          const existingWorkspaceIndex = acc.findIndex(
-            (w) => w.workspaceId === workspace.workspaceId
-          );
-
-          if (existingWorkspaceIndex === -1) {
-            acc.push(workspace);
-          } else {
-            acc[existingWorkspaceIndex] = workspace;
-          }
-        }
-
-        return acc;
-      }, [] as { workspaceId: string; meta: any }[]);
-
       // Update the project element with the merged workspaces
       const updated = await ProjectElementModel.findOneAndUpdate(
         {
           _id: existingProjectElement._id,
         },
         {
-          workspaces: mergedWorkspaces,
+          workspaces: updatedWorkspaces,
         },
         { new: true } // Return the updated document
       );
 
       return updated;
-    }
+    } else throw new Error("Project element not found");
   } catch (error) {
     throw error;
   }
 }
-
-
 
 export async function removeWorkspaceFromProjectElement(
   projectId: string,
@@ -260,10 +291,6 @@ export async function removeWorkspaceFromProjectElement(
     throw error;
   }
 }
-
-
-
-
 
 export async function findProjectElement(input: GetProjectElementInput) {
   const projectElement = await ProjectElementModel.findOne({

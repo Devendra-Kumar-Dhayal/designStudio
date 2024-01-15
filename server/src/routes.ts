@@ -11,6 +11,8 @@ import {
   findAllProjectsHandler,
   createProjectElementHandler,
   getProjectElementHandler,
+  updateProjectElementHandler,
+  submitWorkspaceHandler,
 } from "./controller/workspace.controller";
 import {
   createUserSessionHandler,
@@ -169,6 +171,11 @@ router.delete(
   deleteWorkspaceHandler
 );
 
+router.put(
+  "/api/workspaces/submit/:workspaceId",
+  [requireDesigner, validateResource(deleteWorkspaceSchema)],
+  submitWorkspaceHandler
+);
 // GET /api/workspaces - Get all workspaces
 router.get(
   "/api/workspacesrecent",
@@ -205,7 +212,7 @@ router.post(
 router.put(
   "/api/projectelement",
   [requireUser, validateResource(createProjectElementSchema)],
-  createProjectElementHandler
+  updateProjectElementHandler
 );
 
 router.get(

@@ -28,6 +28,10 @@ const workspaceElementSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     default: {}, // Default to an empty object
   },
+  isSubmitted:{
+    type:Boolean,
+    default:false
+  }
 });
 
 const projectElements = new mongoose.Schema(

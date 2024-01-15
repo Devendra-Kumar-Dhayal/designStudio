@@ -18,11 +18,12 @@ import {
   findAllProjects,
   findProjectElement,
   createProjectElement,
-  createOrUpdateProjectElement, // New service function for fetching all workspaces
+  createOrUpdateProjectElement,
+  convertWorkspace, // New service function for fetching all workspaces
 } from "../service/workspace.service"; // Adjusted service functions for workspace
 
 export async function createWorkspaceHandler(
-  req: Request<{},{}, CreateWorkspaceInput, {}>,
+  req: Request<{}, {}, CreateWorkspaceInput, {}>,
   res: Response
 ) {
   const userId = res.locals.user._id;
@@ -37,17 +38,15 @@ export async function updateWorkspaceHandler(
   res: Response
 ) {
   const userId = res.locals.user._id;
-  
+
   const workspaceId = req.params.workspaceId;
   const update = req.body;
-  
+
   const workspace = await findWorkspace({ workspaceId });
 
   if (!workspace) {
     return res.sendStatus(404);
   }
-
-
 
   const updatedWorkspace = await findAndUpdateWorkspace(
     { workspaceId },
@@ -56,7 +55,6 @@ export async function updateWorkspaceHandler(
       new: true,
     }
   );
-
 
   return res.send(updatedWorkspace);
 }
@@ -73,6 +71,20 @@ export async function getWorkspaceHandler(
   }
 
   return res.send(workspace);
+}
+export async function submitWorkspaceHandler(
+  req: Request<UpdateWorkspaceInput["params"]>,
+  res: Response
+) {
+  const workspaceId = req.params.workspaceId;
+  const workspace = await findWorkspace({ workspaceId });
+
+  if (!workspace) {
+    return res.sendStatus(404);
+  }
+  await convertWorkspace({ workspaceId });
+
+  return res.status(200).send(workspace);
 }
 
 export async function deleteWorkspaceHandler(
@@ -104,18 +116,17 @@ export async function getAllWorkspacesRecentHandler(
 ) {
   const workspaces = await findAllWorkspaces({ limit: 25 }); // Implement logic to fetch all workspaces
 
-  return res.send( workspaces);
+  return res.send(workspaces);
 }
-
 
 export async function findAllProjectsHandler(req: Request, res: Response) {
   const projects = await findAllProjects(); // Implement logic to fetch all workspaces
 
-  return res.send({projects});
+  return res.send({ projects });
 }
 
 export async function findProjectByIdHandler(
-  req: Request<GetProjectInput['params'],{},{}>,
+  req: Request<GetProjectInput["params"], {}, {}>,
   res: Response
 ) {
   const projectId = req.params.projectId;
@@ -128,94 +139,73 @@ export async function findProjectByIdHandler(
   return res.send(project);
 }
 
-
 export async function createProjectHandler(
   req: Request<{}, {}, CreateProjectInput, {}>,
   res: Response
 ) {
   const userId = res.locals.user._id;
-  
 
   const project = await createProject(req.body);
 
   return res.status(201).send(project);
-
 }
-
 
 export async function createProjectElementHandler(
   req: Request<{}, {}, CreateProjectElementInput, {}>,
   res: Response
 ) {
-  
-
   try {
     console.log("inside service1");
 
-    const input = req.body
-    const existing = await findProjectElement({projectId:input!.projectId??"",name:input!.name??""});
-    console.log("inside service2");
-
-    if(existing){
-      throw new Error("Name already exists")
-    }
-    console.log("inside service3");
-
-    const project = await createProjectElement(req.body);
-  
-    return res.status(201).send(project);
-  } catch (error:any) {
-    console.log(error,error.message)
-    return res.status(404).send(error.message);
-  }
-
-}
-export async function updateProjectElementHandler(
-  req: Request<{}, {}, CreateProjectElementInput, {}>,
-  res: Response
-) {
-  
-
-  try {
-    console.log("inside service1");
-
-    const input = req.body
-    const existing = await createOrUpdateProjectElement({
+    const input = req.body;
+    const existing = await findProjectElement({
       projectId: input!.projectId ?? "",
       name: input!.name ?? "",
     });
     console.log("inside service2");
 
-    if(existing){
-      throw new Error("Name already exists")
+    if (existing) {
+      throw new Error("Name already exists");
     }
     console.log("inside service3");
 
     const project = await createProjectElement(req.body);
-  
+
     return res.status(201).send(project);
-  } catch (error:any) {
-    console.log(error,error.message)
+  } catch (error: any) {
+    console.log(error, error.message);
     return res.status(404).send(error.message);
   }
+}
+export async function updateProjectElementHandler(
+  req: Request<{}, {}, CreateProjectElementInput, {}>,
+  res: Response
+) {
+  try {
+    const input = req.body;
+    const existing = await createOrUpdateProjectElement(input);
 
+    return res.status(200).send(existing);
+  } catch (error: any) {
+    console.log(error, error.message);
+    return res.status(404).send(error.message);
+  }
 }
 
-
 export async function getProjectElementHandler(
-  req:Request<{}, {}, {}, GetProjectElementInput>,
-  res:Response
-){
+  req: Request<{}, {}, {}, GetProjectElementInput>,
+  res: Response
+) {
   // const projectId = req.params.projectId;
   try {
     const project = await findProjectElement(req.query);
-  
+
     if (!project) {
       return res.sendStatus(200);
     }
-  
+
     return res.status(200).send(project);
   } catch (error) {
-    return res.status(404)
+    return res.status(404);
   }
 }

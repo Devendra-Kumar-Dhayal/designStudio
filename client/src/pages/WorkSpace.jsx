@@ -36,7 +36,7 @@ import useDebounce from "../components/hooks/useDebounce";
 import { set } from "lodash";
 import { IconKafka, IconBoomi, IconApp_C, IconApp_R } from "./Icons";
 import { MdDataObject } from "react-icons/md";
-import { Input, useDisclosure } from "@nextui-org/react";
+import { Button, Input, useDisclosure } from "@nextui-org/react";
 import { ProjectContext } from "../components/ProjectContext";
 import ElementMetaModal from "../components/ElementMetaModal";
 import { toast } from "sonner";
@@ -128,7 +128,7 @@ const WorkSpace = () => {
   const [elements, setElements] = useState([]);
   const [isMounted, setIsMounted] = useState(false);
   const [workspaceMeta, setworkspaceMeta] = useState({});
-  const [selectedProjectId, setSelectedProjectId] = useState("")
+  const [selectedProjectId, setSelectedProjectId] = useState("");
   const debouncedElements = useDebounce(elements, 1000);
   const [action, setAction] = useState("none");
   const [selectedColor, setselectedColor] = useState(color[0]);
@@ -136,7 +136,7 @@ const WorkSpace = () => {
   const [selectedElement, setSelectedElement] = useState(null);
   const [panOffset, setPanOffset] = React.useState({ x: 0, y: 0 });
   const [selectedIndex, setSelectedIndex] = useState(null);
-
+  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false)
   const [selectedIdFormeta, setSelectedIdFormeta] = useState();
   const [meta, setMeta] = useState({});
   const [isDesigner, setisDesigner] = useState(true);
@@ -172,9 +172,7 @@ const WorkSpace = () => {
   };
 
   const handleSave = async () => {
-    setTimeout(() => {
-      
-    }, (1));
+    setTimeout(() => {}, 1);
     if (isWorkSpaceMeta) {
       if (wid) {
         try {
@@ -207,10 +205,9 @@ const WorkSpace = () => {
     };
     setElements(elementsCopy, true);
     toast("saved");
-
   };
 
-  const handleLabelSave = async (label)=>{
+  const handleLabelSave = async (label) => {
     const elementsCopy = [...elements];
 
     elementsCopy[selectedIdFormeta] = {
@@ -227,10 +224,30 @@ const WorkSpace = () => {
       },
     };
     setElements(elementsCopy, true);
-  }
+  };
   const handleDiscard = async () => {
     setMeta(elements[selectedIdFormeta].options?.meta || {});
   };
+
+
+  const handleSubmit = async ()=>{
+    setIsLoadingSubmit(true)
+    const res = await axios.put(
+      `${BASEURL}/api/workspaces/submit/${wid}`,{},
+      {
+        withCredentials: true,
+      }
+    );
+    if (res.status === 200){
+      toast.success("Workspace Submitted successfully...")
+    }
+      // navigate({
+      //   pathname: "/workspace",
+      //   search: `?wid=${res.data._id}`,
+      // });
+      setIsLoadingSubmit(false)
+  
+  }
 
   useEffect(() => {
     getUser();
@@ -1326,6 +1343,18 @@ const WorkSpace = () => {
           Clear
         </button>
       </div>
+      <div className="w-fit flex gap-3  fixed z-50 top-5 left-1/2 translate-x-[-50%]">
+        <Button
+          onPress={handleSubmit}
+          // className="p-2 bg-gray-200 w-fit rounded-lg"
+          color="default"
+          isLoading={isLoadingSubmit}
+          // variant="primary"
+        >
+          Submit
+        </Button>
+      </div>
+
       {action === "writing" ? (
         <textarea
           ref={textAreaRef}
