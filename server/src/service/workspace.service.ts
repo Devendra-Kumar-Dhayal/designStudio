@@ -1,4 +1,4 @@
-import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
+import { FilterQuery, QueryOptions, Types, UpdateQuery } from "mongoose";
 import WorkspaceModel, {
   WorkspaceDocument,
   WorkspaceInput,
@@ -13,7 +13,9 @@ import {
 } from "../schema/workspace.schema";
 import ProjectModel from "../models/project.model";
 import logger from "../utils/logger";
-import ProjectElementModel from "../models/projectElements.model";
+import ProjectElementModel, {
+  ProjectElementDocument,
+} from "../models/projectElements.model";
 import { arrayBuffer } from "stream/consumers";
 import e from "express";
 
@@ -65,9 +67,7 @@ export async function convertWorkspace(query: { workspaceId: string }) {
     // Remove the specified workspaceId from the workspaces array
     //@ts-ignore
     const updatedWorkspaces = projectElement.workspaces.filter((workspace) => {
-      //@ts-ignore
-
-      console.log(workspace, workspace.workspaceId.toString(), typeof workspace.workspaceId,query.workspaceId, workspace.workspaceId.toString() !== query.workspaceId);
+     
       //@ts-ignore
 
       return workspace.workspaceId.toString() !== query.workspaceId;
@@ -177,6 +177,44 @@ export async function findproject({ projectId }: { projectId: string }) {
     throw error;
   }
 }
+export async function findProjectElements({
+  projectId,
+}: {
+  projectId: string;
+}) {
+  try {
+    const project = await ProjectElementModel.find({
+      project: projectId,
+    });
+    //@ts-ignore
+    const projectElements = [];
+
+    project.forEach((element) => {
+      console.log(element.workspaces)
+      const arr = element.workspaces.filter(
+        //@ts-ignore
+        (workspace) => workspace.isSubmitted
+      );
+      if (arr.length > 0) {
+        projectElements.push({
+          _id: element._id,
+          name: element.name,
+          project: element.project,
+          workspaces: arr,
+        });
+      }
+      console.log(element)
+      // console.log(arr)
+    });
+    //@ts-ignore
+    // console.log("inside", project, projectElements);
+    //@ts-ignore
+
+    return projectElements;
+  } catch (error) {
+    throw error;
+  }
+}
 
 export async function createProject(input: CreateProjectInput) {
   try {
@@ -223,7 +261,8 @@ export async function createOrUpdateProjectElement(
       const updatedWorkspaces = input.workspaces
         ? input.workspaces.map((workspace) => ({
             workspaceId: workspace.workspaceId,
-            meta: workspace.meta,
+            meta: workspace.meta,//@ts-ignore
+            isSubmitted: workspace.isSubmitted??false,
           }))
         : [];
 

@@ -13,6 +13,7 @@ import {
   getProjectElementHandler,
   updateProjectElementHandler,
   submitWorkspaceHandler,
+  findProjectElementsHandler,
 } from "./controller/workspace.controller";
 import {
   createUserSessionHandler,
@@ -203,6 +204,12 @@ createProjectHandler);
 
 
 router.get("/api/project", [requireUser], findAllProjectsHandler);
+
+router.get(
+  "/api/projectsubmit/:projectId",
+  [requireUser, validateResource(getProjectSchema)],
+  findProjectElementsHandler
+);
 
 router.post(
   "/api/projectelement",

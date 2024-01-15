@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import { ProjectContext } from "../components/ProjectContext";
 import { toast } from "sonner";
+import { Button } from "@nextui-org/react";
 
 const SammpleObject = {
   label: "",
@@ -163,7 +164,14 @@ const Home = () => {
           );
         })}
       </div>
-      <div></div>
+      <div>
+        <Button onPress={()=>{
+          navigate({
+            pathname: "/project",
+            search: `?pid=${selectedProjectId}`,
+          });
+        }}>View</Button>
+      </div>
       <h1 className="text-3xl font-medium text-black">Recents</h1>
       <div className="min-h-[238px]   max-w-[1213px] bg-white gap-9 p-7 flex flex-col rounded-2xl">
         {recents.map((recent, index) => {

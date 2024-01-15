@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Recents from "./pages/Recents";
 import WorkSpace from "./pages/WorkSpace";
 import { Toaster, toast } from "sonner";
+import Project from "./pages/Project";
 
 
 
@@ -19,6 +20,7 @@ const App = () => {
           <Route exact path="/recents" element={<Recents />} />
         </Route>
         <Route exact path="/workspace" element={<WorkSpace />} />
+        <Route exact path="/project" element={<Project />} />
         <Route exact path="/login" element={<Login />} />
       </Routes>
     </div>

@@ -19,7 +19,8 @@ import {
   findProjectElement,
   createProjectElement,
   createOrUpdateProjectElement,
-  convertWorkspace, // New service function for fetching all workspaces
+  convertWorkspace,
+  findProjectElements, // New service function for fetching all workspaces
 } from "../service/workspace.service"; // Adjusted service functions for workspace
 
 export async function createWorkspaceHandler(
@@ -131,6 +132,19 @@ export async function findProjectByIdHandler(
 ) {
   const projectId = req.params.projectId;
   const project = await findproject({ projectId });
+
+  if (!project) {
+    return res.sendStatus(404);
+  }
+
+  return res.send(project);
+}
+export async function findProjectElementsHandler(
+  req: Request<GetProjectInput["params"], {}, {}>,
+  res: Response
+) {
+  const projectId = req.params.projectId;
+  const project = await findProjectElements({ projectId });
 
   if (!project) {
     return res.sendStatus(404);
