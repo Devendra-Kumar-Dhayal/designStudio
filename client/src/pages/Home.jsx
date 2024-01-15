@@ -40,9 +40,9 @@ const Home = () => {
   console.log("meta", meta);
 
   const handleNew = async () => {
-    if(!selectedProjectId){
-      toast.error("Select Project to Continue")
-      return
+    if (!selectedProjectId) {
+      toast.error("Select Project to Continue");
+      return;
     }
     setMeta({ common: { ...SammpleObject } });
     setIsOpen(true);
@@ -164,14 +164,20 @@ const Home = () => {
           );
         })}
       </div>
-      <div>
-        <Button onPress={()=>{
-          navigate({
-            pathname: "/project",
-            search: `?pid=${selectedProjectId}`,
-          });
-        }}>View</Button>
-      </div>
+      {selectedProjectId && (
+        <div>
+          <Button
+            onPress={() => {
+              navigate({
+                pathname: "/project",
+                search: `?pid=${selectedProjectId}`,
+              });
+            }}
+          >
+            View
+          </Button>
+        </div>
+      )}
       <h1 className="text-3xl font-medium text-black">Recents</h1>
       <div className="min-h-[238px]   max-w-[1213px] bg-white gap-9 p-7 flex flex-col rounded-2xl">
         {recents.map((recent, index) => {
