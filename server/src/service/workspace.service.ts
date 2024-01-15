@@ -51,7 +51,7 @@ export async function convertWorkspace(query: { workspaceId: string }) {
   const elements = result?.elements ?? [];
 
   //for each element in workspace find the project element
-  console.log("inside service");
+  console.log("inside service",elements);
   //@ts-ignore
   elements.forEach(async (element) => {
     console.log(element);
@@ -63,7 +63,24 @@ export async function convertWorkspace(query: { workspaceId: string }) {
     if (!projectElement) {
       throw new Error("Project element not found");
     }
-
+    if (element.type === "line") {
+      // @ts-ignore
+      const depending = element.options.depending.map((dep) => {
+        const obj = {
+          ...dep,
+          //@ts-ignore
+          name: elements[dep.element].options.meta.common.label,
+        };
+        return obj;
+      });
+      element = {
+        ...element,
+        options: {
+          ...element.options,
+          depending,
+        },
+      };
+    }
     // Remove the specified workspaceId from the workspaces array
     //@ts-ignore
     const updatedWorkspaces = projectElement.workspaces.filter((workspace) => {
