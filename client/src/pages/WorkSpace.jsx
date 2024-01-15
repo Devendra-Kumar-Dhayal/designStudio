@@ -1075,6 +1075,7 @@ const WorkSpace = () => {
             const depending = elements[index].options?.depending ?? [];
 
             const opt = {
+              ...elements[index].options,
               depending: [
                 ...depending,
                 {
@@ -1172,6 +1173,7 @@ const WorkSpace = () => {
             const depending = elements[index].options?.depending ?? [];
 
             const opt = {
+              ...elements[index].options,
               depending: [
                 ...depending,
                 {

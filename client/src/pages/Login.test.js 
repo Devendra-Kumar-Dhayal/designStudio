@@ -1,0 +1,39 @@
+import React from 'react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import Login from './Login';
+
+test('renders the login component', () => {
+  const { getByText, getByLabelText } = render(<Login />);
+  
+  // Check if important elements are rendered
+  expect(getByText('Sign In')).toBeInTheDocument();
+  expect(getByLabelText('Username:*')).toBeInTheDocument();
+  expect(getByLabelText('Password:*')).toBeInTheDocument();
+});
+
+test('handles login correctly', async () => {
+  const { getByLabelText, getByText } = render(<Login />);
+  
+  // Mocking the fetch function
+  global.fetch = jest.fn(() =>
+    Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve({}),
+    })
+  );
+
+  // Simulate user input
+  fireEvent.change(getByLabelText('Username:*'), { target: { value: 'testuser' } });
+  fireEvent.change(getByLabelText('Password:*'), { target: { value: 'testpassword' } });
+
+  // Trigger the login function
+  fireEvent.click(getByText('Sign In'));
+
+  // Wait for the async operation to complete
+  await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+
+  // You can add assertions based on the expected behavior after successful login
+});
+
+// Add more tests for other functionalities as needed
