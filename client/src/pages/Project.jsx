@@ -22,7 +22,7 @@ function findElement(arr, label1) {
     const element = arr[i];
 
     // If the element is not in the hash table, add it to the uniqueArray
-    if (element.type != "line") {
+    if (element.type !== "line") {
       if (element.options.meta.common.label === label1) {
         return element;
       }
@@ -45,9 +45,7 @@ function removeRepeatingValues(arr) {
         seen[element.options.meta.common.label] = true;
       }
     }
-    console.log("unique array", uniqueArray);
   }
-  console.log("unique array", uniqueArray);
   for (let i = 0; i < arr.length; i++) {
     let element = arr[i];
 
@@ -59,7 +57,7 @@ function removeRepeatingValues(arr) {
         for (let j = 0; j < 2; j++) {
           var ele = findElement(uniqueArray, element.options.depending[j].name);
           console.log("ele", ele, ele.type);
-          if (ele.type == "rectangle") {
+          if (ele.type === "rectangle") {
             const { x, y } = attachLineToShape(
               ele,
               element,
@@ -72,16 +70,13 @@ function removeRepeatingValues(arr) {
                 x1: x,
                 y1: y,
               };
-              console.log("element1", element);
             } else {
               element = {
                 ...element,
                 x2: x,
                 y2: y,
               };
-              console.log("element2");
             }
-            console.log("updated 1 ", element.x1, element.y1, x, y);
           } else {
             const { x, y } = attachLineToShapeCircle(
               ele,
@@ -97,8 +92,6 @@ function removeRepeatingValues(arr) {
                 x1: x,
                 y1: y,
               };
-              console.log("element3");
-              console.log("updated 2 ", element.x1, element.y1, x, y);
             } else {
               // element.x2 = x;
               // element.y2 = y;
@@ -107,8 +100,6 @@ function removeRepeatingValues(arr) {
                 x2: x,
                 y2: y,
               };
-              console.log("element4");
-              console.log("updated 2 ", element.x2, element.y2, x, y);
             }
           }
         }

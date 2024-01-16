@@ -78,10 +78,10 @@ const Draw = [
     type: "pencil",
     icon: LuPencil,
   },
-  {
-    type: "text",
-    icon: CiText,
-  },
+  // {
+  //   type: "text",
+  //   icon: CiText,
+  // },
 ];
 
 const cursorForPosition = (position) => {
@@ -133,7 +133,7 @@ const WorkSpace = () => {
   const [selectedElement, setSelectedElement] = useState(null);
   const [panOffset, setPanOffset] = React.useState({ x: 0, y: 0 });
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false)
+  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const [selectedIdFormeta, setSelectedIdFormeta] = useState();
   const [meta, setMeta] = useState({});
   const [isDesigner, setisDesigner] = useState(true);
@@ -226,25 +226,24 @@ const WorkSpace = () => {
     setMeta(elements[selectedIdFormeta].options?.meta || {});
   };
 
-
-  const handleSubmit = async ()=>{
-    setIsLoadingSubmit(true)
+  const handleSubmit = async () => {
+    setIsLoadingSubmit(true);
     const res = await axios.put(
-      `${BASEURL}/api/workspaces/submit/${wid}`,{},
+      `${BASEURL}/api/workspaces/submit/${wid}`,
+      {},
       {
         withCredentials: true,
       }
     );
-    if (res.status === 200){
-      toast.success("Workspace Submitted successfully...")
+    if (res.status === 200) {
+      toast.success("Workspace Submitted successfully...");
     }
-      // navigate({
-      //   pathname: "/workspace",
-      //   search: `?wid=${res.data._id}`,
-      // });
-      setIsLoadingSubmit(false)
-  
-  }
+    // navigate({
+    //   pathname: "/workspace",
+    //   search: `?wid=${res.data._id}`,
+    // });
+    setIsLoadingSubmit(false);
+  };
 
   useEffect(() => {
     getUser();
@@ -329,7 +328,7 @@ const WorkSpace = () => {
       drawElement(context, roughCanvas, element, selectedIndex);
     });
     context.restore();
-  }, [elements, action, selectedElement, panOffset]);
+  }, [elements, action, selectedElement, panOffset, selectedIndex]);
 
   const handleDoubleClick = (event) => {
     if (tool !== "selection") return;
@@ -529,7 +528,7 @@ const WorkSpace = () => {
       setAction(tool === "text" ? "writing" : "drawing");
     }
   };
-
+  console.log("elements", selectedIndex);
   const handleMouseMove = (event) => {
     const { clientX, clientY } = getMouseCoordinates(event);
 
@@ -543,9 +542,16 @@ const WorkSpace = () => {
       document.body.style.cursor = "grab ";
       return;
     }
+    if(tool ==="line"){
+      const element = getElementAtPosition(clientX, clientY, elements);
+
+      if (element) setSelectedIndex(element?.id);
+      else setSelectedIndex(null);
+    }
 
     if (tool === "selection") {
       const element = getElementAtPosition(clientX, clientY, elements);
+      
       event.target.style.cursor = element
         ? cursorForPosition(element.position)
         : "default";
@@ -1291,7 +1297,7 @@ const WorkSpace = () => {
             " bg-white p-1 w-full text-xs flex justify-center flex-col rounded-lg items-center text-black"
           )}
           onClick={() => {
-            navigate(-1)
+            navigate(-1);
           }}
         >
           <IoArrowBackCircleOutline className="w-5  h-5 " />
