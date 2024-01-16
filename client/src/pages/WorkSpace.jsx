@@ -41,7 +41,7 @@ import { ProjectContext } from "../components/ProjectContext";
 import ElementMetaModal from "../components/ElementMetaModal";
 import { toast } from "sonner";
 
-const color = ["#FF0000", "#FFFFFF", "#000000", "#00FF00", "#0000FF"];
+const color = ["#2A95A5", "#69C6BC", "#EDE7C7", "#DC7179", "#BB3A69"];
 
 const SammpleObject = {
   description: "",
