@@ -195,6 +195,26 @@ const Project = () => {
 
     context.save();
     context.translate(panOffset.x, panOffset.y);
+    const gridSize = 20;
+    const canvasWidth = canvas.width*100;
+    const canvasHeight = canvas.height*100;
+  
+    context.beginPath();
+    context.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+  
+    // Vertical lines
+    for (let x = 0; x <= canvasWidth; x += gridSize) {
+      context.moveTo(x, 0);
+      context.lineTo(x, canvasHeight);
+    }
+  
+    // Horizontal lines
+    for (let y = 0; y <= canvasHeight; y += gridSize) {
+      context.moveTo(0, y);
+      context.lineTo(canvasWidth, y);
+    }
+  
+    context.stroke();
 
     finalElements?.map((element) => {
       console.log("name", element);
