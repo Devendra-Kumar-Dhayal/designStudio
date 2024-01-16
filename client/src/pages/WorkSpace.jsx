@@ -278,7 +278,7 @@ const WorkSpace = () => {
       fetchWorkspaceData();
     }
   }, []);
-
+  
   useEffect(() => {
     // PUT request to update elements whenever 'elements' state changes
     if (!wid) return;
@@ -304,7 +304,14 @@ const WorkSpace = () => {
 
     // Trigger PUT request when 'elements' state changes
   }, [debouncedElements, wid]);
-
+  useEffect(() => {
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext('2d');
+  
+    // Draw the grid
+    
+  }, []);
+  
   useEffect(() => {
     document.addEventListener("dblclick", handleDoubleClick);
 
@@ -322,6 +329,26 @@ const WorkSpace = () => {
 
     context.save();
     context.translate(panOffset.x, panOffset.y);
+    const gridSize = 20;
+    const canvasWidth = canvas.width*100;
+    const canvasHeight = canvas.height*100;
+  
+    context.beginPath();
+    context.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+  
+    // Vertical lines
+    for (let x = 0; x <= canvasWidth; x += gridSize) {
+      context.moveTo(x, 0);
+      context.lineTo(x, canvasHeight);
+    }
+  
+    // Horizontal lines
+    for (let y = 0; y <= canvasHeight; y += gridSize) {
+      context.moveTo(0, y);
+      context.lineTo(canvasWidth, y);
+    }
+  
+    context.stroke();
 
     elements?.map((element) => {
       if (action === "writing" && selectedElement.id === element.id) return;

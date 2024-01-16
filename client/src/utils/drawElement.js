@@ -28,13 +28,13 @@ const drawArrow = (roughCanvas, fromX, fromY, toX, toY, color, element) => {
   roughCanvas.draw(element.roughElement);
   const l1 = generator.line(x1, y1, toX, toY, {
     roughness: 0,
-    stroke: element.roughElement.stroke,
-    fill: element.roughElement.fill,
+    stroke: element.roughElement.options.stroke,
+    fill: element.roughElement.options.fill,
   });
   const l2 = generator.line(x2, y2, toX, toY, {
     roughness: 0,
-    stroke: element.roughElement.stroke,
-    fill: element.roughElement.fill,
+    stroke: element.roughElement.options.stroke,
+    fill: element.roughElement.options.fill,
   });
   // context.strokeStyle = color;
 
