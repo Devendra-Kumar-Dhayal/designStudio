@@ -66,10 +66,6 @@ const Draw = [
     icon: TbRectangleFilled,
   },
   {
-    type: "circle",
-    icon: TbCircle,
-  },
-  {
     type: "kafka",
     icon: IconKafka,
   },
