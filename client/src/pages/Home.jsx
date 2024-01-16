@@ -174,7 +174,7 @@ const Home = () => {
               });
             }}
           >
-            View
+            Project View
           </Button>
         </div>
       )}
