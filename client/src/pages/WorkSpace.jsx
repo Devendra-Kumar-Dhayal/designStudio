@@ -40,6 +40,7 @@ import { Button, Input, useDisclosure } from "@nextui-org/react";
 import { ProjectContext } from "../components/ProjectContext";
 import ElementMetaModal from "../components/ElementMetaModal";
 import { toast } from "sonner";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 
 const color = ["#2A95A5", "#69C6BC", "#EDE7C7", "#DC7179", "#BB3A69"];
 
@@ -1285,6 +1286,18 @@ const WorkSpace = () => {
   return (
     <div>
       <div className="fixed top-5 left-5 z-50 items-center gap-2 flex flex-col justify-center bg-gray-300 rounded-lg p-2">
+        <button
+          className={cn(
+            " bg-white p-1 w-full text-xs flex justify-center flex-col rounded-lg items-center text-black"
+          )}
+          onClick={() => {
+            navigate(-1)
+          }}
+        >
+          <IoArrowBackCircleOutline className="w-5  h-5 " />
+        </button>
+      </div>
+      <div className="fixed top-20 left-5 z-50 items-center gap-2 flex flex-col justify-center bg-gray-300 rounded-lg p-2">
         {isDesigner &&
           Draw.map((item, index) => {
             return (

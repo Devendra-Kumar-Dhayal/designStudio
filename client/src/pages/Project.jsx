@@ -15,6 +15,7 @@ import {
   attachLineToShapeCircle,
 } from "../utils/attachShapes";
 import createElement from "../utils/createElement";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 
 function findElement(arr, label1) {
   for (let i = 0; i < arr.length; i++) {
@@ -226,17 +227,31 @@ const Project = () => {
     context.restore();
   }, [finalElements, panOffset]);
   return (
-    <canvas
-      id="canvas"
-      width={canvasSize.width}
-      height={canvasSize.height}
-      // onMouseDown={handleMouseDown}
-      // onMouseMove={handleMouseMove}
-      // onMouseUp={handleMouseUp}
-      style={{ position: "absolute", zIndex: 1 }}
-    >
-      Canvas
-    </canvas>
+    <>
+      <div className="fixed top-5 left-5 z-50 items-center gap-2 flex flex-col justify-center bg-gray-300 rounded-lg p-2">
+        <button
+          className={cn(
+            " bg-white p-1 w-full text-xs flex justify-center flex-col rounded-lg items-center text-black"
+          )}
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          <IoArrowBackCircleOutline className="w-5  h-5 " />
+        </button>
+      </div>
+      <canvas
+        id="canvas"
+        width={canvasSize.width}
+        height={canvasSize.height}
+        // onMouseDown={handleMouseDown}
+        // onMouseMove={handleMouseMove}
+        // onMouseUp={handleMouseUp}
+        style={{ position: "absolute", zIndex: 1 }}
+      >
+        Canvas
+      </canvas>
+    </>
   );
 };
 
