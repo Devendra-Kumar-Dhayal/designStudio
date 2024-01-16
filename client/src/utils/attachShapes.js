@@ -58,7 +58,7 @@ export const attachLineToShape = (shape, line, start) => {
   let closestDistance = Infinity;
 
   intersectionPoints.forEach((point) => {
-    const distance = Math.sqrt((point.x - x3) ** 2 + (point.y - y1) ** 2);
+    const distance = Math.sqrt((point.x - x3) ** 2 + (point.y - y3) ** 2);
     if (distance < closestDistance) {
       closestDistance = distance;
       closestIntersection = point;
