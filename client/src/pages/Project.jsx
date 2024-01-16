@@ -10,14 +10,19 @@ import { BASEURL, cn } from "../utils/functions";
 import { useNavigate } from "react-router-dom";
 import rough from "roughjs/bundled/rough.esm";
 import { drawElement } from "../utils/drawElement";
-import { attachLineToShape,attachLineToShapeCircle } from "../utils/attachShapes";
-function findElement(arr, label1){
+import {
+  attachLineToShape,
+  attachLineToShapeCircle,
+} from "../utils/attachShapes";
+import createElement from "../utils/createElement";
+
+function findElement(arr, label1) {
   for (let i = 0; i < arr.length; i++) {
     const element = arr[i];
 
     // If the element is not in the hash table, add it to the uniqueArray
-    if(element.type!='line'){
-      if (element.options.meta.common.label===label1) {
+    if (element.type != "line") {
+      if (element.options.meta.common.label === label1) {
         return element;
       }
     }
@@ -26,87 +31,85 @@ function findElement(arr, label1){
 function removeRepeatingValues(arr) {
   const seen = {};
   const uniqueArray = [];
-  // rendering queue 
+  // rendering queue
 
   for (let i = 0; i < arr.length; i++) {
     let element = arr[i];
 
     // If the element is not in the hash table, add it to the uniqueArray
-    if(element.type!=='line'){
-      
+    if (element.type !== "line") {
       console.log(element.type);
       if (!seen[element.options.meta.common.label]) {
         uniqueArray.push(element);
         seen[element.options.meta.common.label] = true;
       }
     }
-    console.log("unique array" , uniqueArray);
+    console.log("unique array", uniqueArray);
   }
-  console.log("unique array" , uniqueArray);
+  console.log("unique array", uniqueArray);
   for (let i = 0; i < arr.length; i++) {
     let element = arr[i];
 
     // If the element is not in the hash table, add it to the uniqueArray
-    if(element.type==='line'){
+    if (element.type === "line") {
       if (!seen[element.options.meta.common.label]) {
-
         console.log(element.options.depending[0].name);
         console.log(element.options.depending[1].name);
-        for ( let j = 0; j <2 ; j++){
-
-          var ele = findElement(uniqueArray,element.options.depending[j].name);
-          console.log("ele", ele , ele.type);
-          if (ele.type=='rectangle'){
-            const {x,y} = attachLineToShape(ele,element,element.options.depending[j].start);
-            console.log(element.x1,element.y1,x,y);
-            if(element.options.depending[j].start){
+        for (let j = 0; j < 2; j++) {
+          var ele = findElement(uniqueArray, element.options.depending[j].name);
+          console.log("ele", ele, ele.type);
+          if (ele.type == "rectangle") {
+            const { x, y } = attachLineToShape(
+              ele,
+              element,
+              element.options.depending[j].start
+            );
+            console.log(element.x1, element.y1, x, y);
+            if (element.options.depending[j].start) {
               element = {
                 ...element,
-                x1:x,
-                y1:y,
-              }
-              console.log("element1",element)
-              
-            }
-            else{
+                x1: x,
+                y1: y,
+              };
+              console.log("element1", element);
+            } else {
               element = {
                 ...element,
-                x2:x,
-                y2:y,
-              }
-              console.log("element2",)
+                x2: x,
+                y2: y,
+              };
+              console.log("element2");
             }
-            console.log("updated 1 ",element.x1,element.y1,x,y);
-          }
-          else{
-            const {x,y} = attachLineToShapeCircle(ele,element,element.options.depending[j].start);
-            console.log(element.x1,element.y1,x,y);
-            if(element.options.depending[j].start){
+            console.log("updated 1 ", element.x1, element.y1, x, y);
+          } else {
+            const { x, y } = attachLineToShapeCircle(
+              ele,
+              element,
+              element.options.depending[j].start
+            );
+            console.log(element.x1, element.y1, x, y);
+            if (element.options.depending[j].start) {
               // element.x1 = x;
               // element.y1 = y;
               element = {
                 ...element,
-                x1:x,
-                y1:y,
-              }
-              console.log("element3")
-              console.log("updated 2 ",element.x1,element.y1,x,y);
-
-            }
-            else{
+                x1: x,
+                y1: y,
+              };
+              console.log("element3");
+              console.log("updated 2 ", element.x1, element.y1, x, y);
+            } else {
               // element.x2 = x;
               // element.y2 = y;
               element = {
                 ...element,
-                x2:x,
-                y2:y,
-              }
-              console.log("element4")
-              console.log("updated 2 ",element.x2,element.y2,x,y);
+                x2: x,
+                y2: y,
+              };
+              console.log("element4");
+              console.log("updated 2 ", element.x2, element.y2, x, y);
             }
-            
           }
-          
         }
         uniqueArray.push(element);
         seen[element.options.meta.common.label] = true;
@@ -122,7 +125,7 @@ const Project = () => {
   const [isDesigner, setisDesigner] = useState(true);
   const [elements, setElements] = useState([]);
   const [projectId, setProjectId] = useState("");
-  const [finalElements,setFinalElements] = useState()
+  const [finalElements, setFinalElements] = useState();
   const [canvasSize, setCanvasSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -159,23 +162,23 @@ const Project = () => {
             }
           );
 
-          console.log("response",response,response.data);
-          const arr = []
+          console.log("response", response, response.data);
+          const arr = [];
 
-          response.data.forEach(element=>{
-            element.workspaces.forEach(workspace=>{
-              arr.push(workspace.meta)
-            })
-          })
-          console.log(arr)
+          response.data.forEach((element) => {
+            element.workspaces.forEach((workspace) => {
+              arr.push(workspace.meta);
+            });
+          });
+          console.log(arr);
           // ----------------
           // console.log(arr[0].options.meta.common.label);
           // const arr1 = [];
           // arr1.push(arr[0])
           // setElements(arr1);
 
-      // ----------------
-      // debugger
+          // ----------------
+          // debugger
           setFinalElements(removeRepeatingValues(arr));
           // debugger
           // if (response.data && response.data.elements) {
@@ -189,9 +192,9 @@ const Project = () => {
       fetchWorkspaceData();
     }
   }, []);
-  console.log("data for debug",finalElements);
+  console.log("data for debug", finalElements);
   useLayoutEffect(() => {
-    if(!finalElements) return;
+    if (!finalElements) return;
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d");
     const roughCanvas = rough.canvas(canvas);
@@ -202,13 +205,28 @@ const Project = () => {
     context.translate(panOffset.x, panOffset.y);
 
     finalElements?.map((element) => {
-      drawElement(context, roughCanvas, element, "none");
+      console.log("name", element);
+
+      try {
+        const updatedElement = createElement(
+          element.id,
+          element.x1,
+          element.y1,
+          element.x2,
+          element.y2,
+          element.type,
+          element.roughElement.options.fill,
+          element.options
+        );
+        drawElement(context, roughCanvas, updatedElement, "none");
+      } catch (error) {
+        console.log("error", error);
+      }
     });
     context.restore();
   }, [finalElements, panOffset]);
   return (
     <canvas
-      
       id="canvas"
       width={canvasSize.width}
       height={canvasSize.height}
@@ -220,6 +238,6 @@ const Project = () => {
       Canvas
     </canvas>
   );
-}
+};
 
-export default Project
+export default Project;
