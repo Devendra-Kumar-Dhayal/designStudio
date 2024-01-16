@@ -1,6 +1,6 @@
 import { fixedWidth } from "./constants";
 
-export const attachLineToShape = (shape, line, start) => {
+export const attachLineToShape = (shape, line, start,) => {
   const { x1, y1, x2, y2 } = shape;
   const { x1: lx1, y1: ly1, x2: lx2, y2: ly2 } = line;
   // Calculate the x3, y3 based on the 'start' parameter

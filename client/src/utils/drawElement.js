@@ -10,8 +10,7 @@ const drawArrow = (roughCanvas, fromX, fromY, toX, toY, color, element) => {
   const angle = Math.atan2(dy, dx);
 
   // Arrowhead length
-  let arrowLength = (Math.abs(dx) + Math.abs(dy)) / 30;
-  if (arrowLength < 5) arrowLength = 5;
+  let arrowLength  = 13;
 
   let x1, y1, x2, y2;
   //TODO: only for one arrow at the moment
@@ -131,16 +130,39 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
       break;
     case "kafka":
       roughCanvas.draw(element.roughElement);
-      context.font = "24px sans-serif";
-      context.fillText(element.text, element.x1 - 26, element.y1 + 10);
+      const textWidthb = context.measureText(element.text).width;
+        // const xk = element.x1 + (element.width - textWidthb) / 2 - 30;
+        // const yk = element.y1 + element.height / 2;
+
+        context.font = "24px sans-serif";
+        context.textAlign = "center";
+        context.fillText(
+          element.text,
+          element.x1 +5,
+          element.y1 +10,
+          fixedWidth - 20
+        );
+      // context.fillText(element.text, element.x1 - 26, element.y1 + 10);
       if (element.id === selectedIndex) {
         highlightNearbyElements(element);
       }
       break;
     case "boomi":
       roughCanvas.draw(element.roughElement);
-      context.font = "24px sans-serif";
-      context.fillText(element.text, element.x1 - 26, element.y1 + 10);
+      const textWidth = context.measureText(text).width;
+        const x = element.x1 + (element.width - textWidth) / 2 - 30;
+        const y = element.y1 + element.height / 2;
+        const elementWidth = Math.abs(element.y1 - element.y2);
+
+        context.font = "24px sans-serif";
+        context.textAlign = "center";
+        context.fillText(
+          element.text,
+          element.x1 +5,
+          element.y1 +10,
+          fixedWidth - 20
+        );
+      // context.fillText(element.text, element.x1 - 26, element.y1 + 10);
       if (element.id === selectedIndex) {
         highlightNearbyElements(element);
       }

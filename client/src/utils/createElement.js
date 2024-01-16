@@ -15,6 +15,8 @@ const createElement = (id, x1, y1, x2, y2, type, color, options) => {
               fill: color,
               stroke: color === "#000000" ? "#818181" : "#000000",
               fillStyle: "solid",
+              strokeWidth:3,
+              
             })
           : generator.rectangle(x1, y1, x2 - x1, y2 - y1, {
               roughness: 0,
