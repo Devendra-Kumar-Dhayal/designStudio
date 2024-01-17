@@ -30,14 +30,14 @@ import { BASEURL } from "../utils/functions";
 import { set } from "lodash";
 import { toast } from "sonner";
 
-const Navbar = () => {
+const Navbar = ({user}) => {
   const [search, setsearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [projects, setProjects] = useState([]);
   const [name, setName] = useState("")
   const { selectedProjectId, setSelectedProjectId } = 
   useContext(ProjectContext);
-
+  console.log("user",user)
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const selected = selectedProjectId ? [selectedProjectId] : [];
@@ -174,7 +174,7 @@ const Navbar = () => {
 
         <RxAvatar alt="" className="w-[24px] h-[24px]" />
 
-        <p className="text-lg font-normal hidden md:block">User Name</p>
+        <p className="text-lg font-normal hidden md:block">{user?.name}</p>
       </div>
     </div>
   );

@@ -8,7 +8,9 @@ import { BASEURL } from "../../utils/functions";
 
 const ProtectedLayout = () => {
   const [isOpen, setisOpen] = useState(false);
-  const [isVerified, setIsVerified] = useState(false)
+  const [isVerified, setIsVerified] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [user, setUser] = useState("");
   const navigate = useNavigate();
 
  const getUser = async () => {
@@ -24,9 +26,11 @@ const ProtectedLayout = () => {
      }
      else if(user.status===200){
         setIsVerified(true)
+        setUser(user.data.user)
      }
      if (!user.data.user.role) {
        setisOpen(true);
+
      }
 
      // Continue with normal flow if user status is not 403
@@ -90,7 +94,7 @@ const ProtectedLayout = () => {
         </div>
         <div className="min-h-screen mt-4 w-0 border-l  border-gray-300"></div>
         <div className="flex w-full flex-col  gap-6  md:mb-auto h-fit px-4">
-          <Navbar />
+          <Navbar user={user} />
           {isVerified&&<Outlet />}
         </div>
       </div>
