@@ -163,19 +163,9 @@ const Project = () => {
             });
           });
           console.log(arr);
-          // ----------------
-          // console.log(arr[0].options.meta.common.label);
-          // const arr1 = [];
-          // arr1.push(arr[0])
-          // setElements(arr1);
-
-          // ----------------
-          // debugger
+          
           setFinalElements(removeRepeatingValues(arr));
-          // debugger
-          // if (response.data && response.data.elements) {
-          //   setElements(response.data.elements);
-          // }
+          
         } catch (error) {
           console.error("Error fetching workspace data:", error);
         }
@@ -184,7 +174,8 @@ const Project = () => {
       fetchWorkspaceData();
     }
   }, []);
-  console.log("data for debug", finalElements);
+
+
   useLayoutEffect(() => {
     if (!finalElements) return;
     const canvas = document.getElementById("canvas");
@@ -237,6 +228,12 @@ const Project = () => {
     });
     context.restore();
   }, [finalElements, panOffset]);
+
+  const handleMouseDown = (event) => {
+    console.log("mouse down", event);
+  }
+
+
   return (
     <>
       <div className="fixed top-5 left-5 z-50 items-center gap-2 flex flex-col justify-center bg-gray-300 rounded-lg p-2">
@@ -255,6 +252,7 @@ const Project = () => {
         id="canvas"
         width={canvasSize.width}
         height={canvasSize.height}
+        onDoubleClick={handleMouseDown}
         // onMouseDown={handleMouseDown}
         // onMouseMove={handleMouseMove}
         // onMouseUp={handleMouseUp}
