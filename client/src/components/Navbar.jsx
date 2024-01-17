@@ -51,7 +51,6 @@ const Navbar = () => {
       const res = await axios.get(`${BASEURL}/api/project`, {
         withCredentials: true,
       });
-      console.log("resp", res);
       setProjects(res.data.projects);
     } catch (error) {
       console.log(error);

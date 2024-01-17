@@ -143,7 +143,6 @@ export type GetProjectInput = TypeOf<typeof getProjectSchema>;
 const workspaceSchema = object({
   workspaceId: string(),
   meta: object({
-      // Define your meta properties here
     })
     .optional(),
 });

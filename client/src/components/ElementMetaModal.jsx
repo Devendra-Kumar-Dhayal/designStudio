@@ -38,7 +38,7 @@ const ElementMetaModal = ({
           withCredentials: true,
         }
       );
-      console.log(res.data);
+      // console.log(res.data);
       if (res.data === "OK") {
         setShow(false);
       } else {

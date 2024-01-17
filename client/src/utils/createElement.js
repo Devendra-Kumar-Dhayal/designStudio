@@ -4,7 +4,6 @@ import { fixedHeight, fixedWidth, threshold } from "./constants";
 const generator = rough.generator();
 
 const createElement = (id, x1, y1, x2, y2, type, color, options) => {
-  console.log(options)
   switch (type) {
     case "line":
     case "rectangle":
