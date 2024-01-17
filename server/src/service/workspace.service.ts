@@ -44,13 +44,16 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
   }
 }
 
-export async function convertWorkspace(query: { workspaceId: string }) {
+export async function convertWorkspace(query: { workspaceId: string ,elements:any[]}) {
   //fetch all the elements from workspace
   const result = await WorkspaceModel.findOne({
     _id: query.workspaceId,
   });
+  if(!result){
+    throw new Error("Workspace Not Found!")
+  }
 
-  const elements = result?.elements ?? [];
+  const elements = query.elements;
 
   //for each element in workspace find the project element
   console.log("inside service", elements);

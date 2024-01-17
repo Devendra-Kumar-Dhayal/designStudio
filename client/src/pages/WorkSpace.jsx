@@ -41,9 +41,12 @@ import { ProjectContext } from "../components/ProjectContext";
 import ElementMetaModal from "../components/ElementMetaModal";
 import { toast } from "sonner";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { validateElements } from "../utils/validateElements";
+import {
+  connectLinesProperly,
+  validateElements,
+} from "../utils/validateElements";
 
-const color = ["#69C6BC", "#2A95A5" , "#EDE7C7", "#DC7179", "#BB3A69"];
+const color = ["#69C6BC", "#2A95A5", "#EDE7C7", "#DC7179", "#BB3A69"];
 
 const SammpleObject = {
   description: "",
@@ -231,15 +234,16 @@ const WorkSpace = () => {
     setIsLoadingSubmit(true);
 
     try {
+      // console.log(elementsCopy)
       const validate = validateElements(elements);
-      console.log("validate", validate);
       if (!validate) {
         toast.error("Define each workspaces before submitting");
         return;
       }
+      const elementsCopy = connectLinesProperly(elements);
       const res = await axios.put(
         `${BASEURL}/api/workspaces/submit/${wid}`,
-        {},
+        { elements: elementsCopy },
         {
           withCredentials: true,
         }
