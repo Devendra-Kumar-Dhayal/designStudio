@@ -152,7 +152,9 @@ const projectElementPayload = {
     workspaces: workspaceSchema.array().optional(),
     name: string({ required_error: "Name is required" }),
     projectId: string({ required_error: "projectId is required" }),
-    // type: string({ required_error: "type is required" }),
+    type: string({ required_error: "type is required" }),
+    color: string({ required_error: "type is required" }),
+
   }),
 };
 const projectElementQuery = {
@@ -169,10 +171,19 @@ const projectElementQuery = {
 export const createProjectElementSchema = object({
   ...projectElementPayload
 })
+export const updateProjectElementSchema = object({
+  body: object({
+    workspaces: workspaceSchema.array().optional(),
+    name: string({ required_error: "Name is required" }),
+    projectId: string({ required_error: "projectId is required" }),
+   
+  }),
+});
 export const getProjectElementSchema = object({
   ...projectElementQuery,
 });
 
 export type CreateProjectElementInput = TypeOf<typeof createProjectElementSchema>["body"];
 export type GetProjectElementInput = TypeOf<typeof getProjectElementSchema>["query"];
+export type UpdateProjectElementInput = TypeOf<typeof updateProjectElementSchema>["body"];
 

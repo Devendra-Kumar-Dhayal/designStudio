@@ -10,6 +10,7 @@ import {
   CreateProjectInput,
   CreateWorkspaceInput,
   GetProjectElementInput,
+  UpdateProjectElementInput,
 } from "../schema/workspace.schema";
 import ProjectModel from "../models/project.model";
 import logger from "../utils/logger";
@@ -256,6 +257,8 @@ export async function createProjectElement(input: CreateProjectElementInput) {
       name: input.name,
       project: input.projectId,
       workspaces: arr,
+      type: input.type,
+      color: input.color,
     });
     return projectElement;
   } catch (error) {
@@ -263,9 +266,7 @@ export async function createProjectElement(input: CreateProjectElementInput) {
   }
 }
 
-export async function createOrUpdateProjectElement(
-  input: CreateProjectElementInput
-) {
+export async function createOrUpdateProjectElement(input: UpdateProjectElementInput) {
   try {
     // Check if a project element with the given name and projectId already exists
     const existingProjectElement = await ProjectElementModel.findOne({
@@ -278,8 +279,8 @@ export async function createOrUpdateProjectElement(
       const updatedWorkspaces = input.workspaces
         ? input.workspaces.map((workspace) => ({
             workspaceId: workspace.workspaceId,
-            meta: workspace.meta,//@ts-ignore
-            isSubmitted: workspace.isSubmitted??false,
+            meta: workspace.meta, //@ts-ignore
+            isSubmitted: workspace.isSubmitted ?? false,
           }))
         : [];
 

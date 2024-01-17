@@ -24,7 +24,11 @@ export const highlightNearbyElements = (element) => {
     );
     roughCanvas.draw(g);
   }
-  if (element.type === "circle"||element.type === "kafka"||element.type === "boomi") {
+  if (
+    element.type === "circle" ||
+    element.type === "kafka" ||
+    element.type === "boomi"
+  ) {
     try {
       const g = roughCanvas.circle(
         element.x1,
@@ -37,12 +41,9 @@ export const highlightNearbyElements = (element) => {
         }
       );
       roughCanvas.draw(g);
-    } catch (error) {
-    }
+    } catch (error) {}
   }
-  
 };
-
 
 export const nearPoint = (x, y, x1, y1, name) => {
   return Math.abs(x - x1) < 5 && Math.abs(y - y1) < 5 ? name : null;
@@ -118,78 +119,85 @@ export const nearEuclidean = (x, y, x1, y1, x2, y2) => {
   );
 };
 
-
 export const distance = (a, b) =>
   Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 
 export const getElementAtPosition = (x, y, elements) => {
-  return elements
+  let elementt = null;
+  const arr = elements
     ?.map((element) => ({
       ...element,
       position: positionWithinElement(x, y, element),
     }))
-    .find((element) => element.position !== null);
+    .reverse()
+    .filter((element) => element.position !== null);
+  if (arr.length > 0) {
+    elementt = arr[0];
+  }
+  return elementt;
 };
 
+export function detectShapesNearLineEndpoint(x, y, elements, setSelectedIndex) {
+  const shapesNearEndpoint = [];
+  const elementsType = new Set();
+  //TODO: this set ain't working
+  elementsType.add("rectangle");
+  elementsType.add("circle");
+  elementsType.add("kafka");
+  elementsType.add("boomi");
 
+  elements?.map((element) => {
+    if (!element && !element.type) return false;
 
-export  function detectShapesNearLineEndpoint(x, y, elements,setSelectedIndex) {
-   const shapesNearEndpoint = [];
-   const elementsType = new Set();
-   //TODO: this set ain't working
-   elementsType.add("rectangle");
-   elementsType.add("circle");
-   elementsType.add("kafka");
-   elementsType.add("boomi");
+    if (element.type === "rectangle") {
+      const { type, x1, x2, y1, y2 } = element;
 
-   elements?.map((element) => {
-     if (!element && !element.type) return false;
+      if (nearEuclidean(x, y, x1, y1, x2, y2, threshold)) {
+        shapesNearEndpoint.push(element.id);
+      }
+      return true;
+    } else if (
+      element.type === "circle" ||
+      element.type === "kafka" ||
+      element.type === "boomi"
+    ) {
+      const { type, x1, x2, y1, y2 } = element;
+      if (
+        Math.pow(x - x1, 2) +
+          Math.pow(y - y1, 2) -
+          Math.pow(fixedWidth / 2 + threshold, 2) <=
+        0
+      ) {
+        shapesNearEndpoint.push(element.id);
+      }
+      return true;
+    } else return false;
+  });
 
-     if (element.type === "rectangle") {
-       const { type, x1, x2, y1, y2 } = element;
+  let minDistance = Number.MAX_VALUE;
+  let index = -1;
+  if (shapesNearEndpoint.length === 0) {
+    setSelectedIndex(null);
+    return;
+  }
 
-       if (nearEuclidean(x, y, x1, y1, x2, y2, threshold)) {
-         shapesNearEndpoint.push(element.id);
-       }
-       return true;
-     } else if (element.type === "circle"||element.type === "kafka"||element.type === "boomi") {
-       const { type, x1, x2, y1, y2 } = element;
-       if (
-         Math.pow(x - x1, 2) +
-           Math.pow(y - y1, 2) -
-           Math.pow(fixedWidth / 2 + threshold, 2) <=
-         0
-       ) {
-         shapesNearEndpoint.push(element.id);
-       }
-       return true;
-     } else return false;
-   });
+  shapesNearEndpoint.map((id) => {
+    const { x1, x2, y1, y2 } = elements[id];
+    const xc = (x1 + x2) / 2;
+    const yc = (y1 + y2) / 2;
 
-   let minDistance = Number.MAX_VALUE;
-   let index = -1;
-   if (shapesNearEndpoint.length === 0) {
-     setSelectedIndex(null);
-     return;
-   }
+    const distance = Math.sqrt(Math.pow(x - xc, 2) + Math.pow(y - yc, 2));
+    if (distance < minDistance) {
+      minDistance = distance;
+      index = id;
+    }
+  });
 
-   shapesNearEndpoint.map((id) => {
-     const { x1, x2, y1, y2 } = elements[id];
-     const xc = (x1 + x2) / 2;
-     const yc = (y1 + y2) / 2;
+  if (index === -1) {
+    setSelectedIndex(null);
+    return;
+  }
+  setSelectedIndex(index);
 
-     const distance = Math.sqrt(Math.pow(x - xc, 2) + Math.pow(y - yc, 2));
-     if (distance < minDistance) {
-       minDistance = distance;
-       index = id;
-     }
-   });
-
-   if (index === -1) {
-     setSelectedIndex(null);
-     return;
-   }
-   setSelectedIndex(index);
-
-   return shapesNearEndpoint;
- }
+  return shapesNearEndpoint;
+}

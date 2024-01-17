@@ -5,6 +5,7 @@ import {
   CreateWorkspaceInput,
   GetProjectElementInput,
   GetProjectInput,
+  UpdateProjectElementInput,
   UpdateWorkspaceInput,
 } from "../schema/workspace.schema";
 import {
@@ -176,12 +177,10 @@ export async function createProjectElementHandler(
       projectId: input!.projectId ?? "",
       name: input!.name ?? "",
     });
-    console.log("inside service2");
 
     if (existing) {
       throw new Error("Name already exists");
     }
-    console.log("inside service3");
 
     const project = await createProjectElement(req.body);
 
@@ -192,7 +191,7 @@ export async function createProjectElementHandler(
   }
 }
 export async function updateProjectElementHandler(
-  req: Request<{}, {}, CreateProjectElementInput, {}>,
+  req: Request<{}, {}, UpdateProjectElementInput, {}>,
   res: Response
 ) {
   try {

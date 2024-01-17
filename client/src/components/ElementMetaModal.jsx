@@ -16,6 +16,8 @@ const ElementMetaModal = ({
   handleLabelSave,
   selectedProjectId,
   wid,
+  element,
+  handleColorTypeUpdate,
 }) => {
   const [name, setName] = useState("");
   const [key, setkey] = useState("");
@@ -26,6 +28,8 @@ const ElementMetaModal = ({
   const [show, setShow] = useState(false);
   const [toShow, setToShow] = useState({});
   const ref = useRef();
+
+  console.log(element, element?.roughElement?.options?.fill);
 
   useEffect(() => {
     getName();
@@ -59,6 +63,8 @@ const ElementMetaModal = ({
           projectId: selectedProjectId,
           name: debouncedString,
           workspaces: [{ workspaceId: wid }],
+          type: element.type,
+          color: element.roughElement.options.fill,
         },
         {
           withCredentials: true,
@@ -83,14 +89,14 @@ const ElementMetaModal = ({
     }
   };
 
-  const handleNameAdd = async() => {
+  const handleNameAdd = async () => {
     const bool = toShow.workspaces.some((w) => w.workspaceId.includes(wid));
     if (bool) {
       toast.error("Two elements in same workspace cannot have same name");
       return;
     }
-    let currentWorkspaces= toShow.workspaces
-    currentWorkspaces.push({workspaceId:wid})
+    let currentWorkspaces = toShow.workspaces;
+    currentWorkspaces.push({ workspaceId: wid });
 
     const res = await axios.put(
       `${BASEURL}/api/projectelement`,
@@ -104,8 +110,7 @@ const ElementMetaModal = ({
       }
     );
     console.log(res);
-    if(res.status===200){
-
+    if (res.status === 200) {
       setMeta((prevState) => ({
         ...prevState,
         common: {
@@ -115,12 +120,14 @@ const ElementMetaModal = ({
       }));
       setName("");
       setIsLoading(false);
-      handleLabelSave(toShow.name);
+      handleColorTypeUpdate(
+        element,
+        res.data.color,
+        res.data.type,
+        toShow.name
+      );
+
     }
-
-
-
-
   };
 
   return (

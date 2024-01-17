@@ -36,6 +36,7 @@ import {
   getProjectElementSchema,
   getProjectSchema,
   getWorkspaceSchema,
+  updateProjectElementSchema,
   updateWorkspaceSchema,
 } from "./schema/workspace.schema";
 import { createSessionSchema } from "./schema/session.schema";
@@ -189,19 +190,16 @@ router.get(
   getAllWorkspacesHandler // Implement getAllWorkspacesHandler to fetch all workspaces
 );
 
-
-
-router.get("/api/project/:projectId", [
-  requireUser,
-  validateResource(getProjectSchema)],
+router.get(
+  "/api/project/:projectId",
+  [requireUser, validateResource(getProjectSchema)],
   findProjectByIdHandler
 );
-router.post("/api/project/", [
-  requireDesigner,
-  validateResource(createProjectSchema),
-],
-createProjectHandler);
-
+router.post(
+  "/api/project/",
+  [requireDesigner, validateResource(createProjectSchema)],
+  createProjectHandler
+);
 
 router.get("/api/project", [requireUser], findAllProjectsHandler);
 
@@ -218,7 +216,7 @@ router.post(
 );
 router.put(
   "/api/projectelement",
-  [requireUser, validateResource(createProjectElementSchema)],
+  [requireUser, validateResource(updateProjectElementSchema)],
   updateProjectElementHandler
 );
 

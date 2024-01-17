@@ -232,7 +232,7 @@ const WorkSpace = () => {
 
     try {
       const validate = validateElements(elements);
-      console.log("validate",validate)
+      console.log("validate", validate);
       if (!validate) {
         toast.error("Define each workspaces before submitting");
         return;
@@ -494,6 +494,44 @@ const WorkSpace = () => {
     return { clientX, clientY };
   };
 
+  const handleColorTypeUpdate = (elementToUpdate,color,type,label)=>{
+    console.log(elementToUpdate,color,type)
+
+
+    const options = {
+      ...elementToUpdate.options,
+      meta:{
+        ...elementToUpdate.options.meta,
+        common:{
+          ...elementToUpdate.options.meta?.common,
+          label,
+        }
+      }
+    }
+
+
+    updateElement(
+      [
+        {
+          id: elementToUpdate.id,
+          x1 : elementToUpdate.x1,
+          y1: elementToUpdate.y1,
+          x2: elementToUpdate.x2,
+          y2: elementToUpdate.y2,
+          
+          type,
+          tool,
+          options,
+        },
+      ],
+      elements,
+      setElements,
+      color
+    );
+  }
+  console.log(elements);
+
+
   const handleMouseDown = (event) => {
     if (action === "writing") return;
 
@@ -530,6 +568,7 @@ const WorkSpace = () => {
       }
     } else if (tool === "deletion") {
       const element = getElementAtPosition(clientX, clientY, elements);
+      console.log("getElementAtPosition",element);
       if (element) {
         if (element.position === "inside") {
           const temp = elements.filter((el) => el.id !== element.id);
@@ -1341,8 +1380,8 @@ const WorkSpace = () => {
             return (
               <button
                 className={cn(
-                  " bg-white p-1 w-full text-xs flex justify-center flex-col rounded-lg items-center text-black",
-                  tool === item.type && "bg-blue-600 text-white"
+                  " bg-white p-1 w-full text-xs flex hover:bg-slate-200 justify-center flex-col rounded-lg items-center text-black",
+                  tool === item.type && "bg-blue-600 hover:bg-b text-white"
                 )}
                 onClick={() => setTool(item.type)}
                 key={index}
@@ -1426,17 +1465,21 @@ const WorkSpace = () => {
         />
       ) : null}
 
-      <ElementMetaModal
-        meta={meta}
-        isOpen={isOpen}
-        setMeta={setMeta}
-        onOpenChange={onOpenChange}
-        handleSave={handleSave}
-        handleLabelSave={handleLabelSave}
-        handleDiscard={handleDiscard}
-        selectedProjectId={selectedProjectId}
-        wid={wid}
-      />
+       
+        <ElementMetaModal
+          meta={meta}
+          isOpen={isOpen}
+          setMeta={setMeta}
+          onOpenChange={onOpenChange}
+          handleSave={handleSave}
+          handleLabelSave={handleLabelSave}
+          handleDiscard={handleDiscard}
+          selectedProjectId={selectedProjectId}
+          wid={wid}
+          element={elements[selectedIdFormeta]}
+          handleColorTypeUpdate={handleColorTypeUpdate}
+        />
+      
       <canvas
         id="canvas"
         width={canvasSize.width}
