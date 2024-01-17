@@ -42,7 +42,7 @@ import ElementMetaModal from "../components/ElementMetaModal";
 import { toast } from "sonner";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 
-const color = ["#2A95A5", "#69C6BC", "#EDE7C7", "#DC7179", "#BB3A69"];
+const color = ["#69C6BC", "#2A95A5" , "#EDE7C7", "#DC7179", "#BB3A69"];
 
 const SammpleObject = {
   description: "",
