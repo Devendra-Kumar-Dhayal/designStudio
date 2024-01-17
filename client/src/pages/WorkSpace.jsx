@@ -41,6 +41,7 @@ import { ProjectContext } from "../components/ProjectContext";
 import ElementMetaModal from "../components/ElementMetaModal";
 import { toast } from "sonner";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { validateElements } from "../utils/validateElements";
 
 const color = ["#69C6BC", "#2A95A5" , "#EDE7C7", "#DC7179", "#BB3A69"];
 
@@ -228,21 +229,32 @@ const WorkSpace = () => {
 
   const handleSubmit = async () => {
     setIsLoadingSubmit(true);
-    const res = await axios.put(
-      `${BASEURL}/api/workspaces/submit/${wid}`,
-      {},
-      {
-        withCredentials: true,
+
+    try {
+      const validate = validateElements(elements);
+      console.log("validate", validate);
+      if (!validate) {
+        toast.error("Define each workspaces before submitting");
+        return;
       }
-    );
-    if (res.status === 200) {
-      toast.success("Workspace Submitted successfully...");
+      const res = await axios.put(
+        `${BASEURL}/api/workspaces/submit/${wid}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.status === 200) {
+        toast.success("Workspace Submitted successfully...");
+      }
+      // navigate({
+      //   pathname: "/workspace",
+      //   search: `?wid=${res.data._id}`,
+      // });
+    } catch (error) {
+    } finally {
+      setIsLoadingSubmit(false);
     }
-    // navigate({
-    //   pathname: "/workspace",
-    //   search: `?wid=${res.data._id}`,
-    // });
-    setIsLoadingSubmit(false);
   };
 
   useEffect(() => {
@@ -261,7 +273,6 @@ const WorkSpace = () => {
             }
           );
 
-          console.log("response".response);
           if (response.data && response.data.elements) {
             setElements(response.data.elements);
             setSelectedProjectId(response.data.project);
@@ -278,7 +289,7 @@ const WorkSpace = () => {
       fetchWorkspaceData();
     }
   }, []);
-  
+
   useEffect(() => {
     // PUT request to update elements whenever 'elements' state changes
     if (!wid) return;
@@ -306,12 +317,9 @@ const WorkSpace = () => {
   }, [debouncedElements, wid]);
   useEffect(() => {
     const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext('2d');
-  
-    // Draw the grid
-    
+    const ctx = canvas.getContext("2d");
   }, []);
-  
+
   useEffect(() => {
     document.addEventListener("dblclick", handleDoubleClick);
 
@@ -330,24 +338,24 @@ const WorkSpace = () => {
     context.save();
     context.translate(panOffset.x, panOffset.y);
     const gridSize = 20;
-    const canvasWidth = canvas.width*100;
-    const canvasHeight = canvas.height*100;
-  
+    const canvasWidth = canvas.width * 100;
+    const canvasHeight = canvas.height * 100;
+
     context.beginPath();
-    context.strokeStyle = 'rgba(0, 0, 0, 0.1)';
-  
+    context.strokeStyle = "rgba(0, 0, 0, 0.1)";
+
     // Vertical lines
     for (let x = 0; x <= canvasWidth; x += gridSize) {
       context.moveTo(x, 0);
       context.lineTo(x, canvasHeight);
     }
-  
+
     // Horizontal lines
     for (let y = 0; y <= canvasHeight; y += gridSize) {
       context.moveTo(0, y);
       context.lineTo(canvasWidth, y);
     }
-  
+
     context.stroke();
 
     elements?.map((element) => {
@@ -486,6 +494,62 @@ const WorkSpace = () => {
     return { clientX, clientY };
   };
 
+  const handleColorTypeUpdate = (elementToUpdate, color, type, label) => {
+    console.log(elementToUpdate, color, type);
+
+    const options = {
+      ...elementToUpdate.options,
+      meta: {
+        ...elementToUpdate.options.meta,
+        common: {
+          ...elementToUpdate.options.meta?.common,
+          label,
+        },
+      },
+    };
+
+    updateElement(
+      [
+        {
+          id: elementToUpdate.id,
+          x1: elementToUpdate.x1,
+          y1: elementToUpdate.y1,
+          x2: elementToUpdate.x2,
+          y2: elementToUpdate.y2,
+
+          type,
+          tool,
+          options,
+        },
+      ],
+      elements,
+      setElements,
+      color
+    );
+  };
+
+  const filterElements = (elementToDelete) => {
+    const temp = elements.filter((el) => el.id !== elementToDelete.id);
+
+    setElements([...temp]);
+    // localStorage.setItem("canvasElements", JSON.stringify(temp));
+  };
+
+  const handleDelete = async (elementToDelete) => {
+    if (!!elementToDelete?.options?.meta?.common?.label) {
+      const res = await axios.delete(
+        `${BASEURL}/api/projectelement/?workspace=${wid}&projectId=${selectedProjectId}&name=${elementToDelete.options.meta.common.label}`,
+
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.status === 200) {
+        filterElements(elementToDelete);
+      }
+    } else filterElements(elementToDelete);
+  };
+
   const handleMouseDown = (event) => {
     if (action === "writing") return;
 
@@ -522,14 +586,9 @@ const WorkSpace = () => {
       }
     } else if (tool === "deletion") {
       const element = getElementAtPosition(clientX, clientY, elements);
-      if (element) {
-        console.log(element);
-        if (element.position === "inside") {
-          const temp = elements.filter((el) => el.id !== element.id);
-
-          setElements([...temp]);
-          localStorage.setItem("canvasElements", JSON.stringify(temp));
-        }
+      console.log("getElementAtPosition", element);
+      if (element && element.position === "inside") {
+        handleDelete(element);
       }
     } else if (tool === "meta") return;
     else {
@@ -555,7 +614,6 @@ const WorkSpace = () => {
       setAction(tool === "text" ? "writing" : "drawing");
     }
   };
-  console.log("elements", selectedIndex);
   const handleMouseMove = (event) => {
     const { clientX, clientY } = getMouseCoordinates(event);
 
@@ -569,7 +627,7 @@ const WorkSpace = () => {
       document.body.style.cursor = "grab ";
       return;
     }
-    if(tool ==="line"){
+    if (tool === "line") {
       const element = getElementAtPosition(clientX, clientY, elements);
 
       if (element) setSelectedIndex(element?.id);
@@ -578,7 +636,7 @@ const WorkSpace = () => {
 
     if (tool === "selection") {
       const element = getElementAtPosition(clientX, clientY, elements);
-      
+
       event.target.style.cursor = element
         ? cursorForPosition(element.position)
         : "default";
@@ -605,7 +663,6 @@ const WorkSpace = () => {
         selectedColor
       );
       if (elements[index].type === "line") {
-        // console.log("line");
         detectShapesNearLineEndpoint(
           clientX,
           clientY,
@@ -1336,8 +1393,8 @@ const WorkSpace = () => {
             return (
               <button
                 className={cn(
-                  " bg-white p-1 w-full text-xs flex justify-center flex-col rounded-lg items-center text-black",
-                  tool === item.type && "bg-blue-600 text-white"
+                  " bg-white p-1 w-full text-xs flex hover:bg-slate-200 justify-center flex-col rounded-lg items-center text-black",
+                  tool === item.type && "bg-blue-600 hover:bg-b text-white"
                 )}
                 onClick={() => setTool(item.type)}
                 key={index}
@@ -1431,7 +1488,10 @@ const WorkSpace = () => {
         handleDiscard={handleDiscard}
         selectedProjectId={selectedProjectId}
         wid={wid}
+        element={elements[selectedIdFormeta]}
+        handleColorTypeUpdate={handleColorTypeUpdate}
       />
+
       <canvas
         id="canvas"
         width={canvasSize.width}

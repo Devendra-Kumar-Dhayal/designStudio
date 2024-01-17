@@ -31,13 +31,11 @@ const Home = () => {
         }
       );
 
-      console.log("res", res);
 
       if (res.status === 200) setRecents(res.data.workspaces);
     };
     selectedProjectId && getRecents();
   }, [selectedProjectId]);
-  console.log("meta", meta);
 
   const handleNew = async () => {
     if (!selectedProjectId) {

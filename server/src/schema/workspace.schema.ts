@@ -143,7 +143,6 @@ export type GetProjectInput = TypeOf<typeof getProjectSchema>;
 const workspaceSchema = object({
   workspaceId: string(),
   meta: object({
-      // Define your meta properties here
     })
     .optional(),
 });
@@ -153,14 +152,13 @@ const projectElementPayload = {
     workspaces: workspaceSchema.array().optional(),
     name: string({ required_error: "Name is required" }),
     projectId: string({ required_error: "projectId is required" }),
-    // type: string({ required_error: "type is required" }),
+    type: string({ required_error: "type is required" }),
+    color: string({ required_error: "type is required" }),
+
   }),
 };
 const projectElementQuery = {
   query: object({
-    workspaces: object({ workspace: string({}) })
-      .array()
-      .optional(),
 
     name: string({ required_error: "Name is required" }),
     projectId: string({ required_error: "projectId is required" }),
@@ -170,10 +168,27 @@ const projectElementQuery = {
 export const createProjectElementSchema = object({
   ...projectElementPayload
 })
+export const updateProjectElementSchema = object({
+  body: object({
+    workspaces: workspaceSchema.array().optional(),
+    name: string({ required_error: "Name is required" }),
+    projectId: string({ required_error: "projectId is required" }),
+   
+  }),
+});
 export const getProjectElementSchema = object({
   ...projectElementQuery,
 });
 
+export const removeProjectElementSchema = object({
+  query: object({
+    workspace: string({ required_error: "Name is required" }),
+    name: string({ required_error: "Name is required" }),
+    projectId: string({ required_error: "projectId is required" }),
+  }),
+});
+
 export type CreateProjectElementInput = TypeOf<typeof createProjectElementSchema>["body"];
 export type GetProjectElementInput = TypeOf<typeof getProjectElementSchema>["query"];
-
+export type UpdateProjectElementInput = TypeOf<typeof updateProjectElementSchema>["body"];
+export type RemoveProjectElementInput = TypeOf<typeof removeProjectElementSchema>["query"];
