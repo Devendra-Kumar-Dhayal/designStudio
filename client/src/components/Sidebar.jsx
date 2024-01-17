@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { MdDashboardCustomize } from "react-icons/md";
+import { IconDesignStudio } from "../pages/Icons";
 
 
 const Sidebar = () => {
@@ -22,7 +23,7 @@ const Sidebar = () => {
     },
     {
       icon: MdDashboardCustomize,
-      text: "Recents",
+      text: "Spaces",
       path: "/recents"
     }
 
@@ -34,8 +35,9 @@ const Sidebar = () => {
     <>
       <nav className="box-border border-box h-full bg-inherit flex flex-col gap-7 w-[17vw]">
         <div className="flex flex-col pt-[30px] mb-6 px-10">
-          {"LOGO"}
-          <span className="w-[126px] h-[22px]">Design Studio</span>
+          
+          <IconDesignStudio/>
+          
         </div>
 
         <ul className="mx-auto w-4/5">

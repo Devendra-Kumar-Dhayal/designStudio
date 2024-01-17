@@ -35,8 +35,8 @@ const Navbar = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [projects, setProjects] = useState([]);
   const [name, setName] = useState("")
-  const { selectedProjectId, setSelectedProjectId } =
-    useContext(ProjectContext);
+  const { selectedProjectId, setSelectedProjectId } = 
+  useContext(ProjectContext);
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 

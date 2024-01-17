@@ -1,6 +1,16 @@
 import React from 'react';
 import kafka from './images/kafka.png'
 import boomi from './images/boomi.png'
+import designStudio from './images/designStudio.png'
+
+export function IconDesignStudio(props) {
+  return (
+    <div >
+      <img src={designStudio} alt="kafka button" className="w-50 h-20 mx-auto" />
+    </div>
+  );
+}
+
 export function IconKafka(props) {
   return (
     <div className="container">
