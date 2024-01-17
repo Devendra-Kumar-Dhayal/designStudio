@@ -10,7 +10,7 @@
   "dependencies": {
     "@types/passport": "^1.0.16",
     "@types/passport-google-oauth20": "^2.0.14",
-    "axios": "^1.6.2",
+    "axios": "^1.6.4",
     "bcrypt": "^5.1.1",
     "config": "^3.3.9",
     "cookie-parser": "^1.4.6",

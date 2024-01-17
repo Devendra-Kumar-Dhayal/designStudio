@@ -22,7 +22,7 @@ const Sidebar = () => {
     },
     {
       icon: MdDashboardCustomize,
-      text: "Recents",
+      text: "Spaces",
       path: "/recents"
     }
 

@@ -10,7 +10,7 @@ const drawArrow = (roughCanvas, fromX, fromY, toX, toY, color, element) => {
   const angle = Math.atan2(dy, dx);
 
   // Arrowhead length
-  let arrowLength  = 13;
+  let arrowLength = 13;
 
   let x1, y1, x2, y2;
   //TODO: only for one arrow at the moment
@@ -58,7 +58,7 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
         element
       );
 
-      if(text){
+      if (text) {
         const cx = (element.x1 + element.x2) / 2;
         const cy = (element.y1 + element.y2) / 2;
         const textWidth = context.measureText(text).width;
@@ -70,14 +70,39 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
         // context.fillRect(cx - textWidth / 2 -4*padding , cy - textHeight / 2  , 2*(textWidth +padding), textHeight + 2 * padding);
 
         // Draw text
+        context.fillStyle = "white";
+        context.fillRect(
+          cx - (textWidth / 2 + 10),
+          cy - 12,
+          textWidth + 20,
+          textHeight
+        );
+
+        //border
+        var borderWidth = 2; // replace with your desired border width
+        context.strokeStyle = "black"; // replace with your desired border color
+        context.lineWidth = borderWidth;
+
+        context.strokeRect(
+          cx - (textWidth / 2 + 10) - borderWidth,
+          cy - 12 - borderWidth,
+          textWidth + 20 + 2 * borderWidth,
+          textHeight + 2 * borderWidth
+        );
+
+        //font
         context.font = "24px sans-serif";
         context.textAlign = "center";
         context.fillStyle = "black"; // Adjust the text color as needed
         context.fillText(
           text,
           cx,
-          cy+10,
-          Math.pow(Math.pow(element.x1 - element.x2, 2) + Math.pow(element.y1 - element.y2, 2), 1 / 2)
+          cy + 10,
+          Math.pow(
+            Math.pow(element.x1 - element.x2, 2) +
+              Math.pow(element.y1 - element.y2, 2),
+            1 / 2
+          )
         );
       }
       break;
@@ -87,21 +112,19 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
         highlightNearbyElements(element);
       }
 
-      
-
-      if(!!text){
+      if (!!text) {
         const textWidth = context.measureText(text).width;
         const x = element.x1 + (element.width - textWidth) / 2 - 30;
         const y = element.y1 + element.height / 2;
         const elementWidth = Math.abs(element.y1 - element.y2);
-        
+
         context.font = "24px sans-serif";
-        context.textAlign="center"
+        context.textAlign = "center";
         context.fillText(
           text,
-          element.x1 +(elementWidth/2)  ,
-          element.y1 + elementWidth / 2+5,
-          fixedWidth-20
+          element.x1 + elementWidth / 2,
+          element.y1 + elementWidth / 2 + 5,
+          fixedWidth - 20
         );
       }
       break;
@@ -121,8 +144,8 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
         context.textAlign = "center";
         context.fillText(
           text,
-          element.x1 +5,
-          element.y1 +10,
+          element.x1 + 5,
+          element.y1 + 10,
           fixedWidth - 20
         );
       }
@@ -131,17 +154,17 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
     case "kafka":
       roughCanvas.draw(element.roughElement);
       const textWidthb = context.measureText(element.text).width;
-        // const xk = element.x1 + (element.width - textWidthb) / 2 - 30;
-        // const yk = element.y1 + element.height / 2;
+      // const xk = element.x1 + (element.width - textWidthb) / 2 - 30;
+      // const yk = element.y1 + element.height / 2;
 
-        context.font = "24px sans-serif";
-        context.textAlign = "center";
-        context.fillText(
-          element.text,
-          element.x1 +5,
-          element.y1 +10,
-          fixedWidth - 20
-        );
+      context.font = "24px sans-serif";
+      context.textAlign = "center";
+      context.fillText(
+        element.text,
+        element.x1 + 5,
+        element.y1 + 10,
+        fixedWidth - 20
+      );
       // context.fillText(element.text, element.x1 - 26, element.y1 + 10);
       if (element.id === selectedIndex) {
         highlightNearbyElements(element);
@@ -150,18 +173,18 @@ export const drawElement = (context, roughCanvas, element, selectedIndex) => {
     case "boomi":
       roughCanvas.draw(element.roughElement);
       const textWidth = context.measureText(text).width;
-        const x = element.x1 + (element.width - textWidth) / 2 - 30;
-        const y = element.y1 + element.height / 2;
-        const elementWidth = Math.abs(element.y1 - element.y2);
+      const x = element.x1 + (element.width - textWidth) / 2 - 30;
+      const y = element.y1 + element.height / 2;
+      const elementWidth = Math.abs(element.y1 - element.y2);
 
-        context.font = "24px sans-serif";
-        context.textAlign = "center";
-        context.fillText(
-          element.text,
-          element.x1 +5,
-          element.y1 +10,
-          fixedWidth - 20
-        );
+      context.font = "24px sans-serif";
+      context.textAlign = "center";
+      context.fillText(
+        element.text,
+        element.x1 + 5,
+        element.y1 + 10,
+        fixedWidth - 20
+      );
       // context.fillText(element.text, element.x1 - 26, element.y1 + 10);
       if (element.id === selectedIndex) {
         highlightNearbyElements(element);
