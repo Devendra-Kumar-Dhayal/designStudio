@@ -5,6 +5,7 @@ import {
   CreateWorkspaceInput,
   GetProjectElementInput,
   GetProjectInput,
+  RemoveProjectElementInput,
   UpdateProjectElementInput,
   UpdateWorkspaceInput,
 } from "../schema/workspace.schema";
@@ -21,7 +22,8 @@ import {
   createProjectElement,
   createOrUpdateProjectElement,
   convertWorkspace,
-  findProjectElements, // New service function for fetching all workspaces
+  findProjectElements,
+  removeWorkspaceFromProjectElement, // New service function for fetching all workspaces
 } from "../service/workspace.service"; // Adjusted service functions for workspace
 
 export async function createWorkspaceHandler(
@@ -204,6 +206,22 @@ export async function updateProjectElementHandler(
     return res.status(404).send(error.message);
   }
 }
+export async function removeProjectElementHandler(
+  req: Request<{}, {},  {},RemoveProjectElementInput>,
+  res: Response
+) {
+  try {
+    const input = req.query;
+    const existing = await removeWorkspaceFromProjectElement(input);
+
+    return res.status(200).send(existing);
+  } catch (error: any) {
+    console.log(error, error.message);
+    return res.status(404).send(error.message);
+  }
+}
+
+
 
 export async function getProjectElementHandler(
   req: Request<{}, {}, {}, GetProjectElementInput>,

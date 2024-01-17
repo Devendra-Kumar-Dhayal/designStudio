@@ -14,6 +14,7 @@ import {
   updateProjectElementHandler,
   submitWorkspaceHandler,
   findProjectElementsHandler,
+  removeProjectElementHandler,
 } from "./controller/workspace.controller";
 import {
   createUserSessionHandler,
@@ -36,6 +37,7 @@ import {
   getProjectElementSchema,
   getProjectSchema,
   getWorkspaceSchema,
+  removeProjectElementSchema,
   updateProjectElementSchema,
   updateWorkspaceSchema,
 } from "./schema/workspace.schema";
@@ -218,6 +220,12 @@ router.put(
   "/api/projectelement",
   [requireUser, validateResource(updateProjectElementSchema)],
   updateProjectElementHandler
+);
+
+router.delete(
+  "/api/projectelement",
+  [requireUser, validateResource(removeProjectElementSchema)],
+  removeProjectElementHandler
 );
 
 router.get(

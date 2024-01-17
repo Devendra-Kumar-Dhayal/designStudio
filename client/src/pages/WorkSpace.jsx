@@ -494,31 +494,29 @@ const WorkSpace = () => {
     return { clientX, clientY };
   };
 
-  const handleColorTypeUpdate = (elementToUpdate,color,type,label)=>{
-    console.log(elementToUpdate,color,type)
-
+  const handleColorTypeUpdate = (elementToUpdate, color, type, label) => {
+    console.log(elementToUpdate, color, type);
 
     const options = {
       ...elementToUpdate.options,
-      meta:{
+      meta: {
         ...elementToUpdate.options.meta,
-        common:{
+        common: {
           ...elementToUpdate.options.meta?.common,
           label,
-        }
-      }
-    }
-
+        },
+      },
+    };
 
     updateElement(
       [
         {
           id: elementToUpdate.id,
-          x1 : elementToUpdate.x1,
+          x1: elementToUpdate.x1,
           y1: elementToUpdate.y1,
           x2: elementToUpdate.x2,
           y2: elementToUpdate.y2,
-          
+
           type,
           tool,
           options,
@@ -528,9 +526,29 @@ const WorkSpace = () => {
       setElements,
       color
     );
-  }
-  console.log(elements);
+  };
 
+  const filterElements = (elementToDelete) => {
+    const temp = elements.filter((el) => el.id !== elementToDelete.id);
+
+    setElements([...temp]);
+    // localStorage.setItem("canvasElements", JSON.stringify(temp));
+  };
+
+  const handleDelete = async (elementToDelete) => {
+    if (!!elementToDelete?.options?.meta?.common?.label) {
+      const res = await axios.delete(
+        `${BASEURL}/api/projectelement/?workspace=${wid}&projectId=${selectedProjectId}&name=${elementToDelete.options.meta.common.label}`,
+
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.status === 200) {
+        filterElements(elementToDelete);
+      }
+    } else filterElements(elementToDelete);
+  };
 
   const handleMouseDown = (event) => {
     if (action === "writing") return;
@@ -568,14 +586,9 @@ const WorkSpace = () => {
       }
     } else if (tool === "deletion") {
       const element = getElementAtPosition(clientX, clientY, elements);
-      console.log("getElementAtPosition",element);
-      if (element) {
-        if (element.position === "inside") {
-          const temp = elements.filter((el) => el.id !== element.id);
-
-          setElements([...temp]);
-          localStorage.setItem("canvasElements", JSON.stringify(temp));
-        }
+      console.log("getElementAtPosition", element);
+      if (element && element.position === "inside") {
+        handleDelete(element);
       }
     } else if (tool === "meta") return;
     else {
@@ -1465,21 +1478,20 @@ const WorkSpace = () => {
         />
       ) : null}
 
-       
-        <ElementMetaModal
-          meta={meta}
-          isOpen={isOpen}
-          setMeta={setMeta}
-          onOpenChange={onOpenChange}
-          handleSave={handleSave}
-          handleLabelSave={handleLabelSave}
-          handleDiscard={handleDiscard}
-          selectedProjectId={selectedProjectId}
-          wid={wid}
-          element={elements[selectedIdFormeta]}
-          handleColorTypeUpdate={handleColorTypeUpdate}
-        />
-      
+      <ElementMetaModal
+        meta={meta}
+        isOpen={isOpen}
+        setMeta={setMeta}
+        onOpenChange={onOpenChange}
+        handleSave={handleSave}
+        handleLabelSave={handleLabelSave}
+        handleDiscard={handleDiscard}
+        selectedProjectId={selectedProjectId}
+        wid={wid}
+        element={elements[selectedIdFormeta]}
+        handleColorTypeUpdate={handleColorTypeUpdate}
+      />
+
       <canvas
         id="canvas"
         width={canvasSize.width}
