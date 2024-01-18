@@ -1,21 +1,17 @@
 import axios from "axios";
-import React, {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
-import { BASEURL, cn } from "../utils/functions";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import rough from "roughjs/bundled/rough.esm";
-import { drawElement } from "../utils/drawElement";
 import {
   attachLineToShape,
   attachLineToShapeCircle,
 } from "../utils/attachShapes";
 import createElement from "../utils/createElement";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { drawElement } from "../utils/drawElement";
+import { BASEURL, cn } from "../utils/functions";
+import { getElementAtPosition } from "../utils/positionFunctions";
+import { Input, Modal, ModalContent, useDisclosure } from "@nextui-org/react";
 
 function findElement(arr, label1) {
   for (let i = 0; i < arr.length; i++) {
@@ -122,7 +118,17 @@ const Project = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
-  const [panOffset, setPanOffset] = React.useState({ x: 0, y: 0 });
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [selectedElement, setSelectedElement] = useState(null);
+
+  const getMouseCoordinates = (event) => {
+    const clientX = event.clientX - panOffset.x;
+    const clientY = event.clientY - panOffset.y;
+    return { clientX, clientY };
+  };
+
+  console.log(selectedElement)
 
   const getUser = async () => {
     try {
@@ -163,9 +169,8 @@ const Project = () => {
             });
           });
           console.log(arr);
-          
+
           setFinalElements(removeRepeatingValues(arr));
-          
         } catch (error) {
           console.error("Error fetching workspace data:", error);
         }
@@ -174,7 +179,6 @@ const Project = () => {
       fetchWorkspaceData();
     }
   }, []);
-
 
   useLayoutEffect(() => {
     if (!finalElements) return;
@@ -187,28 +191,27 @@ const Project = () => {
     context.save();
     context.translate(panOffset.x, panOffset.y);
     const gridSize = 20;
-    const canvasWidth = canvas.width*100;
-    const canvasHeight = canvas.height*100;
-  
+    const canvasWidth = canvas.width * 100;
+    const canvasHeight = canvas.height * 100;
+
     context.beginPath();
-    context.strokeStyle = 'rgba(0, 0, 0, 0.1)';
-  
+    context.strokeStyle = "rgba(0, 0, 0, 0.1)";
+
     // Vertical lines
     for (let x = 0; x <= canvasWidth; x += gridSize) {
       context.moveTo(x, 0);
       context.lineTo(x, canvasHeight);
     }
-  
+
     // Horizontal lines
     for (let y = 0; y <= canvasHeight; y += gridSize) {
       context.moveTo(0, y);
       context.lineTo(canvasWidth, y);
     }
-  
+
     context.stroke();
 
     finalElements?.map((element) => {
-      console.log("name", element);
 
       try {
         const updatedElement = createElement(
@@ -229,10 +232,16 @@ const Project = () => {
     context.restore();
   }, [finalElements, panOffset]);
 
-  const handleMouseDown = (event) => {
-    console.log("mouse down", event);
-  }
+  // console.log(selectedId);
 
+  const handleDoubleClick = (event) => {
+    // console.log("mouse down", event);
+    const { clientX, clientY } = getMouseCoordinates(event);
+    const element = getElementAtPosition(clientX, clientY, finalElements);
+    // console.log(element);
+    onOpenChange()
+    setSelectedElement(element,element);
+  };
 
   return (
     <>
@@ -248,11 +257,51 @@ const Project = () => {
           <IoArrowBackCircleOutline className="w-5  h-5 " />
         </button>
       </div>
+
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        // classes={"p-4 flex flex-col gap-4"}
+      >
+        <ModalContent>
+          <div className="w-full rounded-lg border border-gray-400 flex flex-col gap-2 shadow-sm py-4 px-6">
+            <h1 className="text-base font-bold">Meta</h1>
+            <div className="flex flex-col gap-4">
+              {selectedElement?.options?.meta?.common &&
+                Object.entries(selectedElement?.options?.meta?.common).map(
+                  ([key, value]) => (
+                    <div className="w-full flex gap-2">
+                      <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
+                        {key.toUpperCase()}:
+                      </h2>
+                      <p className="w-4/5 bg-gray-300 p-2 rounded-lg">
+                        {value}
+                      </p>
+                    </div>
+                  )
+                )}
+            </div>
+
+            {selectedElement?.options?.meta?.other &&
+              Object.entries(selectedElement?.options?.meta?.other).map(
+                ([key, value]) => (
+                  <div className="w-full flex gap-2">
+                    <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
+                      {key}
+                    </h2>
+                    <p className="w-4/5 bg-gray-300 p-2 rounded-lg">{value}</p>
+                  </div>
+                )
+              )}
+          </div>
+        </ModalContent>
+      </Modal>
+
       <canvas
         id="canvas"
         width={canvasSize.width}
         height={canvasSize.height}
-        onDoubleClick={handleMouseDown}
+        onDoubleClick={handleDoubleClick}
         // onMouseDown={handleMouseDown}
         // onMouseMove={handleMouseMove}
         // onMouseUp={handleMouseUp}

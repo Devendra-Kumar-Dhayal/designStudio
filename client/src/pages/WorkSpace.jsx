@@ -135,7 +135,7 @@ const WorkSpace = () => {
   const [selectedColor, setselectedColor] = useState(color[0]);
   const [tool, setTool] = useState("selection");
   const [selectedElement, setSelectedElement] = useState(null);
-  const [panOffset, setPanOffset] = React.useState({ x: 0, y: 0 });
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const [selectedIdFormeta, setSelectedIdFormeta] = useState();

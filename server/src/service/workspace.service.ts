@@ -1,10 +1,10 @@
-import { FilterQuery, QueryOptions, Types, UpdateQuery } from "mongoose";
+import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
 import WorkspaceModel, {
-  WorkspaceDocument,
-  WorkspaceInput,
+  WorkspaceDocument
 } from "../models/workspace.model";
 
-import { databaseResponseTimeHistogram } from "../utils/metrics";
+import ProjectModel from "../models/project.model";
+import ProjectElementModel from "../models/projectElements.model";
 import {
   CreateProjectElementInput,
   CreateProjectInput,
@@ -13,13 +13,8 @@ import {
   RemoveProjectElementInput,
   UpdateProjectElementInput,
 } from "../schema/workspace.schema";
-import ProjectModel from "../models/project.model";
 import logger from "../utils/logger";
-import ProjectElementModel, {
-  ProjectElementDocument,
-} from "../models/projectElements.model";
-import { arrayBuffer } from "stream/consumers";
-import e from "express";
+import { databaseResponseTimeHistogram } from "../utils/metrics";
 
 export async function createWorkspace(input: CreateWorkspaceInput) {
   const { meta, projectId } = input;
@@ -56,7 +51,6 @@ export async function convertWorkspace(query: { workspaceId: string ,elements:an
   const elements = query.elements;
 
   //for each element in workspace find the project element
-  console.log("inside service", elements);
   //@ts-ignore
   elements.forEach(async (element) => {
     console.log(element);
