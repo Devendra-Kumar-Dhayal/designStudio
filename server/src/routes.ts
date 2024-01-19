@@ -46,33 +46,9 @@ import {
 
 const router = express.Router();
 
-/**
- * @openapi
- * '/api/users':
- *  post:
- *     tags:
- *     - User
- *     summary: Register a user
- *     requestBody:
- *      required: true
- *      content:
- *        application/json:
- *           schema:
- *              $ref: '#/components/schemas/CreateUserInput'
- *     responses:
- *      200:
- *        description: Success
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/CreateUserResponse'
- *      409:
- *        description: Conflict
- *      400:
- *        description: Bad request
- */
+//user
 router.post(
-  "/api/users",
+  "/api/register",
   validateResource(createUserSchema),
   createUserHandler
 );
@@ -84,58 +60,14 @@ router.put(
   requireUser,
   setUserRole
 );
-/**
- * @openapi
- * '/api/sessions':
- *  get:
- *    tags:
- *    - Session
- *    summary: Get all sessions
- *    responses:
- *      200:
- *        description: Get all sessions for current user
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetSessionResponse'
- *      403:
- *        description: Forbidden
- *  post:
- *    tags:
- *    - Session
- *    summary: Create a session
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            $ref: '#/components/schemas/CreateSessionInput'
- *    responses:
- *      200:
- *        description: Session created
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/CreateSessionResponse'
- *      401:
- *        description: Unauthorized
- *  delete:
- *    tags:
- *    - Session
- *    summary: Delete a session
- *    responses:
- *      200:
- *        description: Session deleted
- *      403:
- *        description: Forbidden
- */
+
 router.post(
-  "/api/sessions",
+  "/api/login",
   validateResource(createSessionSchema),
   createUserSessionHandler
 );
 
-router.get("/api/sessions", requireUser, getUserSessionsHandler);
+router.get("/api/forgot-password", requireUser, getUserSessionsHandler);
 
 router.delete("/api/sessions", requireUser, deleteSessionHandler);
 
@@ -144,7 +76,6 @@ router.get("/oauth/error", (req, res) => {
   // Handle OAuth error here
   const error = req.query.error;
   console.log("error", error);
-  // Process error or redirect as needed
   res.status(500).send(`OAuth Error: ${error}`);
 });
 

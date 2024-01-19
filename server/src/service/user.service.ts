@@ -5,6 +5,7 @@ import UserModel, { UserDocument, UserInput } from "../models/user.model";
 import config from "config";
 import axios from "axios";
 import logger from "../utils/logger";
+import { CreateSessionInput } from "../schema/session.schema";
 export async function createUser(input: UserInput) {
   try {
     const useremail = input.email;
@@ -21,13 +22,7 @@ export async function createUser(input: UserInput) {
   }
 }
 
-export async function validatePassword({
-  email,
-  password,
-}: {
-  email: string;
-  password: string;
-}) {
+export async function validatePassword({ email, password }: CreateSessionInput) {
   const user = await UserModel.findOne({ email });
 
   if (!user) {

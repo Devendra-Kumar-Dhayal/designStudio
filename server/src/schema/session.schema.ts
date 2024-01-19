@@ -1,4 +1,4 @@
-import { object, string } from "zod";
+import { TypeOf, infer, object, string } from "zod";
 
 /**
  * @openapi
@@ -63,3 +63,6 @@ export const createSessionSchema = object({
     }),
   }),
 });
+
+
+export type CreateSessionInput = TypeOf<typeof createSessionSchema>["body"];

@@ -3,6 +3,11 @@ import { omit } from "lodash";
 import { ChooseUserRoleInput, CreateUserInput, chooseRoleSchema } from '../schema/user.schema';
 import { chooseRole, createUser, findUser } from "../service/user.service";
 import logger from "../utils/logger";
+import { use } from "passport";
+import { createSessionFromUser } from "./session.controller";
+// import { createCompleteSession } from "../service/session.service";
+
+// export type User =
 
 export async function createUserHandler(
   req: Request<{}, {}, CreateUserInput["body"]>,
@@ -10,12 +15,18 @@ export async function createUserHandler(
 ) {
   try {
     const user = await createUser(req.body);
-    return res.send(user);
+    // await createCompleteSession(req,user)
+    await createSessionFromUser(user, req, res);
+    
+    // return res.send(user);
   } catch (e: any) {
     logger.error(e);
     return res.status(409).send(e.message);
   }
 }
+
+
+
 
 export async function getCurrentUser(req: Request, res: Response) {
   // if(!res.locals.user)
