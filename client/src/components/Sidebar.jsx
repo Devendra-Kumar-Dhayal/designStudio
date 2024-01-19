@@ -89,7 +89,9 @@ const Sidebar = () => {
                 ? "active:scale-95 transition-all duration-20 ease-in-out shadow-md"
                 : ""
             }`}
-            onClick={() => setSelectedItem("documentation")}
+            onClick={() => {
+              navigate("/docs");
+            }}
           >
             <span className="text-black text-[12px] font-semibold">
               DOCUMENTATION
