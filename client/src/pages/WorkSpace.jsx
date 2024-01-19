@@ -369,6 +369,8 @@ const WorkSpace = () => {
     context.restore();
   }, [elements, action, selectedElement, panOffset, selectedIndex]);
 
+
+
   const handleDoubleClick = (event) => {
     if (tool !== "selection") return;
 
@@ -436,7 +438,7 @@ const WorkSpace = () => {
     };
     const handleKeyDown = (event) => {
       if (event.key === " ") {
-        if (action === "pannig") return;
+        if (action === "panning") return;
         document.body.style.cursor = "grab";
       }
     };
@@ -620,10 +622,9 @@ const WorkSpace = () => {
     }
   };
   const handleMouseMove = (event) => {
-    if (!isDesigner) return;
-
+    
     const { clientX, clientY } = getMouseCoordinates(event);
-
+    
     if (action === "panning") {
       const deltaX = clientX - startPanMousePosition.x;
       const deltaY = clientY - startPanMousePosition.y;
@@ -634,6 +635,7 @@ const WorkSpace = () => {
       document.body.style.cursor = "grab ";
       return;
     }
+    if (!isDesigner) return;
     if (tool === "line") {
       const element = getElementAtPosition(clientX, clientY, elements);
 
