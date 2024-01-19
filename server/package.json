@@ -21,13 +21,15 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongoose": "^8.0.3",
-    "nanoid": "^3.3.4",
+    "nanoid": "^3.3.7",
     "node": "^20.10.0",
     "node-fetch": "^2.7.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "pino": "^8.17.1",
-    "pino-pretty": "^10.3.0",
+
+    "pino": "^8.17.2",
+    "pino-pretty": "^10.3.1",
+
     "prom-client": "^14.0.0",
     "response-time": "^2.3.2",
     "swagger-jsdoc": "^6.1.0",
