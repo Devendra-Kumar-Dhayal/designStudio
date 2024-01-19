@@ -9,24 +9,61 @@ export const validateElements = (elements) => {
   return isValid;
 };
 
-
-export const connectLinesProperly =(elements)=>{
+export const connectLinesProperly = (elements) => {
   const lines = elements.filter((element) => element.type === "line");
-  const notValidated = []
+  let elementsCopy = [...elements];
 
   lines.forEach((line) => {
-    const { x1, y1, x2, y2 } = line;
-    const found = lines.find((l) => {
-      const { x1: x1_, y1: y1_, x2: x2_, y2: y2_ } = l;
-      return (
-        (x1 === x1_ && y1 === y1_ && x2 === x2_ && y2 === y2_) ||
-        (x1 === x2_ && y1 === y2_ && x2 === x1_ && y2 === y1_)
-      );
-    });
-    if (!found) {
-      notValidated.push(line);
+    if (line?.options?.depending && line.options.depending.length === 2) {
+      const depending = line.options.depending;
+
+      // Add a check for the existence of depending array
+      if (depending && depending.length === 2) {
+        const [{ element: firstId }, { element: secondId }] = depending;
+
+        const firstElement = elementsCopy[firstId];
+        const secondElement = elementsCopy[secondId];
+
+        try {
+          elementsCopy[firstId] = {
+            ...firstElement,
+            options: {
+              ...firstElement.options,
+              connected: [
+                ...(firstElement?.options?.connected ?? []),
+                {
+                  element: secondElement?.options?.meta?.common?.label,
+                  type: secondElement.type,
+                  id: secondElement.id,
+
+                },
+              ],
+            },
+          };
+
+          elementsCopy[secondId] = {
+            ...secondElement,
+            options: {
+              ...secondElement.options,
+              connected: [
+                ...(secondElement.options?.connected ?? []),
+                {
+                  element: firstElement?.options?.meta?.common?.label,
+                  type: firstElement.type,
+                  id: firstElement.id,
+                },
+              ],
+            },
+          };
+
+        } catch (error) {
+          console.log(error);
+        }
+      }
     }
   });
+          // console.log(elementsCopy);
 
-  return notValidated;
-}
+
+  return elementsCopy;
+};

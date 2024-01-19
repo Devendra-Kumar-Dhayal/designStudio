@@ -77,7 +77,11 @@ export async function getWorkspaceHandler(
   return res.send(workspace);
 }
 export async function submitWorkspaceHandler(
-  req: Request<UpdateWorkspaceInput["params"]>,
+  req: Request<
+    UpdateWorkspaceInput["params"],
+    {},
+    UpdateWorkspaceInput["body"]
+  >,
   res: Response
 ) {
   const workspaceId = req.params.workspaceId;
@@ -86,7 +90,8 @@ export async function submitWorkspaceHandler(
   if (!workspace) {
     return res.sendStatus(404);
   }
-  await convertWorkspace({ workspaceId });
+  const elements = req.body.elements ?? [];
+  await convertWorkspace({ workspaceId, elements });
 
   return res.status(200).send(workspace);
 }
@@ -207,7 +212,7 @@ export async function updateProjectElementHandler(
   }
 }
 export async function removeProjectElementHandler(
-  req: Request<{}, {},  {},RemoveProjectElementInput>,
+  req: Request<{}, {}, {}, RemoveProjectElementInput>,
   res: Response
 ) {
   try {
@@ -220,8 +225,6 @@ export async function removeProjectElementHandler(
     return res.status(404).send(error.message);
   }
 }
-
-
 
 export async function getProjectElementHandler(
   req: Request<{}, {}, {}, GetProjectElementInput>,

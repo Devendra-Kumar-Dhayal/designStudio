@@ -1,25 +1,8 @@
-import { Express, Request, Response } from "express";
-import {
-  createWorkspaceHandler,
-  getWorkspaceHandler,
-  getAllWorkspacesHandler,
-  deleteWorkspaceHandler,
-  updateWorkspaceHandler,
-  getAllWorkspacesRecentHandler,
-  createProjectHandler,
-  findProjectByIdHandler,
-  findAllProjectsHandler,
-  createProjectElementHandler,
-  getProjectElementHandler,
-  updateProjectElementHandler,
-  submitWorkspaceHandler,
-  findProjectElementsHandler,
-  removeProjectElementHandler,
-} from "./controller/workspace.controller";
+import express from "express";
 import {
   createUserSessionHandler,
-  getUserSessionsHandler,
   deleteSessionHandler,
+  getUserSessionsHandler,
   googleOauthHandler,
 } from "./controller/session.controller";
 import {
@@ -27,25 +10,39 @@ import {
   getCurrentUser,
   setUserRole,
 } from "./controller/user.controller";
+import {
+  createProjectElementHandler,
+  createProjectHandler,
+  createWorkspaceHandler,
+  deleteWorkspaceHandler,
+  findAllProjectsHandler,
+  findProjectByIdHandler,
+  findProjectElementsHandler,
+  getAllWorkspacesHandler,
+  getAllWorkspacesRecentHandler,
+  getProjectElementHandler,
+  getWorkspaceHandler,
+  removeProjectElementHandler,
+  submitWorkspaceHandler,
+  updateProjectElementHandler,
+  updateWorkspaceHandler,
+} from "./controller/workspace.controller";
+import requireDesigner from "./middleware/requireDesigner";
 import requireUser from "./middleware/requireUser";
 import validateResource from "./middleware/validateResource";
+import { createSessionSchema } from "./schema/session.schema";
+import { chooseRoleSchema, createUserSchema } from "./schema/user.schema";
 import {
   createProjectElementSchema,
   createProjectSchema,
-  createWorkspaceSchema,
   deleteWorkspaceSchema,
   getProjectElementSchema,
   getProjectSchema,
   getWorkspaceSchema,
   removeProjectElementSchema,
   updateProjectElementSchema,
-  updateWorkspaceSchema,
+  updateWorkspaceSchema
 } from "./schema/workspace.schema";
-import { createSessionSchema } from "./schema/session.schema";
-import { chooseRoleSchema, createUserSchema } from "./schema/user.schema";
-import express from "express";
-import deserializeUser from "./middleware/deserializeUser";
-import requireDesigner from "./middleware/requireDesigner";
 
 const router = express.Router();
 

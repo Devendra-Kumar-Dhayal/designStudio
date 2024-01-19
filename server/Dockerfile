@@ -9,8 +9,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --legacy-peer-deps --silent
-Run npm install 
+RUN yarn
+# Run npm install 
 
 # Copy app files
 COPY . .

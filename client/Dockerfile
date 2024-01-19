@@ -9,7 +9,7 @@ WORKDIR /frontend
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --legacy-peer-deps
+RUN yarn 
 # RUN npm install axios
 
 # Copy app files

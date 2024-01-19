@@ -201,3 +201,4 @@ export function detectShapesNearLineEndpoint(x, y, elements, setSelectedIndex) {
 
   return shapesNearEndpoint;
 }
+
