@@ -10,6 +10,8 @@ import {
   CreateProjectInput,
   CreateWorkspaceInput,
   GetProjectElementInput,
+  RemoveProjectElementInput,
+  UpdateProjectElementInput,
 } from "../schema/workspace.schema";
 import ProjectModel from "../models/project.model";
 import logger from "../utils/logger";
@@ -51,7 +53,7 @@ export async function convertWorkspace(query: { workspaceId: string }) {
   const elements = result?.elements ?? [];
 
   //for each element in workspace find the project element
-  console.log("inside service",elements);
+  console.log("inside service", elements);
   //@ts-ignore
   elements.forEach(async (element) => {
     console.log(element);
@@ -84,7 +86,6 @@ export async function convertWorkspace(query: { workspaceId: string }) {
     // Remove the specified workspaceId from the workspaces array
     //@ts-ignore
     const updatedWorkspaces = projectElement.workspaces.filter((workspace) => {
-     
       //@ts-ignore
 
       return workspace.workspaceId.toString() !== query.workspaceId;
@@ -207,7 +208,7 @@ export async function findProjectElements({
     const projectElements = [];
 
     project.forEach((element) => {
-      console.log(element.workspaces)
+      console.log(element.workspaces);
       const arr = element.workspaces.filter(
         //@ts-ignore
         (workspace) => workspace.isSubmitted
@@ -220,7 +221,7 @@ export async function findProjectElements({
           workspaces: arr,
         });
       }
-      console.log(element)
+      console.log(element);
       // console.log(arr)
     });
     //@ts-ignore
@@ -256,6 +257,8 @@ export async function createProjectElement(input: CreateProjectElementInput) {
       name: input.name,
       project: input.projectId,
       workspaces: arr,
+      type: input.type,
+      color: input.color,
     });
     return projectElement;
   } catch (error) {
@@ -264,7 +267,7 @@ export async function createProjectElement(input: CreateProjectElementInput) {
 }
 
 export async function createOrUpdateProjectElement(
-  input: CreateProjectElementInput
+  input: UpdateProjectElementInput
 ) {
   try {
     // Check if a project element with the given name and projectId already exists
@@ -278,8 +281,8 @@ export async function createOrUpdateProjectElement(
       const updatedWorkspaces = input.workspaces
         ? input.workspaces.map((workspace) => ({
             workspaceId: workspace.workspaceId,
-            meta: workspace.meta,//@ts-ignore
-            isSubmitted: workspace.isSubmitted??false,
+            meta: workspace.meta, //@ts-ignore
+            isSubmitted: workspace.isSubmitted ?? false,
           }))
         : [];
 
@@ -301,13 +304,14 @@ export async function createOrUpdateProjectElement(
   }
 }
 
-export async function removeWorkspaceFromProjectElement(
-  projectId: string,
-  name: string,
-  workspaceIdToRemove: string
-) {
+export async function removeWorkspaceFromProjectElement({
+  projectId,
+  name,
+  workspace,
+}:RemoveProjectElementInput) {
   try {
     // Find the project element with the given name and projectId
+    const workspaceIdToRemove = workspace
     const existingProjectElement = await ProjectElementModel.findOne({
       name,
       project: projectId,
@@ -322,7 +326,7 @@ export async function removeWorkspaceFromProjectElement(
       .map((workspace) => {
         if (
           //@ts-ignore
-          workspace.workspaceId === workspaceIdToRemove
+          workspace.workspaceId.toString() === workspaceIdToRemove
         ) {
           // Exclude the workspace with the specified workspaceId
           return undefined;
