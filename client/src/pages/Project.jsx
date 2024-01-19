@@ -129,6 +129,102 @@ function removeRepeatingValues(arr) {
       }
     }
   }
+
+  //node collision removal
+  const spacing = 600; // spcae between the two elements
+
+  for (let i = 0; i < uniqueArray.length - 1; i++) {
+    for (let j = i + 1; j < uniqueArray.length; j++) {
+      let element1 = uniqueArray[i];
+      let element2 = uniqueArray[j];
+      if (element1.type === "rectangle") {
+        if (element2.type === "rectangle") {
+          // removing collsion between reactangle and reactangle
+          let dist = calculateDistance(
+            (element1.x1 + element1.x2) / 2,
+            (element1.y1 + element1.y2) / 2,
+            (element2.x1 + element2.x2) / 2,
+            (element2.y1 + element2.y2) / 2
+          );
+          if (dist < spacing) {
+            let ratio = spacing / dist;
+            let newCord = [
+              (element1.x1 + element1.x2) / 2 +
+                ratio *
+                  ((element2.x1 + element2.x2) / 2 -
+                    (element1.x1 + element1.x2) / 2),
+              (element1.y1 + element1.y2) / 2 +
+                ratio *
+                  ((element2.y1 + element2.y2) / 2 -
+                    (element1.y1 + element1.y2) / 2),
+            ];
+            element2.x1 = newCord[0] - 100;
+            element2.y1 = newCord[1] - 100;
+            element2.x2 = newCord[0] + 100;
+            element2.y2 = newCord[1] + 100;
+          }
+        } else {
+          let dist = calculateDistance(
+            (element1.x1 + element1.x2) / 2, // removing collsion between reactangle and any circle
+            (element1.y1 + element1.y2) / 2,
+            element2.x1,
+            element2.y1
+          );
+          if (dist < spacing) {
+            let ratio = spacing / dist;
+            let newCord = [
+              (element1.x1 + element1.x2) / 2 +
+                ratio * (element2.x1 - (element1.x1 + element1.x2) / 2),
+              (element1.y1 + element1.y2) / 2 +
+                ratio * (element2.y1 - (element1.y1 + element1.y2) / 2),
+            ];
+            element2.x1 = newCord[0];
+            element2.y1 = newCord[1];
+          }
+        }
+      } else {
+        if (element2.type === "rectangle") {
+          let dist = calculateDistance(
+            // removing collsion between circle and rectangle
+            element1.x1,
+            element1.y1,
+            (element2.x1 + element2.x2) / 2,
+            (element2.y1 + element2.y2) / 2
+          );
+          if (dist < spacing) {
+            let ratio = spacing / dist;
+            let newCord = [
+              element1.x1 +
+                ratio * ((element2.x1 + element2.x2) / 2 - element1.x1),
+              element1.y1 +
+                ratio * ((element2.y1 + element2.y2) / 2 - element1.y1),
+            ];
+            element2.x1 = newCord[0] - 100;
+            element2.y1 = newCord[1] - 100;
+            element2.x2 = newCord[0] + 100;
+            element2.y2 = newCord[1] + 100;
+          }
+        } else {
+          let dist = calculateDistance(
+            element1.x1, // removing collsion between any circle and any circle
+            element1.y1,
+            element2.x1,
+            element2.y1
+          );
+          if (dist < spacing) {
+            let ratio = spacing / dist;
+            let newCord = [
+              element1.x1 + ratio * (element2.x1 - element1.x1),
+              element1.y1 + ratio * (element2.y1 - element1.y1),
+            ];
+            element2.x1 = newCord[0];
+            element2.y1 = newCord[1];
+          }
+        }
+      }
+    }
+  }
+
   for (let i = 0; i < arr.length; i++) {
     let element = arr[i];
 
@@ -187,80 +283,7 @@ function removeRepeatingValues(arr) {
     }
   }
 
-//node collision removal
-const spacing =400 // spcae between the two elements
-
-for(let i=0;i<uniqueArray.length-1;i++){
-  for(let j=i+1;j<uniqueArray.length;j++){
-    let element1 = uniqueArray[i];
-    let element2 = uniqueArray[j];
-    if(element1.type==="rectangle"){
-
-      if(element2.type==="rectangle"){   // removing collsion between reactangle and reactangle
-        let dist = calculateDistance(
-        (element1.x1+element1.x2)/2
-        ,(element1.y1+element1.y2)/2
-        ,(element2.x1+element2.x2)/2
-        ,(element2.y1+element2.y2)/2);
-        if(dist<spacing){
-          let ratio = spacing / dist; 
-          let newCord = [(element1.x1+element1.x2)/2 + ratio * ((element2.x1+element2.x2)/2 - (element1.x1+element1.x2)/2), (element1.y1+element1.y2)/2 + ratio * ((element2.y1+element2.y2)/2 - (element1.y1+element1.y2)/2)];
-          element2.x1 = newCord[0]-100;
-          element2.y1 = newCord[1]-100;
-          element2.x2 = newCord[0]+100;
-          element2.y2 = newCord[1]+100;
-        }
-      } else{
-        let dist = calculateDistance(
-          (element1.x1+element1.x2)/2    // removing collsion between reactangle and any circle
-          ,(element1.y1+element1.y2)/2
-          ,element2.x1
-          ,element2.y1);
-        if(dist<spacing){
-          let ratio = spacing / dist;
-          let newCord = [(element1.x1+element1.x2)/2 + ratio * (element2.x1 - (element1.x1+element1.x2)/2), (element1.y1+element1.y2)/2 + ratio * (element2.y1 - (element1.y1+element1.y2)/2)];
-          element2.x1 = newCord[0];
-          element2.y1 = newCord[1];
-        }
-      }
-    } else{
-      if(element2.type==="rectangle"){
-        let dist = calculateDistance(   // removing collsion between circle and rectangle
-        element1.x1
-        ,element1.y1
-        ,(element2.x1+element2.x2)/2
-        ,(element2.y1+element2.y2)/2);
-        if(dist<spacing){
-          let ratio = spacing / dist; 
-          let newCord = [element1.x1 + ratio * ((element2.x1+element2.x2)/2 - element1.x1), element1.y1 + ratio * ((element2.y1+element2.y2)/2 - element1.y1)];
-          element2.x1 = newCord[0]-100;
-          element2.y1 = newCord[1]-100;
-          element2.x2 = newCord[0]+100;
-          element2.y2 = newCord[1]+100;
-        }
-      } else{
-        let dist = calculateDistance(
-          element1.x1                   // removing collsion between any circle and any circle
-          ,element1.y1
-          ,element2.x1
-          ,element2.y1);
-        if(dist < spacing){
-          let ratio = spacing / dist;
-          let newCord = [element1.x1 + ratio * (element2.x1 - element1.x1), element1.y1 + ratio * (element2.y1 - element1.y1)];
-          element2.x1 = newCord[0];
-          element2.y1 = newCord[1];
-        }
-          
-      }
-
-    }
-
-  }
-}
-
-
-
-return uniqueArray;
+  return uniqueArray;
 }
 
 const Project = () => {
