@@ -62,7 +62,6 @@ export const connectLinesProperly = (elements) => {
       }
     }
   });
-          // console.log(elementsCopy);
 
 
   return elementsCopy;

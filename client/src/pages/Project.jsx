@@ -129,6 +129,102 @@ function removeRepeatingValues(arr) {
       }
     }
   }
+
+  //node collision removal
+  const spacing = 600; // spcae between the two elements
+
+  for (let i = 0; i < uniqueArray.length - 1; i++) {
+    for (let j = i + 1; j < uniqueArray.length; j++) {
+      let element1 = uniqueArray[i];
+      let element2 = uniqueArray[j];
+      if (element1.type === "rectangle") {
+        if (element2.type === "rectangle") {
+          // removing collsion between reactangle and reactangle
+          let dist = calculateDistance(
+            (element1.x1 + element1.x2) / 2,
+            (element1.y1 + element1.y2) / 2,
+            (element2.x1 + element2.x2) / 2,
+            (element2.y1 + element2.y2) / 2
+          );
+          if (dist < spacing) {
+            let ratio = spacing / dist;
+            let newCord = [
+              (element1.x1 + element1.x2) / 2 +
+                ratio *
+                  ((element2.x1 + element2.x2) / 2 -
+                    (element1.x1 + element1.x2) / 2),
+              (element1.y1 + element1.y2) / 2 +
+                ratio *
+                  ((element2.y1 + element2.y2) / 2 -
+                    (element1.y1 + element1.y2) / 2),
+            ];
+            element2.x1 = newCord[0] - 100;
+            element2.y1 = newCord[1] - 100;
+            element2.x2 = newCord[0] + 100;
+            element2.y2 = newCord[1] + 100;
+          }
+        } else {
+          let dist = calculateDistance(
+            (element1.x1 + element1.x2) / 2, // removing collsion between reactangle and any circle
+            (element1.y1 + element1.y2) / 2,
+            element2.x1,
+            element2.y1
+          );
+          if (dist < spacing) {
+            let ratio = spacing / dist;
+            let newCord = [
+              (element1.x1 + element1.x2) / 2 +
+                ratio * (element2.x1 - (element1.x1 + element1.x2) / 2),
+              (element1.y1 + element1.y2) / 2 +
+                ratio * (element2.y1 - (element1.y1 + element1.y2) / 2),
+            ];
+            element2.x1 = newCord[0];
+            element2.y1 = newCord[1];
+          }
+        }
+      } else {
+        if (element2.type === "rectangle") {
+          let dist = calculateDistance(
+            // removing collsion between circle and rectangle
+            element1.x1,
+            element1.y1,
+            (element2.x1 + element2.x2) / 2,
+            (element2.y1 + element2.y2) / 2
+          );
+          if (dist < spacing) {
+            let ratio = spacing / dist;
+            let newCord = [
+              element1.x1 +
+                ratio * ((element2.x1 + element2.x2) / 2 - element1.x1),
+              element1.y1 +
+                ratio * ((element2.y1 + element2.y2) / 2 - element1.y1),
+            ];
+            element2.x1 = newCord[0] - 100;
+            element2.y1 = newCord[1] - 100;
+            element2.x2 = newCord[0] + 100;
+            element2.y2 = newCord[1] + 100;
+          }
+        } else {
+          let dist = calculateDistance(
+            element1.x1, // removing collsion between any circle and any circle
+            element1.y1,
+            element2.x1,
+            element2.y1
+          );
+          if (dist < spacing) {
+            let ratio = spacing / dist;
+            let newCord = [
+              element1.x1 + ratio * (element2.x1 - element1.x1),
+              element1.y1 + ratio * (element2.y1 - element1.y1),
+            ];
+            element2.x1 = newCord[0];
+            element2.y1 = newCord[1];
+          }
+        }
+      }
+    }
+  }
+
   for (let i = 0; i < arr.length; i++) {
     let element = arr[i];
 
@@ -187,80 +283,7 @@ function removeRepeatingValues(arr) {
     }
   }
 
-//node collision removal
-const spacing =400 // spcae between the two elements
-
-for(let i=0;i<uniqueArray.length-1;i++){
-  for(let j=i+1;j<uniqueArray.length;j++){
-    let element1 = uniqueArray[i];
-    let element2 = uniqueArray[j];
-    if(element1.type==="rectangle"){
-
-      if(element2.type==="rectangle"){   // removing collsion between reactangle and reactangle
-        let dist = calculateDistance(
-        (element1.x1+element1.x2)/2
-        ,(element1.y1+element1.y2)/2
-        ,(element2.x1+element2.x2)/2
-        ,(element2.y1+element2.y2)/2);
-        if(dist<spacing){
-          let ratio = spacing / dist; 
-          let newCord = [(element1.x1+element1.x2)/2 + ratio * ((element2.x1+element2.x2)/2 - (element1.x1+element1.x2)/2), (element1.y1+element1.y2)/2 + ratio * ((element2.y1+element2.y2)/2 - (element1.y1+element1.y2)/2)];
-          element2.x1 = newCord[0]-100;
-          element2.y1 = newCord[1]-100;
-          element2.x2 = newCord[0]+100;
-          element2.y2 = newCord[1]+100;
-        }
-      } else{
-        let dist = calculateDistance(
-          (element1.x1+element1.x2)/2    // removing collsion between reactangle and any circle
-          ,(element1.y1+element1.y2)/2
-          ,element2.x1
-          ,element2.y1);
-        if(dist<spacing){
-          let ratio = spacing / dist;
-          let newCord = [(element1.x1+element1.x2)/2 + ratio * (element2.x1 - (element1.x1+element1.x2)/2), (element1.y1+element1.y2)/2 + ratio * (element2.y1 - (element1.y1+element1.y2)/2)];
-          element2.x1 = newCord[0];
-          element2.y1 = newCord[1];
-        }
-      }
-    } else{
-      if(element2.type==="rectangle"){
-        let dist = calculateDistance(   // removing collsion between circle and rectangle
-        element1.x1
-        ,element1.y1
-        ,(element2.x1+element2.x2)/2
-        ,(element2.y1+element2.y2)/2);
-        if(dist<spacing){
-          let ratio = spacing / dist; 
-          let newCord = [element1.x1 + ratio * ((element2.x1+element2.x2)/2 - element1.x1), element1.y1 + ratio * ((element2.y1+element2.y2)/2 - element1.y1)];
-          element2.x1 = newCord[0]-100;
-          element2.y1 = newCord[1]-100;
-          element2.x2 = newCord[0]+100;
-          element2.y2 = newCord[1]+100;
-        }
-      } else{
-        let dist = calculateDistance(
-          element1.x1                   // removing collsion between any circle and any circle
-          ,element1.y1
-          ,element2.x1
-          ,element2.y1);
-        if(dist < spacing){
-          let ratio = spacing / dist;
-          let newCord = [element1.x1 + ratio * (element2.x1 - element1.x1), element1.y1 + ratio * (element2.y1 - element1.y1)];
-          element2.x1 = newCord[0];
-          element2.y1 = newCord[1];
-        }
-          
-      }
-
-    }
-
-  }
-}
-
-
-
-return uniqueArray;
+  return uniqueArray;
 }
 
 const Project = () => {
@@ -273,6 +296,9 @@ const Project = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  // const [wid, setWid] = useState(null);
+  const [action, setAction] = useState("none");
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const [selectedElement, setSelectedElement] = useState(null);
@@ -282,7 +308,7 @@ const Project = () => {
     const clientY = event.clientY - panOffset.y;
     return { clientX, clientY };
   };
-
+  console.log(elements)
   const getUser = async () => {
     try {
       const user = await axios.get(`${BASEURL}/api/auth/user/me`, {
@@ -301,7 +327,9 @@ const Project = () => {
     getUser();
 
     const searchParams = new URLSearchParams(window.location.search);
+  
     const projectId = searchParams.get("pid");
+    const wid = searchParams.get("wid")
     if (projectId) {
       setProjectId(projectId);
       const fetchWorkspaceData = async () => {
@@ -314,12 +342,27 @@ const Project = () => {
           );
 
           const arr = [];
+          // console.log(response.data)
 
-          response.data.forEach((element) => {
-            element.workspaces.forEach((workspace) => {
-              arr.push(workspace.meta);
+          if(wid){
+            // workspaceId;
+            response.data.forEach((element) => {
+              element.workspaces.forEach((workspace) => {
+                if(workspace.workspaceId === wid){
+                  arr.push(workspace.meta);
+                }
+              });
             });
-          });
+          }
+          else{
+
+            response.data.forEach((element) => {
+              element.workspaces.forEach((workspace) => {
+                arr.push(workspace.meta);
+              });
+            });
+          }
+
 
           setFinalElements(removeRepeatingValues(arr));
         } catch (error) {
@@ -332,6 +375,84 @@ const Project = () => {
   }, []);
 
   console.log("finalElements", finalElements);
+
+  useEffect(() => {
+    const panFunction = (event) => {
+      if (event.ctrlKey) {
+        event.preventDefault();
+
+        // Change canvas zoom based on wheel delta
+        const zoomFactor = 1 + event.deltaY * 0.01; // Adjust the zoom factor as needed
+        // Adjust canvas width and height accordingly
+        const newCanvasWidth = window.innerWidth * zoomFactor;
+        const newCanvasHeight = window.innerHeight * zoomFactor;
+
+        // You might need to adjust the center point for zooming
+        const canvasCenterX = window.innerWidth / 2;
+        const canvasCenterY = window.innerHeight / 2;
+        const offsetX = (canvasCenterX - panOffset.x) * (zoomFactor - 1);
+        const offsetY = (canvasCenterY - panOffset.y) * (zoomFactor - 1);
+
+        setPanOffset((prevState) => ({
+          x: prevState.x - offsetX,
+          y: prevState.y - offsetY,
+        }));
+        // Update canvas size
+        setCanvasSize({ width: newCanvasWidth, height: newCanvasHeight });
+      } else if (event.shiftKey) {
+        setPanOffset((prevState) => ({
+          x: prevState.x - event.deltaY,
+          y: prevState.y,
+        }));
+      } else {
+        setPanOffset((prevState) => ({
+          x: prevState.x,
+          y: prevState.y - event.deltaY,
+        }));
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === " ") {
+        if (action === "panning") return;
+        document.body.style.cursor = "grab";
+      }
+    };
+
+    const handleKeyUp = (event) => {
+      if (event.key === " ") {
+        document.body.style.cursor = "default";
+      }
+    };
+
+    const handleResize = (event) => {
+      setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("wheel", panFunction);
+
+    //TODO: esc key drawing stop
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        // Check if drawing is in progress
+        // if (isDrawing) {
+        //   // Reset drawing flag and any other necessary cleanup
+        //   isDrawing = false;
+        //   // Additional code for canceling the drawing operation...
+        //   // For example, clearing the canvas or resetting variables.
+        // }
+      }
+    });
+
+    return () => {
+      window.removeEventListener("wheel", panFunction);
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [ elements]);
 
   useLayoutEffect(() => {
     if (!finalElements) return;
@@ -397,6 +518,19 @@ const Project = () => {
   const boolBoomi = selectedElement?.options?.connected?.some(
     (ele) => ele.type === "boomi"
   );
+
+  const handleMouseMove = (event)=>{
+    // if (action === "panning") {
+    //   const deltaX = clientX - startPanMousePosition.x;
+    //   const deltaY = clientY - startPanMousePosition.y;
+    //   setPanOffset({
+    //     x: panOffset.x + deltaX,
+    //     y: panOffset.y + deltaY,
+    //   });
+    //   document.body.style.cursor = "grab ";
+    //   return;
+    // }
+  }
   // console.log(bool);
 
   return (

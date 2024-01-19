@@ -25,6 +25,11 @@ const Sidebar = () => {
       icon: MdDashboardCustomize,
       text: "Spaces",
       path: "/recents"
+    },
+    {
+      icon: MdDashboardCustomize,
+      text: "Submitted",
+      path: "/submit"
     }
 
   ];

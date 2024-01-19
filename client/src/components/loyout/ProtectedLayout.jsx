@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import axios from "axios";
 import Modal from "../Modal";
 import { BASEURL } from "../../utils/functions";
+import { ProjectContext } from "../ProjectContext";
 
 const ProtectedLayout = () => {
   const [isOpen, setisOpen] = useState(false);
@@ -12,6 +13,8 @@ const ProtectedLayout = () => {
   const [userName, setUserName] = useState("");
   const [user, setUser] = useState("");
   const navigate = useNavigate();
+  const { isDesigner, setIsDesigner } = useContext(ProjectContext);
+
 
  const getUser = async () => {
    try {
@@ -28,10 +31,16 @@ const ProtectedLayout = () => {
         setIsVerified(true)
         setUser(user.data.user)
      }
+
+
      if (!user.data.user.role) {
        setisOpen(true);
 
      }
+     else{
+      setIsDesigner(user.data.user.role === "designer");
+     }
+
 
      // Continue with normal flow if user status is not 403
      // ...
