@@ -148,7 +148,7 @@ const Home = () => {
           </button>
         </div>
       </Modal>
-      <h1 className="text-3xl font-medium text-black">Dashboard</h1>
+      <h1 className="text-3xl font-medium text-black">Templates</h1>
       <div className="min-h-[238px]   max-w-[1213px] bg-white gap-9 p-7 flex flex-row rounded-2xl">
         {Array.from(Array(1)).map((_, index) => {
           return (
