@@ -11,7 +11,58 @@ import createElement from "../utils/createElement";
 import { drawElement } from "../utils/drawElement";
 import { BASEURL, cn } from "../utils/functions";
 import { getElementAtPosition } from "../utils/positionFunctions";
-import { Input, Modal, ModalContent, useDisclosure } from "@nextui-org/react";
+import { GoCopy } from "react-icons/go";
+import {
+  Card,
+  CardBody,
+  Input,
+  Modal,
+  ModalContent,
+  Tab,
+  Tabs,
+  code,
+  useDisclosure,
+  Button,
+} from "@nextui-org/react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+
+import {
+  codeGo,
+  codeJava,
+  codeJavaScript,
+  codePython,
+  codeReact,
+} from "../utils/codestub";
+import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
+
+
+const codeLanguage = [
+  {
+    language: "javascript",
+    support: "javascript",
+    code: codeJavaScript,
+  },
+  {
+    language: "python",
+    support: "python",
+    code: codePython,
+  },
+  {
+    language: "java",
+    support: "java",
+    code: codeJava,
+  },
+  {
+    language: "go",
+    support: "go",
+    code: codeGo,
+  },
+  {
+    language: "react",
+    code: codeReact,
+    support: "jsx",
+  },
+];
 
 function findElement(arr, label1) {
   for (let i = 0; i < arr.length; i++) {
@@ -35,7 +86,6 @@ function removeRepeatingValues(arr) {
 
     // If the element is not in the hash table, add it to the uniqueArray
     if (element.type !== "line") {
-      console.log(element.type);
       if (!seen[element.options.meta.common.label]) {
         uniqueArray.push(element);
         seen[element.options.meta.common.label] = true;
@@ -48,18 +98,14 @@ function removeRepeatingValues(arr) {
     // If the element is not in the hash table, add it to the uniqueArray
     if (element.type === "line") {
       if (!seen[element.options.meta.common.label]) {
-        console.log(element.options.depending[0].name);
-        console.log(element.options.depending[1].name);
         for (let j = 0; j < 2; j++) {
           var ele = findElement(uniqueArray, element.options.depending[j].name);
-          console.log("ele", ele, ele.type);
           if (ele.type === "rectangle") {
             const { x, y } = attachLineToShape(
               ele,
               element,
               element.options.depending[j].start
             );
-            console.log(element.x1, element.y1, x, y);
             if (element.options.depending[j].start) {
               element = {
                 ...element,
@@ -79,7 +125,6 @@ function removeRepeatingValues(arr) {
               element,
               element.options.depending[j].start
             );
-            console.log(element.x1, element.y1, x, y);
             if (element.options.depending[j].start) {
               // element.x1 = x;
               // element.y1 = y;
@@ -128,8 +173,6 @@ const Project = () => {
     return { clientX, clientY };
   };
 
-  console.log(selectedElement)
-
   const getUser = async () => {
     try {
       const user = await axios.get(`${BASEURL}/api/auth/user/me`, {
@@ -160,7 +203,6 @@ const Project = () => {
             }
           );
 
-          console.log("response", response, response.data);
           const arr = [];
 
           response.data.forEach((element) => {
@@ -168,7 +210,6 @@ const Project = () => {
               arr.push(workspace.meta);
             });
           });
-          console.log(arr);
 
           setFinalElements(removeRepeatingValues(arr));
         } catch (error) {
@@ -179,6 +220,8 @@ const Project = () => {
       fetchWorkspaceData();
     }
   }, []);
+
+  console.log("finalElements", finalElements);
 
   useLayoutEffect(() => {
     if (!finalElements) return;
@@ -212,7 +255,6 @@ const Project = () => {
     context.stroke();
 
     finalElements?.map((element) => {
-
       try {
         const updatedElement = createElement(
           element.id,
@@ -232,16 +274,17 @@ const Project = () => {
     context.restore();
   }, [finalElements, panOffset]);
 
-  // console.log(selectedId);
-
   const handleDoubleClick = (event) => {
-    // console.log("mouse down", event);
     const { clientX, clientY } = getMouseCoordinates(event);
     const element = getElementAtPosition(clientX, clientY, finalElements);
-    // console.log(element);
-    onOpenChange()
-    setSelectedElement(element,element);
+    onOpenChange();
+    setSelectedElement(element, element);
   };
+
+  const bool = selectedElement?.options?.connected?.some(
+    (ele) => ele.type === "kafka"
+  );
+  // console.log(bool);
 
   return (
     <>
@@ -261,7 +304,9 @@ const Project = () => {
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        // classes={"p-4 flex flex-col gap-4"}
+        size="5xl"
+        scrollBehavior="inside"
+        // className={"overflow-scroll"}
       >
         <ModalContent>
           <div className="w-full rounded-lg border border-gray-400 flex flex-col gap-2 shadow-sm py-4 px-6">
@@ -293,6 +338,38 @@ const Project = () => {
                   </div>
                 )
               )}
+
+            {bool && (
+              <div className="flex w-full flex-col overflow-y-hidden h-1/2">
+                <Tabs aria-label="Options">
+                  {codeLanguage.map((code) => (
+                    <Tab
+                      key={code.language}
+                      title={code.language}
+                      className="relative"
+                    >
+                      <Button
+                        onClick={() => {
+                          navigator.clipboard.writeText(code.code);
+                        }}
+                        className="absolute top-10 right-5 z-50"
+                      >
+                        <GoCopy />
+                      </Button>
+                      <Card>
+                        <SyntaxHighlighter
+                          language={code.support}
+                          style={darcula}
+                          className="!max-h-[550px]"
+                        >
+                          {code.code}
+                        </SyntaxHighlighter>
+                      </Card>
+                    </Tab>
+                  ))}
+                </Tabs>
+              </div>
+            )}
           </div>
         </ModalContent>
       </Modal>
