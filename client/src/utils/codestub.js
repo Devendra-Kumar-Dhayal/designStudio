@@ -154,3 +154,107 @@ const App = () => {
 export default App;
 `;
 
+
+export const codeNode = `
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
+
+app.post('/webhook', (req, res) => {
+  // Handle the incoming message from Boomi
+  const message = req.body;
+  console.log('Received message:', message);
+
+  // Your processing logic here
+
+  res.status(200).send('Message received successfully');
+});
+
+app.listen(port, () => {
+  console.log(\`Server is running on http://localhost:\${port}\`);
+});
+`;
+
+
+export const codeFlask = ` 
+from flask import Flask, request
+app = Flask(__name__)
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    # Handle the incoming message from Boomi
+    message = request.json
+    print('Received message:', message)
+
+    # Your processing logic here
+
+    return 'Message received successfully', 200
+
+if __name__ == '__main__':
+    app.run(port=5000)
+`;
+
+export const codeSpring = `
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@SpringBootApplication
+public class YourApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(YourApplication.class, args);
+    }
+}
+
+@RestController
+class WebhookController {
+
+    @PostMapping("/webhook")
+    public String webhook(@RequestBody Map<String, Object> message) {
+        // Handle the incoming message from Boomi
+        System.out.println("Received message: " + message);
+
+        // Your processing logic here
+
+        return "Message received successfully";
+    }
+}
+
+`;
+
+
+
+export const codeGoHandler = `
+package main
+
+import (
+    "github.com/gin-gonic/gin"
+    "net/http"
+)
+
+func main() {
+    r := gin.Default()
+
+    r.POST("/webhook", func(c *gin.Context) {
+        // Handle the incoming message from Boomi
+        var message map[string]interface{}
+        if err := c.BindJSON(&message); err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+            return
+        }
+
+        // Your processing logic here
+
+        c.String(http.StatusOK, "Message received successfully")
+    })
+
+    r.Run(":8080")
+}
+`
+

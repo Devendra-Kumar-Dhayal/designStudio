@@ -27,11 +27,15 @@ import {
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 
 import {
+  codeFlask,
   codeGo,
+  codeGoHandler,
   codeJava,
   codeJavaScript,
+  codeNode,
   codePython,
   codeReact,
+  codeSpring,
 } from "../utils/codestub";
 import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
 
@@ -62,6 +66,29 @@ const codeLanguage = [
     code: codeReact,
     support: "jsx",
   },
+];
+const codeLanguageBoomi = [
+  {
+    language: "node",
+    support: "javascript",
+    code: codeNode,
+  },
+  {
+    language: "python",
+    support: "python",
+    code: codeFlask,
+  },
+  {
+    language: "java",
+    support: "java",
+    code: codeSpring,
+  },
+  {
+    language: "go",
+    support: "go",
+    code: codeGoHandler,
+  },
+ 
 ];
 
 function findElement(arr, label1) {
@@ -284,6 +311,9 @@ const Project = () => {
   const bool = selectedElement?.options?.connected?.some(
     (ele) => ele.type === "kafka"
   );
+  const boolBoomi = selectedElement?.options?.connected?.some(
+    (ele) => ele.type === "boomi"
+  );
   // console.log(bool);
 
   return (
@@ -338,38 +368,78 @@ const Project = () => {
                   </div>
                 )
               )}
-
-            {bool && (
-              <div className="flex w-full flex-col overflow-y-hidden h-1/2">
-                <Tabs aria-label="Options">
-                  {codeLanguage.map((code) => (
-                    <Tab
-                      key={code.language}
-                      title={code.language}
-                      className="relative"
-                    >
-                      <Button
-                        onClick={() => {
-                          navigator.clipboard.writeText(code.code);
-                        }}
-                        className="absolute top-10 right-5 z-50"
+            <Tabs aria-label="Options">
+              {bool && (
+                <Tab
+                  key="kafka"
+                  title="kafka"
+                  className="flex w-full flex-col overflow-y-hidden h-1/2"
+                >
+                  <Tabs aria-label="Options">
+                    {codeLanguage.map((code) => (
+                      <Tab
+                        key={code.language}
+                        title={code.language}
+                        className="relative"
                       >
-                        <GoCopy />
-                      </Button>
-                      <Card>
-                        <SyntaxHighlighter
-                          language={code.support}
-                          style={darcula}
-                          className="!max-h-[550px]"
+                        <Button
+                          onClick={() => {
+                            navigator.clipboard.writeText(code.code);
+                          }}
+                          className="absolute top-10 right-5 z-50"
                         >
-                          {code.code}
-                        </SyntaxHighlighter>
-                      </Card>
-                    </Tab>
-                  ))}
-                </Tabs>
-              </div>
-            )}
+                          <GoCopy />
+                        </Button>
+                        <Card>
+                          <SyntaxHighlighter
+                            language={code.support}
+                            style={darcula}
+                            className="!max-h-[550px]"
+                          >
+                            {code.code}
+                          </SyntaxHighlighter>
+                        </Card>
+                      </Tab>
+                    ))}
+                  </Tabs>
+                </Tab>
+              )}
+              {boolBoomi && (
+                <Tab
+                  key="boomi"
+                  title="boomi"
+                  className="flex w-full flex-col overflow-y-hidden h-1/2"
+                >
+                  <Tabs aria-label="Options">
+                    {codeLanguageBoomi.map((code) => (
+                      <Tab
+                        key={code.language}
+                        title={code.language}
+                        className="relative"
+                      >
+                        <Button
+                          onClick={() => {
+                            navigator.clipboard.writeText(code.code);
+                          }}
+                          className="absolute top-10 right-5 z-50"
+                        >
+                          <GoCopy />
+                        </Button>
+                        <Card>
+                          <SyntaxHighlighter
+                            language={code.support}
+                            style={darcula}
+                            className="!max-h-[550px]"
+                          >
+                            {code.code}
+                          </SyntaxHighlighter>
+                        </Card>
+                      </Tab>
+                    ))}
+                  </Tabs>
+                </Tab>
+              )}
+            </Tabs>
           </div>
         </ModalContent>
       </Modal>
