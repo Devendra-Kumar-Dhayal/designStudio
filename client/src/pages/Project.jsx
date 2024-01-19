@@ -1,21 +1,95 @@
 import axios from "axios";
-import React, {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
-import { BASEURL, cn } from "../utils/functions";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import rough from "roughjs/bundled/rough.esm";
-import { drawElement } from "../utils/drawElement";
 import {
   attachLineToShape,
   attachLineToShapeCircle,
 } from "../utils/attachShapes";
 import createElement from "../utils/createElement";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { drawElement } from "../utils/drawElement";
+import { BASEURL, cn } from "../utils/functions";
+import { getElementAtPosition } from "../utils/positionFunctions";
+import { GoCopy } from "react-icons/go";
+import {
+  Card,
+  CardBody,
+  Input,
+  Modal,
+  ModalContent,
+  Tab,
+  Tabs,
+  code,
+  useDisclosure,
+  Button,
+} from "@nextui-org/react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+
+import {
+  codeFlask,
+  codeGo,
+  codeGoHandler,
+  codeJava,
+  codeJavaScript,
+  codeNode,
+  codePython,
+  codeReact,
+  codeSpring,
+} from "../utils/codestub";
+import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
+
+
+const codeLanguage = [
+  {
+    language: "javascript",
+    support: "javascript",
+    code: codeJavaScript,
+  },
+  {
+    language: "python",
+    support: "python",
+    code: codePython,
+  },
+  {
+    language: "java",
+    support: "java",
+    code: codeJava,
+  },
+  {
+    language: "go",
+    support: "go",
+    code: codeGo,
+  },
+  {
+    language: "react",
+    code: codeReact,
+    support: "jsx",
+  },
+];
+const codeLanguageBoomi = [
+  {
+    language: "node",
+    support: "javascript",
+    code: codeNode,
+  },
+  {
+    language: "python",
+    support: "python",
+    code: codeFlask,
+  },
+  {
+    language: "java",
+    support: "java",
+    code: codeSpring,
+  },
+  {
+    language: "go",
+    support: "go",
+    code: codeGoHandler,
+  },
+ 
+];
 
 function calculateDistance(x1, y1, x2, y2) {
   const deltaX = x2 - x1;
@@ -49,7 +123,6 @@ function removeRepeatingValues(arr) {
 
     // If the element is not in the hash table, add it to the uniqueArray
     if (element.type !== "line") {
-      console.log(element.type);
       if (!seen[element.options.meta.common.label]) {
         uniqueArray.push(element);
         seen[element.options.meta.common.label] = true;
@@ -62,18 +135,14 @@ function removeRepeatingValues(arr) {
     // If the element is not in the hash table, add it to the uniqueArray
     if (element.type === "line") {
       if (!seen[element.options.meta.common.label]) {
-        console.log(element.options.depending[0].name);
-        console.log(element.options.depending[1].name);
         for (let j = 0; j < 2; j++) {
           var ele = findElement(uniqueArray, element.options.depending[j].name);
-          console.log("ele", ele, ele.type);
           if (ele.type === "rectangle") {
             const { x, y } = attachLineToShape(
               ele,
               element,
               element.options.depending[j].start
             );
-            console.log(element.x1, element.y1, x, y);
             if (element.options.depending[j].start) {
               element = {
                 ...element,
@@ -93,7 +162,6 @@ function removeRepeatingValues(arr) {
               element,
               element.options.depending[j].start
             );
-            console.log(element.x1, element.y1, x, y);
             if (element.options.depending[j].start) {
               // element.x1 = x;
               // element.y1 = y;
@@ -205,7 +273,15 @@ const Project = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
-  const [panOffset, setPanOffset] = React.useState({ x: 0, y: 0 });
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [selectedElement, setSelectedElement] = useState(null);
+
+  const getMouseCoordinates = (event) => {
+    const clientX = event.clientX - panOffset.x;
+    const clientY = event.clientY - panOffset.y;
+    return { clientX, clientY };
+  };
 
   const getUser = async () => {
     try {
@@ -237,7 +313,6 @@ const Project = () => {
             }
           );
 
-          console.log("response", response, response.data);
           const arr = [];
 
           response.data.forEach((element) => {
@@ -245,20 +320,8 @@ const Project = () => {
               arr.push(workspace.meta);
             });
           });
-          console.log(arr);
-          // ----------------
-          // console.log(arr[0].options.meta.common.label);
-          // const arr1 = [];
-          // arr1.push(arr[0])
-          // setElements(arr1);
 
-          // ----------------
-          // debugger
           setFinalElements(removeRepeatingValues(arr));
-          // debugger
-          // if (response.data && response.data.elements) {
-          //   setElements(response.data.elements);
-          // }
         } catch (error) {
           console.error("Error fetching workspace data:", error);
         }
@@ -267,7 +330,9 @@ const Project = () => {
       fetchWorkspaceData();
     }
   }, []);
-  console.log("data for debug", finalElements);
+
+  console.log("finalElements", finalElements);
+
   useLayoutEffect(() => {
     if (!finalElements) return;
     const canvas = document.getElementById("canvas");
@@ -279,29 +344,27 @@ const Project = () => {
     context.save();
     context.translate(panOffset.x, panOffset.y);
     const gridSize = 20;
-    const canvasWidth = canvas.width*100;
-    const canvasHeight = canvas.height*100;
-  
+    const canvasWidth = canvas.width * 100;
+    const canvasHeight = canvas.height * 100;
+
     context.beginPath();
-    context.strokeStyle = 'rgba(0, 0, 0, 0.1)';
-  
+    context.strokeStyle = "rgba(0, 0, 0, 0.1)";
+
     // Vertical lines
     for (let x = 0; x <= canvasWidth; x += gridSize) {
       context.moveTo(x, 0);
       context.lineTo(x, canvasHeight);
     }
-  
+
     // Horizontal lines
     for (let y = 0; y <= canvasHeight; y += gridSize) {
       context.moveTo(0, y);
       context.lineTo(canvasWidth, y);
     }
-  
+
     context.stroke();
 
     finalElements?.map((element) => {
-      console.log("name", element);
-
       try {
         const updatedElement = createElement(
           element.id,
@@ -320,6 +383,22 @@ const Project = () => {
     });
     context.restore();
   }, [finalElements, panOffset]);
+
+  const handleDoubleClick = (event) => {
+    const { clientX, clientY } = getMouseCoordinates(event);
+    const element = getElementAtPosition(clientX, clientY, finalElements);
+    onOpenChange();
+    setSelectedElement(element, element);
+  };
+
+  const bool = selectedElement?.options?.connected?.some(
+    (ele) => ele.type === "kafka"
+  );
+  const boolBoomi = selectedElement?.options?.connected?.some(
+    (ele) => ele.type === "boomi"
+  );
+  // console.log(bool);
+
   return (
     <>
       <div className="fixed top-5 left-5 z-50 items-center gap-2 flex flex-col justify-center bg-gray-300 rounded-lg p-2">
@@ -334,10 +413,125 @@ const Project = () => {
           <IoArrowBackCircleOutline className="w-5  h-5 " />
         </button>
       </div>
+
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="5xl"
+        scrollBehavior="inside"
+        // className={"overflow-scroll"}
+      >
+        <ModalContent>
+          <div className="w-full rounded-lg border border-gray-400 flex flex-col gap-2 shadow-sm py-4 px-6">
+            <h1 className="text-base font-bold">Meta</h1>
+            <div className="flex flex-col gap-4">
+              {selectedElement?.options?.meta?.common &&
+                Object.entries(selectedElement?.options?.meta?.common).map(
+                  ([key, value]) => (
+                    <div className="w-full flex gap-2">
+                      <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
+                        {key.toUpperCase()}:
+                      </h2>
+                      <p className="w-4/5 bg-gray-300 p-2 rounded-lg">
+                        {value}
+                      </p>
+                    </div>
+                  )
+                )}
+            </div>
+
+            {selectedElement?.options?.meta?.other &&
+              Object.entries(selectedElement?.options?.meta?.other).map(
+                ([key, value]) => (
+                  <div className="w-full flex gap-2">
+                    <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
+                      {key}
+                    </h2>
+                    <p className="w-4/5 bg-gray-300 p-2 rounded-lg">{value}</p>
+                  </div>
+                )
+              )}
+            <Tabs aria-label="Options">
+              {bool && (
+                <Tab
+                  key="kafka"
+                  title="kafka"
+                  className="flex w-full flex-col overflow-y-hidden h-1/2"
+                >
+                  <Tabs aria-label="Options">
+                    {codeLanguage.map((code) => (
+                      <Tab
+                        key={code.language}
+                        title={code.language}
+                        className="relative"
+                      >
+                        <Button
+                          onClick={() => {
+                            navigator.clipboard.writeText(code.code);
+                          }}
+                          className="absolute top-10 right-5 z-50"
+                        >
+                          <GoCopy />
+                        </Button>
+                        <Card>
+                          <SyntaxHighlighter
+                            language={code.support}
+                            style={darcula}
+                            className="!max-h-[550px]"
+                          >
+                            {code.code}
+                          </SyntaxHighlighter>
+                        </Card>
+                      </Tab>
+                    ))}
+                  </Tabs>
+                </Tab>
+              )}
+              {boolBoomi && (
+                <Tab
+                  key="boomi"
+                  title="boomi"
+                  className="flex w-full flex-col overflow-y-hidden h-1/2"
+                >
+                  <Tabs aria-label="Options">
+                    {codeLanguageBoomi.map((code) => (
+                      <Tab
+                        key={code.language}
+                        title={code.language}
+                        className="relative"
+                      >
+                        <Button
+                          onClick={() => {
+                            navigator.clipboard.writeText(code.code);
+                          }}
+                          className="absolute top-10 right-5 z-50"
+                        >
+                          <GoCopy />
+                        </Button>
+                        <Card>
+                          <SyntaxHighlighter
+                            language={code.support}
+                            style={darcula}
+                            className="!max-h-[550px]"
+                          >
+                            {code.code}
+                          </SyntaxHighlighter>
+                        </Card>
+                      </Tab>
+                    ))}
+                  </Tabs>
+                </Tab>
+              )}
+            </Tabs>
+          </div>
+        </ModalContent>
+      </Modal>
+
       <canvas
         id="canvas"
         width={canvasSize.width}
         height={canvasSize.height}
+        onDoubleClick={handleDoubleClick}
         // onMouseDown={handleMouseDown}
         // onMouseMove={handleMouseMove}
         // onMouseUp={handleMouseUp}
