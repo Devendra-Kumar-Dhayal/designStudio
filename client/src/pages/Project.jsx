@@ -296,6 +296,7 @@ const Project = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  // const [wid, setWid] = useState(null);
   const [action, setAction] = useState("none");
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -307,7 +308,7 @@ const Project = () => {
     const clientY = event.clientY - panOffset.y;
     return { clientX, clientY };
   };
-
+  console.log(elements)
   const getUser = async () => {
     try {
       const user = await axios.get(`${BASEURL}/api/auth/user/me`, {
@@ -326,7 +327,9 @@ const Project = () => {
     getUser();
 
     const searchParams = new URLSearchParams(window.location.search);
+  
     const projectId = searchParams.get("pid");
+    const wid = searchParams.get("wid")
     if (projectId) {
       setProjectId(projectId);
       const fetchWorkspaceData = async () => {
@@ -339,12 +342,27 @@ const Project = () => {
           );
 
           const arr = [];
+          // console.log(response.data)
 
-          response.data.forEach((element) => {
-            element.workspaces.forEach((workspace) => {
-              arr.push(workspace.meta);
+          if(wid){
+            // workspaceId;
+            response.data.forEach((element) => {
+              element.workspaces.forEach((workspace) => {
+                if(workspace.workspaceId === wid){
+                  arr.push(workspace.meta);
+                }
+              });
             });
-          });
+          }
+          else{
+
+            response.data.forEach((element) => {
+              element.workspaces.forEach((workspace) => {
+                arr.push(workspace.meta);
+              });
+            });
+          }
+
 
           setFinalElements(removeRepeatingValues(arr));
         } catch (error) {

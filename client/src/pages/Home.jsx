@@ -18,9 +18,12 @@ const Home = () => {
   const [key, setkey] = useState("");
   const [value, setValue] = useState("");
 
-  const { selectedProjectId } = useContext(ProjectContext);
+  const { selectedProjectId, isDesigner, setIsDesigner } =
+    useContext(ProjectContext);
 
   const navigate = useNavigate();
+
+  console.log("isDesigner",isDesigner)
 
   useEffect(() => {
     const getRecents = async () => {
@@ -183,10 +186,11 @@ const Home = () => {
             <div
               className="w-full h-[50px] bg-[#F8F9FA] p-3 rounded-xl flex flex-col justify-between shadow-md hover:bg-slate-100 cursor-pointer "
               onClick={() => {
-                navigate({
-                  pathname: "/workspace",
-                  search: `?wid=${recent._id}`,
-                });
+                 navigate({
+                      pathname: "/workspace",
+                      search: `?wid=${recent._id}`,
+                    })
+                 
               }}
               key={index}
             >
