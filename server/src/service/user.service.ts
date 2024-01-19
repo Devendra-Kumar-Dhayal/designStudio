@@ -6,7 +6,10 @@ import config from "config";
 import axios from "axios";
 import logger from "../utils/logger";
 import { CreateSessionInput } from "../schema/session.schema";
-export async function createUser(input: UserInput) {
+import { CreateUserInput } from "../schema/user.schema";
+import bcrypt from 'bcrypt';
+export async function createUser(input: CreateUserInput["body"]) {
+  console.log("input:", input);
   try {
     const useremail = input.email;
 
@@ -14,15 +17,36 @@ export async function createUser(input: UserInput) {
     if (isuser != null) {
       throw new Error("User already exists");
     } else {
-      const user = await UserModel.create(input);
+      console.log("first");
+      // const {email,password,} = input
+      // const user = await UserModel.create({
+      //   name: input.name,
+      //   email: input.email,
+      //   password: input.password,
+      // });
+      // const salt = await bcrypt.genSalt(12);
+      // console.log("third");
+      // const hash = await bcrypt.hash(input.password, salt);
+      // console.log(hash,input.password)
+      
+      const user = await UserModel.create({
+        name: input.name,
+        email: input.email,
+        password: input.password,
+      });
+      console.log("first", user);
       return omit(user.toJSON(), "password");
     }
   } catch (e: any) {
+    console.log("Eroor", e);
     throw new Error(e);
   }
 }
 
-export async function validatePassword({ email, password }: CreateSessionInput) {
+export async function validatePassword({
+  email,
+  password,
+}: CreateSessionInput) {
   const user = await UserModel.findOne({ email });
 
   if (!user) {
@@ -62,7 +86,6 @@ export async function getGoogleOAuthTokens({
     redirect_uri: config.get("googleOauthRedirectUrl"),
     grant_type: "authorization_code",
   };
-
 
   try {
     const res = await axios.post<GoogleTokensResult>(
@@ -121,8 +144,7 @@ export async function findAndUpdateUser(
   update: UpdateQuery<UserDocument>,
   options: QueryOptions = {}
 ) {
-
-  console.log("update",update)
+  console.log("update", update);
   return UserModel.findOneAndUpdate(query, update, options);
 }
 

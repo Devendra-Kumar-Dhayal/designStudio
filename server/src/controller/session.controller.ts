@@ -59,7 +59,6 @@ export async function createUserSessionHandler(
   req: Request<{}, {}, CreateSessionInput>,
   res: Response
 ) {
-
   // Validate the user's password
   const user = await validatePassword(req.body);
 

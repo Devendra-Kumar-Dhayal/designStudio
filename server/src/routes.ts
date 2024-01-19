@@ -47,6 +47,8 @@ import {
 const router = express.Router();
 
 //user
+
+router.get("/api/healthcheck", (req, res) => res.sendStatus(200));
 router.post(
   "/api/register",
   validateResource(createUserSchema),
@@ -89,7 +91,6 @@ router.get(
   getWorkspaceHandler
 );
 
-// PUT /api/workspaces/{workspaceId} - Update a single workspace by its ID
 router.put(
   "/api/workspaces/:workspaceId",
   [requireDesigner, validateResource(updateWorkspaceSchema)],
