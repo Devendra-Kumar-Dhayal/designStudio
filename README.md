@@ -1,4 +1,26 @@
+# Application Design Studio
+![image](https://i.pinimg.com/originals/44/db/bd/44dbbd8d16d9f5a8f5492db8d9fbb132.png)
 
+Web-based editor to model the individual data flows
+between applications. Team of applications collaborating to make a business function smoothly 
+
+# Inspiration 
+The Data Flow Modeling Web Editor streamlines system understanding by providing an intuitive interface to visually model and document data flows between applications, enhancing collaboration and facilitating real-time communication for seamless integration and efficient project management.
+
+# User Stories 
+- Designer mode: to create, delete and modify flows
+- Viewer mode: to visualise flows 
+
+## Features
+
+- Intuitive Interface
+- Application Integration
+- REST API Integration
+- Scalability
+- Security and Documentation
+
+## Tech Stack
+![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E) ![Node.js](https://img.shields.io/badge/NodeJs-1572B6?style=for-the-badge&logo=nodejs&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-323330?style=for-the-badge&logo=typescript&logoColor=F7DF1E) ![MongoDB](https://img.shields.io/badge/MongoDb-1572B6?style=for-the-badge&logo=mongodb&logoColor=white) ![Express](https://img.shields.io/badge/Express-1572B6?style=for-the-badge&logo=express&logoColor=white)
 
 ## Quick start
 
