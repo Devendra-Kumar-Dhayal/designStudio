@@ -18,4 +18,5 @@ jobs:
         run: docker build ./client/ --tag nevdread/client:latest
       - name: publish
         run: |
+          docker login -u nevdread -p ${{ secrets.DOCKER_HUB_TOKEN }}
           docker push nevdread/client:latest
