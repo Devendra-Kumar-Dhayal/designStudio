@@ -4,7 +4,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { FaQuestion } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
-import { Cookies,remove } from "react-cookie";
+import { Cookies, remove } from "react-cookie";
 
 import {
   Button,
@@ -53,6 +53,8 @@ const Navbarr = ({ user }) => {
   console.log("user", user);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const navigate = useNavigate();
+    const cookies = new Cookies();
+  
 
   const selected = selectedProjectId ? [selectedProjectId] : [];
 
@@ -96,18 +98,18 @@ const Navbarr = ({ user }) => {
     }
   };
 
-  const handleLogout = () => {
-    const cookies = new Cookies();
+  const handleLogout = async() => {
 
-    // Get an array of all cookie names
-    // const cookieNames = cookies.getAll();
 
-    // Remove each cookie by name
-    // remove("accessToken");
-    // remove("refreshToken");
-    // navigate("/login");
+    // const resp = await axios.get(`${BASEURL}/api/logout`, {
+    //   withCredentials: true,
+    // });
+    // if (resp.status === 200) {
+    //   toast.success("Logout succesfull");
+    //   navigate("/login");
+    // }
 
-    // Optionally, you can redirect the user to the login page or perform other logout actions
+    //
   };
 
   return (

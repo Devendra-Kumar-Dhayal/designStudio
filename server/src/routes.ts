@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import {
   createUserSessionHandler,
   deleteSessionHandler,
@@ -83,6 +83,12 @@ router.post(
   validateResource(forgotPassword),
   forgotPasswordUserHandler
 );
+
+// router.get("/api/logout", (req:Request, res:Response) => {
+//   res.clearCookie("accessToken");
+//   res.clearCookie("refreshToken");
+//   return res.sendStatus(200);
+// });
 router.post(
   "/api/verify",
   validateResource(verifyEmailForgotPassword),
