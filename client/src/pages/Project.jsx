@@ -150,7 +150,7 @@ const Project = () => {
           );
 
           const arr = [];
-          // console.log(response.data)
+          console.log(response.data)
 
           if(wid){
             // workspaceId;

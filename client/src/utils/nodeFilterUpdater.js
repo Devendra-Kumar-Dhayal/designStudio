@@ -157,14 +157,14 @@ export function updateLine(arr, uniqueArray,seen){
       if (element.type === "line") {
         if (!seen[element.options.meta.common.label]) {
           for (let j = 0; j < 2; j++) {
-            var ele = findElement(uniqueArray, element.options.depending[j].name);
-            if (ele.type === "rectangle") {
+            var ele = findElement(uniqueArray, element.options.depending[j]?.name);
+            if (ele?.type === "rectangle") {
               const { x, y } = attachLineToShape(
                 ele,
                 element,
                 element.options.depending[j].start
               );
-              if (element.options.depending[j].start) {
+              if (element.options.depending[j]?.start) {
                 element = {
                   ...element,
                   x1: x,

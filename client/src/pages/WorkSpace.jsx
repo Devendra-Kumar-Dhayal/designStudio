@@ -231,7 +231,7 @@ const WorkSpace = () => {
   const handleDiscard = async () => {
     setMeta(elements[selectedIdFormeta].options?.meta || {});
   };
- console.log("elements:", elements);
+  console.log("elements:", elements);
 
   const handleNewElement = async (element) => {
     console.log("element:", element);
@@ -256,23 +256,22 @@ const WorkSpace = () => {
       }
     );
     const currentWorkspaces = element?.workspaces ?? [];
-     currentWorkspaces.push({ workspaceId: wid });
+    currentWorkspaces.push({ workspaceId: wid });
 
-     const res = await axios.put(
-       `${BASEURL}/api/projectelement`,
-       {
-         projectId: selectedProjectId,
-         name: element.name,
-         workspaces: currentWorkspaces,
-       },
-       {
-         withCredentials: true,
-       }
-     );
-     if(res.status===200){
-
-       setElements(prev=>[...prev,newElement])
-     }
+    const res = await axios.put(
+      `${BASEURL}/api/projectelement`,
+      {
+        projectId: selectedProjectId,
+        name: element.name,
+        workspaces: currentWorkspaces,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    if (res.status === 200) {
+      setElements((prev) => [...prev, newElement]);
+    }
   };
 
   const handleSubmit = async () => {
@@ -728,6 +727,7 @@ const WorkSpace = () => {
         }
         // else setSelectedIndex(null);
       }
+      console.log("options", options);
       const element = createElement(
         id,
         startX,
@@ -738,6 +738,7 @@ const WorkSpace = () => {
         selectedColor,
         options
       );
+      console.log("elementformed", element);
       elementsCopy.push(element);
 
       setElements(elementsCopy);
@@ -782,7 +783,7 @@ const WorkSpace = () => {
 
     if (action === "drawing") {
       const index = elements.length - 1;
-      const { x1, y1, type } = elements[index];
+      const { x1, y1, type, options } = elements[index];
       updateElement(
         [
           {
@@ -793,7 +794,7 @@ const WorkSpace = () => {
             y2: clientY,
             type,
             tool,
-            options: {},
+            options,
           },
         ],
         elements,
@@ -1055,12 +1056,12 @@ const WorkSpace = () => {
         onOpen();
         setSelectedIdFormeta(id);
         setMeta({ common: { ...SammpleObject } });
-        const { x1, y1, x2, y2 } = elements[index];
+        const { x1, y1, x2, y2, options } = elements[index];
 
         if (selectedIndex === null) {
           setAction("none");
           updateElement(
-            [{ id, x1, y1, x2, y2, type, options: {} }],
+            [{ id, x1, y1, x2, y2, type, options }],
             elements,
             setElements,
             selectedColor
@@ -1634,7 +1635,11 @@ const WorkSpace = () => {
         handleColorTypeUpdate={handleColorTypeUpdate}
       />
       <div className="w-48 absolute z-50 top-3 right-1/4">
-        <Search projectId={selectedProjectId} onClick={handleNewElement} wid={wid} />
+        <Search
+          projectId={selectedProjectId}
+          onClick={handleNewElement}
+          wid={wid}
+        />
       </div>
 
       <canvas
