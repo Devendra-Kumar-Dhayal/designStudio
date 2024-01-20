@@ -151,6 +151,8 @@ export async function googleOauthHandler(req: Request, res: Response) {
     // create a session
     const session = await createSession(user!._id, req.get("user-agent") || "");
 
+    console.log(user,session)
+
     // create an access token
 
     const accessToken = signJwt(

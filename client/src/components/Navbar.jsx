@@ -3,6 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaQuestion } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
+import { IoMdAdd } from "react-icons/io";
+import { Cookies,remove } from "react-cookie";
 
 import {
   Button,
@@ -15,8 +17,19 @@ import {
   ModalBody,
   ModalFooter,
   Input,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Link,
+  NavbarMenu,
+  NavbarMenuItem,
+  Avatar,
 } from "@nextui-org/react";
-import { IoMdAdd } from "react-icons/io";
 
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -30,15 +43,16 @@ import { BASEURL } from "../utils/functions";
 import { set } from "lodash";
 import { toast } from "sonner";
 
-const Navbar = ({user}) => {
+const Navbarr = ({ user }) => {
   const [search, setsearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [name, setName] = useState("")
-  const { selectedProjectId, setSelectedProjectId } = 
-  useContext(ProjectContext);
-  console.log("user",user)
+  const [name, setName] = useState("");
+  const { selectedProjectId, setSelectedProjectId } =
+    useContext(ProjectContext);
+  console.log("user", user);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const navigate = useNavigate();
 
   const selected = selectedProjectId ? [selectedProjectId] : [];
 
@@ -58,25 +72,42 @@ const Navbar = ({user}) => {
   };
 
   const handleCreateNewProject = async (onClose) => {
-
     try {
-      const res = await axios.post(`${BASEURL}/api/project`,{
-        name,
-      }, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        `${BASEURL}/api/project`,
+        {
+          name,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       console.log("resp", res);
-      if(res.status===201){
-        setProjects([...projects, res.data])
-        setSelectedProjectId(res.data._id)
-        setName("")
+      if (res.status === 201) {
+        setProjects([...projects, res.data]);
+        setSelectedProjectId(res.data._id);
+        setName("");
 
         onClose();
       }
     } catch (error) {
       console.log(error);
-      toast.error(error)
+      toast.error(error);
     }
+  };
+
+  const handleLogout = () => {
+    const cookies = new Cookies();
+
+    // Get an array of all cookie names
+    // const cookieNames = cookies.getAll();
+
+    // Remove each cookie by name
+    // remove("accessToken");
+    // remove("refreshToken");
+    // navigate("/login");
+
+    // Optionally, you can redirect the user to the login page or perform other logout actions
   };
 
   return (
@@ -117,16 +148,14 @@ const Navbar = ({user}) => {
         className="max-w-[250px]"
         selectedKeys={[...selected]}
       >
-        {
-          projects?.map((project) => (
-            <SelectItem
-              key={project._id}
-              onClick={() => setSelectedProjectId(project._id)}
-            >
-              {project.name}
-            </SelectItem>
-          ))
-        }
+        {projects?.map((project) => (
+          <SelectItem
+            key={project._id}
+            onClick={() => setSelectedProjectId(project._id)}
+          >
+            {project.name}
+          </SelectItem>
+        ))}
         <SelectItem key={"add"}>
           <Button className="w-full  flex flex-row gap-2" onClick={onOpen}>
             <IoMdAdd />
@@ -169,15 +198,28 @@ const Navbar = ({user}) => {
         )}
       </div>
 
-      <div className="flex items-center gap-3">
-        
-
-        <RxAvatar alt="" className="w-[24px] h-[24px]" />
-
-        <p className="text-lg font-normal hidden md:block">{user?.name}</p>
-      </div>
+      <Dropdown>
+        <DropdownTrigger>
+          <Button variant="bordered">
+            {/* <Avatar
+              isBordered
+              as="button"
+              className="transition-transform"
+              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+            /> */}
+            <p className="text-lg font-normal hidden md:block">{user?.name}</p>
+          </Button>
+        </DropdownTrigger>
+        <DropdownMenu aria-label="Static Actions">
+          <DropdownItem key="new">
+            <Button variant="bordered" onPress={handleLogout}>
+              Logout
+            </Button>
+          </DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
     </div>
   );
 };
 
-export default Navbar;
+export default Navbarr;

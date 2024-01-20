@@ -17,7 +17,7 @@ export interface UserInput {
   name: string;
   password?: string;
   role?: UserRole;
-  googleId?:string;
+  googleId?: string;
 }
 
 export interface UserDocument extends UserInput, mongoose.Document {
@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema(
     googleId: {
       type: String,
       required: false,
-      unique: true,
+      unique: false,
       validate: passwordOrGoogleIdValidator,
     },
   },
@@ -55,54 +55,53 @@ function passwordOrGoogleIdValidator(this: any) {
 
   console.log("mongoose.this", this);
   const bool = !!(this.password !== undefined || this.googleId !== undefined);
-  console.log(bool)
-  return bool
+  console.log(bool);
+  return bool;
 }
 
 userSchema.pre("save", async function (next) {
   let user = this as UserDocument;
-  console.log("user",user)
+  console.log("user", user);
 
   if (!user.isModified("password")) {
     return next();
   }
-  console.log("first")
-  if(!user.password){
-    return next()
+  console.log("first");
+  if (!user.password) {
+    return next();
   }
-  console.log("second")
+  console.log("second");
 
- try {
-   const salt = randomBytes(16).toString("hex");
-   const hash = pbkdf2Sync(user.password, salt, 10000, 64, "sha512").toString(
-     "hex"
-   );
-   console.log("Hashed password", hash);
-   user.password = `${salt}$${hash}`;
-   next();
- } catch (error:any) {
-   console.error("Error during hashing:", error);
-   next(error);
- }
-
+  try {
+    const salt = randomBytes(16).toString("hex");
+    const hash = pbkdf2Sync(user.password, salt, 10000, 64, "sha512").toString(
+      "hex"
+    );
+    console.log("Hashed password", hash);
+    user.password = `${salt}$${hash}`;
+    next();
+  } catch (error: any) {
+    console.error("Error during hashing:", error);
+    next(error);
+  }
 });
 
 userSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
- const user = this as UserDocument;
- const password = user.password as string;
- const [salt, hashedPassword] = password.split("$");
+  const user = this as UserDocument;
+  const password = user.password as string;
+  const [salt, hashedPassword] = password.split("$");
 
- const candidateHash = pbkdf2Sync(
-   candidatePassword,
-   salt,
-   10000,
-   64,
-   "sha512"
- ).toString("hex");
+  const candidateHash = pbkdf2Sync(
+    candidatePassword,
+    salt,
+    10000,
+    64,
+    "sha512"
+  ).toString("hex");
 
- return candidateHash === hashedPassword;
+  return candidateHash === hashedPassword;
 };
 
 const UserModel = mongoose.model<UserDocument>("User", userSchema);

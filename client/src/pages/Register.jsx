@@ -7,30 +7,35 @@ import axios from "axios";
 import { BASEURL } from "../utils/functions";
 import { toast } from "sonner";
 
-const Login = () => {
+const Register = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        `${BASEURL}/api/login`,
+        `${BASEURL}/api/register`,
         {
+          name,
           email,
           password,
+          passwordConfirmation,
         },
         {
           withCredentials: true,
         }
       );
-      if (response.status===200) {
+      if (response.status === 200) {
         navigate("/");
       }
       // Handle the response here
     } catch (error) {
       toast.error("Error");
-      console.log(error)
+      console.log(error);
       // Handle the error here
     }
   };
@@ -40,7 +45,13 @@ const Login = () => {
       <img src={SideImg} alt="sideImg" className=" w-1/2 h-screen" />
       <div className="flex flex-col items-center justify-center w-1/2 h-screen">
         <div className="w-2/3 h-fit rounded-xl p-4 flex flex-col items-center justify-center shadow-medium gap-4">
-          <h1 className="text-2xl font-semibold text-left ">Sign in</h1>
+          <h1 className="text-2xl font-semibold text-left ">Sign Up</h1>
+          <Input
+            type="text"
+            label="Name"
+            value={name}
+            onValueChange={setName}
+          />
           <Input
             type="email"
             label="Email"
@@ -53,9 +64,13 @@ const Login = () => {
             value={password}
             onValueChange={setPassword}
           />
-          <div className="flex text-xs text-gray-600 hover:text-gray-400 cursor-pointer  self-end flex-start justify-start">
-            Forgot Password?
-          </div>
+          <Input
+            type="password"
+            label="Confirm Password"
+            value={passwordConfirmation}
+            onValueChange={setPasswordConfirmation}
+          />
+
           <Button
             auto
             shadow
@@ -63,7 +78,7 @@ const Login = () => {
             className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
             onPress={handleSubmit}
           >
-            Sign In
+            Sign Up
           </Button>
           <div className="w-full relative border-b my-4">
             <h1 className="absolute px-4 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white text-gray-400">
@@ -73,10 +88,10 @@ const Login = () => {
 
           <Googleauth />
 
-          <div className="flex text-lg text-gray-600 hover:text-slate-500 cursor-pointer   flex-start justify-start" onClick={()=>{
-            navigate("/register")
+          <div className="flex text-lg text-gray-600 hover:text-slate-500 cursor-pointer   flex-start justify-start" onClick={() => {
+            navigate("/login")
           }}>
-            Create Account?
+            Already have an account?
           </div>
         </div>
       </div>
@@ -84,4 +99,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
