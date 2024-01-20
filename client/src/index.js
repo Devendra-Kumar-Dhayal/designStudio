@@ -5,14 +5,17 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import ProjectContextProvider from "./components/ProjectContext";
 import { NextUIProvider } from "@nextui-org/react";
+import { CookiesProvider } from "react-cookie";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <NextUIProvider>
-    <ProjectContextProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ProjectContextProvider>
-  </NextUIProvider>
+  <CookiesProvider defaultSetOptions>
+    <NextUIProvider>
+      <ProjectContextProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ProjectContextProvider>
+    </NextUIProvider>
+  </CookiesProvider>
 );

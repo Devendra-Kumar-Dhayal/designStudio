@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import {
   createUserSessionHandler,
   deleteSessionHandler,
@@ -6,9 +6,12 @@ import {
   googleOauthHandler,
 } from "./controller/session.controller";
 import {
+  changePasswordUserHandler,
   createUserHandler,
+  forgotPasswordUserHandler,
   getCurrentUser,
   setUserRole,
+  verifyForgotPasswordUserHandler,
 } from "./controller/user.controller";
 import {
   createProjectElementHandler,
@@ -31,7 +34,13 @@ import requireDesigner from "./middleware/requireDesigner";
 import requireUser from "./middleware/requireUser";
 import validateResource from "./middleware/validateResource";
 import { createSessionSchema } from "./schema/session.schema";
-import { chooseRoleSchema, createUserSchema } from "./schema/user.schema";
+import {
+  changePassword,
+  chooseRoleSchema,
+  createUserSchema,
+  forgotPassword,
+  verifyEmailForgotPassword,
+} from "./schema/user.schema";
 import {
   createProjectElementSchema,
   createProjectSchema,
@@ -41,38 +50,16 @@ import {
   getWorkspaceSchema,
   removeProjectElementSchema,
   updateProjectElementSchema,
-  updateWorkspaceSchema
+  updateWorkspaceSchema,
 } from "./schema/workspace.schema";
 
 const router = express.Router();
 
-/**
- * @openapi
- * '/api/users':
- *  post:
- *     tags:
- *     - User
- *     summary: Register a user
- *     requestBody:
- *      required: true
- *      content:
- *        application/json:
- *           schema:
- *              $ref: '#/components/schemas/CreateUserInput'
- *     responses:
- *      200:
- *        description: Success
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/CreateUserResponse'
- *      409:
- *        description: Conflict
- *      400:
- *        description: Bad request
- */
+//user
+
+router.get("/api/healthcheck", (req, res) => res.sendStatus(200));
 router.post(
-  "/api/users",
+  "/api/register",
   validateResource(createUserSchema),
   createUserHandler
 );
@@ -84,58 +71,34 @@ router.put(
   requireUser,
   setUserRole
 );
-/**
- * @openapi
- * '/api/sessions':
- *  get:
- *    tags:
- *    - Session
- *    summary: Get all sessions
- *    responses:
- *      200:
- *        description: Get all sessions for current user
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetSessionResponse'
- *      403:
- *        description: Forbidden
- *  post:
- *    tags:
- *    - Session
- *    summary: Create a session
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            $ref: '#/components/schemas/CreateSessionInput'
- *    responses:
- *      200:
- *        description: Session created
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/CreateSessionResponse'
- *      401:
- *        description: Unauthorized
- *  delete:
- *    tags:
- *    - Session
- *    summary: Delete a session
- *    responses:
- *      200:
- *        description: Session deleted
- *      403:
- *        description: Forbidden
- */
+
 router.post(
-  "/api/sessions",
+  "/api/login",
   validateResource(createSessionSchema),
   createUserSessionHandler
 );
 
-router.get("/api/sessions", requireUser, getUserSessionsHandler);
+router.post(
+  "/api/forgotpassword",
+  validateResource(forgotPassword),
+  forgotPasswordUserHandler
+);
+
+// router.get("/api/logout", (req:Request, res:Response) => {
+//   res.clearCookie("accessToken");
+//   res.clearCookie("refreshToken");
+//   return res.sendStatus(200);
+// });
+router.post(
+  "/api/verify",
+  validateResource(verifyEmailForgotPassword),
+  verifyForgotPasswordUserHandler
+);
+router.post(
+  "/api/changepassword",
+  [requireUser, validateResource(changePassword)],
+  changePasswordUserHandler
+);
 
 router.delete("/api/sessions", requireUser, deleteSessionHandler);
 
@@ -144,7 +107,6 @@ router.get("/oauth/error", (req, res) => {
   // Handle OAuth error here
   const error = req.query.error;
   console.log("error", error);
-  // Process error or redirect as needed
   res.status(500).send(`OAuth Error: ${error}`);
 });
 
@@ -158,7 +120,6 @@ router.get(
   getWorkspaceHandler
 );
 
-// PUT /api/workspaces/{workspaceId} - Update a single workspace by its ID
 router.put(
   "/api/workspaces/:workspaceId",
   [requireDesigner, validateResource(updateWorkspaceSchema)],

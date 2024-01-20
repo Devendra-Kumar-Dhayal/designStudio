@@ -5,7 +5,7 @@ const requireDesigner = async (req: Request, res: Response, next: NextFunction) 
   const user = res.locals.user;
   if(!user) return res.sendStatus(403)
 
-  const userDatabase = await findUser({ _id: user._doc._id });
+  const userDatabase = await findUser({ _id: user._id });
   
 
   if ( !userDatabase|| userDatabase.role !== "designer") {

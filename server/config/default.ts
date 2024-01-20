@@ -76,4 +76,11 @@ afkT/Dx/vJkzxMmdm680wOdfLlWWrKPvAOs374qos5s47vVRQZMhRPU3
 `,
   origin: "http://localhost:3000",
   googleOauthRedirectUrl: "http://localhost:5000/api/sessions/oauth/google",
+  smtp: {
+    user: process.env.MAIL_USERNAME,
+    pass: process.env.MAIL_PASSWORD,
+    host: process.env.MAIL_SERVER,
+    port: 587,
+    secure: false,
+  },
 };

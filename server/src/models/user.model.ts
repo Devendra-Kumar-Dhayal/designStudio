@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import config from "config";
 import validate from "../middleware/validateResource";
+import { log } from "console";
+import logger from "../utils/logger";
+import argon2 from "argon2";
+import { randomBytes, pbkdf2Sync } from "crypto";
 
 export enum UserRole {
   Viewer = "viewer",
@@ -13,7 +17,8 @@ export interface UserInput {
   name: string;
   password?: string;
   role?: UserRole;
-  googleId?:string;
+  googleId?: string;
+  token?: string;
 }
 
 export interface UserDocument extends UserInput, mongoose.Document {
@@ -38,9 +43,13 @@ const userSchema = new mongoose.Schema(
     googleId: {
       type: String,
       required: false,
-      unique: true,
+      unique: false,
       validate: passwordOrGoogleIdValidator,
     },
+    token:{
+      type:String,
+      required:false
+    }
   },
   {
     timestamps: true,
@@ -48,35 +57,56 @@ const userSchema = new mongoose.Schema(
 );
 function passwordOrGoogleIdValidator(this: any) {
   // Ensure at least one of password or googleId exists
+
   console.log("mongoose.this", this);
-  return !!(this.password || this.googleId);
+  const bool = !!(this.password !== undefined || this.googleId !== undefined);
+  console.log(bool);
+  return bool;
 }
 
 userSchema.pre("save", async function (next) {
   let user = this as UserDocument;
+  console.log("user", user);
 
   if (!user.isModified("password")) {
     return next();
   }
-  if(!user.password){
-    return next()
+  console.log("first");
+  if (!user.password) {
+    return next();
   }
+  console.log("second");
 
-  const salt = await bcrypt.genSalt(config.get<number>("saltWorkFactor"));
-
-  const hash = await bcrypt.hashSync(user.password, salt);
-
-  user.password = hash;
-
-  return next();
+  try {
+    const salt = randomBytes(16).toString("hex");
+    const hash = pbkdf2Sync(user.password, salt, 10000, 64, "sha512").toString(
+      "hex"
+    );
+    console.log("Hashed password", hash);
+    user.password = `${salt}$${hash}`;
+    next();
+  } catch (error: any) {
+    console.error("Error during hashing:", error);
+    next(error);
+  }
 });
 
 userSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
   const user = this as UserDocument;
+  const password = user.password as string;
+  const [salt, hashedPassword] = password.split("$");
 
-  return bcrypt.compare(candidatePassword, user!.password as string ).catch((e) => false);
+  const candidateHash = pbkdf2Sync(
+    candidatePassword,
+    salt,
+    10000,
+    64,
+    "sha512"
+  ).toString("hex");
+
+  return candidateHash === hashedPassword;
 };
 
 const UserModel = mongoose.model<UserDocument>("User", userSchema);

@@ -3,6 +3,10 @@ import { Route, Routes } from "react-router-dom";
 import ProtectedLayout from "./components/loyout/ProtectedLayout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Verify from "./pages/Verify";
+import Forgot from "./pages/Forgot";
+import Change from "./pages/Change";
+import Register from "./pages/Register";
 import Recents from "./pages/Recents";
 import Submit from "./pages/Submit";
 import WorkSpace from "./pages/WorkSpace";
@@ -24,6 +28,10 @@ const App = () => {
         <Route exact path="/workspaceView" element={<Project />} />
         <Route exact path="/project" element={<Project />} />
         <Route exact path="/login" element={<Login />} />
+        <Route exact path="/forgot" element={<Forgot />} />
+        <Route exact path="/verify" element={<Verify />} />
+        <Route exact path="/change" element={<Change />} />
+        <Route exact path="/register" element={<Register />} />
         <Route exact path="/docs" element={<ReadmeViewer />} />
       </Routes>
     </div>
