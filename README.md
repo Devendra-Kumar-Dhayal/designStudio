@@ -49,6 +49,15 @@ navigate to server folder;
 setup .env file using .env.example
 at client side add .env.local
 and for server side .env
+## Documentation
+
+[Documentation](https://linktodocumentation)
+ 
+- Upon login, users access the workspace for CRUD operations.
+- Toolbar functionalities include creating boxes, adding services (e.g., Kafka, Boomi), and using a pencil for drawing.
+- A color palette is available for customization.
+- Submitted work is saved on the server for future access.
+- The dashboard features a "Recents" button to view recently submitted pages.
 
 # Deployment
 
