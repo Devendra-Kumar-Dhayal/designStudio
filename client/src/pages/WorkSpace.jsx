@@ -45,6 +45,8 @@ import {
   connectLinesProperly,
   validateElements,
 } from "../utils/validateElements";
+import { SearchIcon } from "../components/SearchIcon";
+import Search from "../components/Search";
 
 const color = ["#69C6BC", "#2A95A5", "#EDE7C7", "#DC7179", "#BB3A69"];
 
@@ -228,6 +230,49 @@ const WorkSpace = () => {
   };
   const handleDiscard = async () => {
     setMeta(elements[selectedIdFormeta].options?.meta || {});
+  };
+ console.log("elements:", elements);
+
+  const handleNewElement = async (element) => {
+    console.log("element:", element);
+    //create element here and make an api call
+    const id = elements.length;
+    let startX = canvasSize.width / 2 - 100;
+    let startY = canvasSize.height / 2 - 100;
+    const newElement = createElement(
+      id,
+      startX,
+      startY,
+      startX + fixedWidth,
+      startY + fixedWidth,
+      element.type,
+      element.color,
+      {
+        meta: {
+          common: {
+            label: element.name,
+          },
+        },
+      }
+    );
+    const currentWorkspaces = element?.workspaces ?? [];
+     currentWorkspaces.push({ workspaceId: wid });
+
+     const res = await axios.put(
+       `${BASEURL}/api/projectelement`,
+       {
+         projectId: selectedProjectId,
+         name: element.name,
+         workspaces: currentWorkspaces,
+       },
+       {
+         withCredentials: true,
+       }
+     );
+     if(res.status===200){
+
+       setElements(prev=>[...prev,newElement])
+     }
   };
 
   const handleSubmit = async () => {
@@ -488,7 +533,6 @@ const WorkSpace = () => {
   }, [action, selectedElement]);
 
   const handleClear = async () => {
-
     for (const ele of elements) {
       if (!!ele?.options?.meta?.common?.label) {
         try {
@@ -618,7 +662,7 @@ const WorkSpace = () => {
       let startX = clientX;
       let startY = clientY;
       let options = {};
-      const elementsCopy = elements
+      const elementsCopy = elements;
       if (tool === "line") {
         const element = getElementAtPosition(clientX, clientY, elements);
 
@@ -631,29 +675,28 @@ const WorkSpace = () => {
             const { x, y } = attachLineToShape(element, line, true);
             startX = x;
             startY = y;
-            options={
-              depending:[
+            options = {
+              depending: [
                 {
-                  element:element.id,
-                  start:true,
-                }
-              ]
-            }
-            const ele = elementsCopy[element.id]
+                  element: element.id,
+                  start: true,
+                },
+              ],
+            };
+            const ele = elementsCopy[element.id];
             elementsCopy[element.id] = {
               ...ele,
-              options:{
+              options: {
                 ...ele?.options,
-                depends:[
-                  ...ele?.options?.depends ??[],
+                depends: [
+                  ...(ele?.options?.depends ?? []),
                   {
-                    element:id,
-                    start:true,
-                  }
-                ]
-              }
-            }
-
+                    element: id,
+                    start: true,
+                  },
+                ],
+              },
+            };
           } else {
             const line = { x1: startX, y1: startY, x2: clientX, y2: clientY };
             const { x, y } = attachLineToShapeCircle(element, line, true);
@@ -673,7 +716,7 @@ const WorkSpace = () => {
               options: {
                 ...ele?.options,
                 depends: [
-                  ...ele?.options?.depends??[],
+                  ...(ele?.options?.depends ?? []),
                   {
                     element: id,
                     start: true,
@@ -682,7 +725,6 @@ const WorkSpace = () => {
               },
             };
           }
-          
         }
         // else setSelectedIndex(null);
       }
@@ -694,9 +736,7 @@ const WorkSpace = () => {
         clientY,
         tool,
         selectedColor,
-        options,
-
-
+        options
       );
       elementsCopy.push(element);
 
@@ -1593,6 +1633,9 @@ const WorkSpace = () => {
         element={elements[selectedIdFormeta]}
         handleColorTypeUpdate={handleColorTypeUpdate}
       />
+      <div className="w-48 absolute z-50 top-3 right-1/4">
+        <Search projectId={selectedProjectId} onClick={handleNewElement} wid={wid} />
+      </div>
 
       <canvas
         id="canvas"
