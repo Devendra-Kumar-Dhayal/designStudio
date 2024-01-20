@@ -73,10 +73,10 @@ export async function createNewToken(id: string) {
     {
       _id: id,
     },
-    {
-      token,
-    }
+    { $set: { token } },
+    { new: true, returnDocument: "after" }
   );
+  console.log("user",user,token)
   return user;
 }
 
@@ -208,8 +208,9 @@ export async function chooseRole(userId: string, role: string) {
 
 export async function verifyForgotUser(token: string) {
   try {
+    console.log("first")
     const { decoded, valid, expired } = verifyJwt<TokenData>(token);
-
+    console.log(decoded)
     if (!valid) {
       throw new Error("Invalid Login, Try Again");
     }
@@ -217,12 +218,14 @@ export async function verifyForgotUser(token: string) {
     if (expired) {
       throw new Error("Link Expired, Try Logging In");
     }
+    console.log("second")
 
     const userId = decoded?.userId;
 
     const user = await UserModel.findOne({
       _id: userId,
     });
+    console.log("third")
 
     if (!user) {
       throw new Error("User not found");
@@ -231,6 +234,7 @@ export async function verifyForgotUser(token: string) {
     if (user?.token !== decoded?.tokenId) {
       throw new Error("Email verification failed.. Try Loging In..");
     }
+    console.log("forth")
 
     const updatedUser = omit(user.toJSON(), ["password", "token"]);
 

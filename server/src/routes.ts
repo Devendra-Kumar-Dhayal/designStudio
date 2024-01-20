@@ -78,18 +78,18 @@ router.post(
   createUserSessionHandler
 );
 
-router.get(
-  "/api/forgot-password",
+router.post(
+  "/api/forgotpassword",
   validateResource(forgotPassword),
   forgotPasswordUserHandler
 );
-router.get(
+router.post(
   "/api/verify",
   validateResource(verifyEmailForgotPassword),
   verifyForgotPasswordUserHandler
 );
-router.get(
-  "/api/change-password",
+router.post(
+  "/api/changepassword",
   [requireUser, validateResource(changePassword)],
   changePasswordUserHandler
 );

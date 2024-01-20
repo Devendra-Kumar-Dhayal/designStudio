@@ -9,23 +9,22 @@ import { toast } from "sonner";
 
 const Login = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        `${BASEURL}/api/login`,
+        `${BASEURL}/api/forgotpassword`,
         {
           email,
-          password,
         },
         {
           withCredentials: true,
         }
       );
-      if (response.status===200) {
-        navigate("/");
+      if (response.status===201) {
+        toast.success(response.data.message)
       }
       // Handle the response here
     } catch (error) {
@@ -47,18 +46,7 @@ const Login = () => {
             value={email}
             onValueChange={setEmail}
           />
-          <Input
-            type="password"
-            label="Password"
-            value={password}
-            onValueChange={setPassword}
-          />
-          <div className="flex text-xs text-gray-600 hover:text-gray-400 cursor-pointer  self-end flex-start justify-start" onClick={()=>{
-            navigate("/forgot")
-          }}
-          >
-            Forgot Password?
-          </div>
+          
           <Button
             auto
             shadow
@@ -66,7 +54,7 @@ const Login = () => {
             className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
             onPress={handleSubmit}
           >
-            Sign In
+           Change Password
           </Button>
           <div className="w-full relative border-b my-4">
             <h1 className="absolute px-4 left-1/2 -translate-y-1/2 -translate-x-1/2 bg-white text-gray-400">

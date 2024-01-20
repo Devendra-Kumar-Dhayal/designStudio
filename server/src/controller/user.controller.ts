@@ -66,6 +66,7 @@ export const forgotPasswordUserHandler = async (
   res: Response
 ) => {
   try {
+    console.log("handler forgot")
     const user = await findUser({ email: req.body.email });
     if (!user) {
       return res.status(401).json({ message: "User not found" });
@@ -109,23 +110,27 @@ export const verifyForgotPasswordUserHandler = async (
   res: Response
 ) => {
   try {
+
+    console.log("verifyhandler")
     if (!req.query.token) {
       return res.status(401).json({ message: "Invalid or expired request" });
     }
+    console.log("one")
 
     //verify token
     const user = await verifyForgotUser(req.query.token);
-
+    console.log("first", user)
     if (!user) {
       return res
         .status(401)
         .json({ message: "Something went wrong try again" });
     }
-
+    console.log("second", user)
     const session = await createSessionFromUser(user, req, res);
+    console.log("second", session)
 
 
-    return res.status(200).send({ message: "User verified successfully" });
+    // return res.status(200).send({ message: "User verified successfully" });
   } catch (error: any) {
     logger.error(error.message);
     return res.status(409).json({ error: error.message });
