@@ -1,0 +1,28 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build the Docker client image
+        run: docker build ./client/ --tag nevdread/client:latest
+      - name: Build the Docker server image
+        run: docker build ./server/ --tag nevdread/server:latest
+      - name: publish client
+        run: |
+          docker login -u nevdread -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker push nevdread/client:latest
+      - name: publish server
+        run: |
+          docker login -u nevdread -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker push nevdread/server:latest
