@@ -101,13 +101,13 @@ const Navbarr = ({ user }) => {
   const handleLogout = async() => {
 
 
-    // const resp = await axios.get(`${BASEURL}/api/logout`, {
-    //   withCredentials: true,
-    // });
-    // if (resp.status === 200) {
-    //   toast.success("Logout succesfull");
-    //   navigate("/login");
-    // }
+    const resp = await axios.get(`${BASEURL}/api/logout`, {
+      withCredentials: true,
+    });
+    if (resp.status === 200) {
+      toast.success("Logout succesfull");
+      navigate("/login");
+    }
 
     //
   };
