@@ -14,6 +14,8 @@ import {
   verifyForgotPasswordUserHandler,
 } from "./controller/user.controller";
 import {
+  WorkspaceElementSearchHandler,
+  WorkspaceSearchHandler,
   createProjectElementHandler,
   createProjectHandler,
   createWorkspaceHandler,
@@ -49,9 +51,12 @@ import {
   getProjectSchema,
   getWorkspaceSchema,
   removeProjectElementSchema,
+  searchWorkspaceElementSchema,
+  searchWorkspaceSchema,
   updateProjectElementSchema,
   updateWorkspaceSchema,
 } from "./schema/workspace.schema";
+import validate from "./middleware/validateResource";
 
 const router = express.Router();
 
@@ -84,7 +89,7 @@ router.post(
   forgotPasswordUserHandler
 );
 
-router.get("/api/logout", (req:Request, res:Response) => {
+router.get("/api/logout", (req: Request, res: Response) => {
   res.clearCookie("accessToken");
   res.clearCookie("refreshToken");
   return res.sendStatus(200);
@@ -151,6 +156,13 @@ router.get(
 );
 
 router.get(
+  "/api/workspacesearch/",
+  [requireUser, validate(searchWorkspaceSchema)],
+  WorkspaceSearchHandler
+);
+
+
+router.get(
   "/api/project/:projectId",
   [requireUser, validateResource(getProjectSchema)],
   findProjectByIdHandler
@@ -190,6 +202,12 @@ router.get(
   "/api/projectelement",
   [requireUser, validateResource(getProjectElementSchema)],
   getProjectElementHandler
+);
+
+router.get(
+  "/api/elementsearch/",
+  [requireUser, validate(searchWorkspaceElementSchema)],
+  WorkspaceElementSearchHandler
 );
 
 export default router;

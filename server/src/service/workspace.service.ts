@@ -1,7 +1,5 @@
 import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
-import WorkspaceModel, {
-  WorkspaceDocument
-} from "../models/workspace.model";
+import WorkspaceModel, { WorkspaceDocument } from "../models/workspace.model";
 
 import ProjectModel from "../models/project.model";
 import ProjectElementModel from "../models/projectElements.model";
@@ -11,6 +9,8 @@ import {
   CreateWorkspaceInput,
   GetProjectElementInput,
   RemoveProjectElementInput,
+  SearchWorkspaceElementInput,
+  SearchWorkspaceInput,
   UpdateProjectElementInput,
 } from "../schema/workspace.schema";
 import logger from "../utils/logger";
@@ -39,13 +39,16 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
   }
 }
 
-export async function convertWorkspace(query: { workspaceId: string ,elements:any[]}) {
+export async function convertWorkspace(query: {
+  workspaceId: string;
+  elements: any[];
+}) {
   //fetch all the elements from workspace
   const result = await WorkspaceModel.findOne({
     _id: query.workspaceId,
   });
-  if(!result){
-    throw new Error("Workspace Not Found!")
+  if (!result) {
+    throw new Error("Workspace Not Found!");
   }
 
   const elements = query.elements;
@@ -305,10 +308,10 @@ export async function removeWorkspaceFromProjectElement({
   projectId,
   name,
   workspace,
-}:RemoveProjectElementInput) {
+}: RemoveProjectElementInput) {
   try {
     // Find the project element with the given name and projectId
-    const workspaceIdToRemove = workspace
+    const workspaceIdToRemove = workspace;
     const existingProjectElement = await ProjectElementModel.findOne({
       name,
       project: projectId,
@@ -355,4 +358,33 @@ export async function findProjectElement(input: GetProjectElementInput) {
     name: input.name,
   });
   return projectElement;
+}
+
+//search worspace
+
+export async function searchWorkspace(query: SearchWorkspaceInput) {
+  try {
+    const result = await WorkspaceModel.find({
+      name: { $regex: query.workspace, $options: "i" },
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+//search workspace element
+
+export async function searchWorkspaceElement(
+  query: SearchWorkspaceElementInput
+) {
+  try {
+    const result = await ProjectElementModel.find({
+      project: query.projectId,
+      name: { $regex: query.element, $options: "i" },
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
 }
