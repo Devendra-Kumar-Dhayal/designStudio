@@ -84,11 +84,11 @@ router.post(
   forgotPasswordUserHandler
 );
 
-// router.get("/api/logout", (req:Request, res:Response) => {
-//   res.clearCookie("accessToken");
-//   res.clearCookie("refreshToken");
-//   return res.sendStatus(200);
-// });
+router.get("/api/logout", (req:Request, res:Response) => {
+  res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+  return res.sendStatus(200);
+});
 router.post(
   "/api/verify",
   validateResource(verifyEmailForgotPassword),
