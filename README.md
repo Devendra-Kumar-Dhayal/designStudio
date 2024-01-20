@@ -8,7 +8,7 @@ To setup using docker compose
   docker compose up --build --no-cache
 ```
 to setup manually 
-naviage to client folder;
+navigate to client folder;
 ```bash
   yarn 
   #or
@@ -16,7 +16,7 @@ naviage to client folder;
   npm start
   
 ```
-naviageto server folder;
+navigate to server folder;
 ```bash
   yarn 
   #or
@@ -27,6 +27,15 @@ naviageto server folder;
 setup .env file using .env.example
 at client side add .env.local
 and for server side .env
+
+# Deployment
+
+We've utilized Jenkins for our CI/CD processes, and the deployment has been successfully completed on Kubernetes.
+
+# Security
+
+- Our application is fortified against risks such as XSS, ReDoS, and NoSQL injection by adopting best practices.
+- Additionally, we've utilized Snyk, a developer security platform, to enhance and safeguard our application's security measures.
 
 
 
