@@ -7,7 +7,10 @@ import axios from "axios";
 import logger from "../utils/logger";
 import { CreateSessionInput } from "../schema/session.schema";
 import { CreateUserInput } from "../schema/user.schema";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
+import { randomUUID } from "crypto";
+import { verifyJwt } from "../utils/jwt.utils";
+import { TokenData } from "../controller/user.controller";
 export async function createUser(input: CreateUserInput["body"]) {
   console.log("input:", input);
   try {
@@ -28,7 +31,7 @@ export async function createUser(input: CreateUserInput["body"]) {
       // console.log("third");
       // const hash = await bcrypt.hash(input.password, salt);
       // console.log(hash,input.password)
-      
+
       const user = await UserModel.create({
         name: input.name,
         email: input.email,
@@ -62,6 +65,19 @@ export async function validatePassword({
 
 export async function findUser(query: FilterQuery<UserDocument>) {
   return UserModel.findOne(query).lean();
+}
+
+export async function createNewToken(id: string) {
+  const token = randomUUID();
+  const user = await UserModel.findOneAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      token,
+    }
+  );
+  return user;
 }
 
 interface GoogleTokensResult {
@@ -188,4 +204,55 @@ export async function chooseRole(userId: string, role: string) {
     logger.error(error, "Error updating user role");
     throw new Error(error.message);
   }
+}
+
+export async function verifyForgotUser(token: string) {
+  try {
+    const { decoded, valid, expired } = verifyJwt<TokenData>(token);
+
+    if (!valid) {
+      throw new Error("Invalid Login, Try Again");
+    }
+
+    if (expired) {
+      throw new Error("Link Expired, Try Logging In");
+    }
+
+    const userId = decoded?.userId;
+
+    const user = await UserModel.findOne({
+      _id: userId,
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    if (user?.token !== decoded?.tokenId) {
+      throw new Error("Email verification failed.. Try Loging In..");
+    }
+
+    const updatedUser = omit(user.toJSON(), ["password", "token"]);
+
+    // Perform the rest of the verification steps here
+    // For example, update user verification status
+
+    return updatedUser;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+}
+
+export async function changePassword(id: string, password: string) {
+  try {
+    const updatedUser = await UserModel.findOneAndUpdate(
+      {
+        _id: id,
+      },
+      {
+        password: password,
+      }
+    );
+    return omit(updatedUser, ["password", "token"]);
+  } catch (error) {}
 }

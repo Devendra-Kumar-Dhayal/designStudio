@@ -6,9 +6,12 @@ import {
   googleOauthHandler,
 } from "./controller/session.controller";
 import {
+  changePasswordUserHandler,
   createUserHandler,
+  forgotPasswordUserHandler,
   getCurrentUser,
   setUserRole,
+  verifyForgotPasswordUserHandler,
 } from "./controller/user.controller";
 import {
   createProjectElementHandler,
@@ -31,7 +34,13 @@ import requireDesigner from "./middleware/requireDesigner";
 import requireUser from "./middleware/requireUser";
 import validateResource from "./middleware/validateResource";
 import { createSessionSchema } from "./schema/session.schema";
-import { chooseRoleSchema, createUserSchema } from "./schema/user.schema";
+import {
+  changePassword,
+  chooseRoleSchema,
+  createUserSchema,
+  forgotPassword,
+  verifyEmailForgotPassword,
+} from "./schema/user.schema";
 import {
   createProjectElementSchema,
   createProjectSchema,
@@ -41,7 +50,7 @@ import {
   getWorkspaceSchema,
   removeProjectElementSchema,
   updateProjectElementSchema,
-  updateWorkspaceSchema
+  updateWorkspaceSchema,
 } from "./schema/workspace.schema";
 
 const router = express.Router();
@@ -69,7 +78,21 @@ router.post(
   createUserSessionHandler
 );
 
-router.get("/api/forgot-password", requireUser, getUserSessionsHandler);
+router.get(
+  "/api/forgot-password",
+  validateResource(forgotPassword),
+  forgotPasswordUserHandler
+);
+router.get(
+  "/api/verify",
+  validateResource(verifyEmailForgotPassword),
+  verifyForgotPasswordUserHandler
+);
+router.get(
+  "/api/change-password",
+  [requireUser, validateResource(changePassword)],
+  changePasswordUserHandler
+);
 
 router.delete("/api/sessions", requireUser, deleteSessionHandler);
 

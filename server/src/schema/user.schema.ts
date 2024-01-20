@@ -69,8 +69,43 @@ export const chooseRoleSchema = object({
   }),
 });
 
+export const forgotPassword = object({
+  body: object({
+    email: string({
+      required_error: "Email is required",
+    }).email("Not a valid email"),
+  }),
+});
+
+export const verifyEmailForgotPassword = object({
+  query: object({
+    token: string({
+      required_error: "Token is required",
+    }),
+  }),
+});
+
+export const changePassword = object({
+  body: object({
+    password: string({
+      required_error: "New Password is required",
+    }),
+    passwordConfirmation: string({
+      required_error: "Confirm Password is required",
+    }),
+  }).refine((data) => data.password === data.passwordConfirmation, {
+    message: "Passwords do not match",
+    path: ["passwordConfirmation"],
+  }),
+});
+
 export type CreateUserInput = Omit<
   TypeOf<typeof createUserSchema>,
   "body.passwordConfirmation"
 >;
 export type ChooseUserRoleInput = TypeOf<typeof chooseRoleSchema>;
+export type ForgotPasswordInput = TypeOf<typeof forgotPassword>["body"];
+export type VerifyEmailForgotPasswordInput = TypeOf<
+  typeof verifyEmailForgotPassword
+>["query"];
+export type ChangePasswordInput = TypeOf<typeof changePassword>["body"];

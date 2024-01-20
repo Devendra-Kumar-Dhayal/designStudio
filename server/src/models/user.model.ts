@@ -18,6 +18,7 @@ export interface UserInput {
   password?: string;
   role?: UserRole;
   googleId?: string;
+  token?: string;
 }
 
 export interface UserDocument extends UserInput, mongoose.Document {
@@ -45,6 +46,10 @@ const userSchema = new mongoose.Schema(
       unique: false,
       validate: passwordOrGoogleIdValidator,
     },
+    token:{
+      type:String,
+      required:false
+    }
   },
   {
     timestamps: true,
