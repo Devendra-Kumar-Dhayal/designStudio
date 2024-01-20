@@ -369,8 +369,6 @@ const WorkSpace = () => {
     context.restore();
   }, [elements, action, selectedElement, panOffset, selectedIndex]);
 
-
-
   const handleDoubleClick = (event) => {
     if (tool !== "selection") return;
 
@@ -489,7 +487,24 @@ const WorkSpace = () => {
     }
   }, [action, selectedElement]);
 
-  const handleClear = () => {
+  const handleClear = async () => {
+
+    for (const ele of elements) {
+      if (!!ele?.options?.meta?.common?.label) {
+        try {
+          const res = await axios.delete(
+            `${BASEURL}/api/projectelement/?workspace=${wid}&projectId=${selectedProjectId}&name=${ele.options.meta.common.label}`,
+            {
+              withCredentials: true,
+            }
+          );
+          // Handle the response if needed
+        } catch (error) {
+          console.error("Error deleting project element:", error);
+          // Handle the error if needed
+        }
+      }
+    }
     setElements([]);
     localStorage.removeItem("canvasElements");
   };
@@ -600,17 +615,92 @@ const WorkSpace = () => {
     } else if (tool === "meta") return;
     else {
       const id = elements.length;
+      let startX = clientX;
+      let startY = clientY;
+      let options = {};
+      const elementsCopy = elements
+      if (tool === "line") {
+        const element = getElementAtPosition(clientX, clientY, elements);
+
+        if (element) {
+          // setSelectedIndex(element?.id);
+          if (element.type === "line") {
+            // const { x, y } = attachLineToShape(elements[id], line, true);
+          } else if (element.type === "rectangle") {
+            const line = { x1: startX, y1: startY, x2: clientX, y2: clientY };
+            const { x, y } = attachLineToShape(element, line, true);
+            startX = x;
+            startY = y;
+            options={
+              depending:[
+                {
+                  element:element.id,
+                  start:true,
+                }
+              ]
+            }
+            const ele = elementsCopy[element.id]
+            elementsCopy[element.id] = {
+              ...ele,
+              options:{
+                ...ele?.options,
+                depends:[
+                  ...ele?.options?.depends ??[],
+                  {
+                    element:id,
+                    start:true,
+                  }
+                ]
+              }
+            }
+
+          } else {
+            const line = { x1: startX, y1: startY, x2: clientX, y2: clientY };
+            const { x, y } = attachLineToShapeCircle(element, line, true);
+            startX = x;
+            startY = y;
+            options = {
+              depending: [
+                {
+                  element: element.id,
+                  start: true,
+                },
+              ],
+            };
+            const ele = elementsCopy[element.id];
+            elementsCopy[element.id] = {
+              ...ele,
+              options: {
+                ...ele?.options,
+                depends: [
+                  ...ele?.options?.depends??[],
+                  {
+                    element: id,
+                    start: true,
+                  },
+                ],
+              },
+            };
+          }
+          
+        }
+        // else setSelectedIndex(null);
+      }
       const element = createElement(
         id,
-        clientX,
-        clientY,
+        startX,
+        startY,
         clientX,
         clientY,
         tool,
-        selectedColor
-      );
+        selectedColor,
+        options,
 
-      setElements((prevState) => [...prevState, element]);
+
+      );
+      elementsCopy.push(element);
+
+      setElements(elementsCopy);
       localStorage.setItem(
         "canvasElements",
         JSON.stringify([...elements, element])
@@ -622,9 +712,8 @@ const WorkSpace = () => {
     }
   };
   const handleMouseMove = (event) => {
-    
     const { clientX, clientY } = getMouseCoordinates(event);
-    
+
     if (action === "panning") {
       const deltaX = clientX - startPanMousePosition.x;
       const deltaY = clientY - startPanMousePosition.y;
