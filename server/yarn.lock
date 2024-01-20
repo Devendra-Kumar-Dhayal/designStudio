@@ -208,6 +208,13 @@
   dependencies:
     undici-types "~5.26.4"
 
+"@types/nodemailer@^6.4.14":
+  version "6.4.14"
+  resolved "https://registry.yarnpkg.com/@types/nodemailer/-/nodemailer-6.4.14.tgz#5c81a5e856db7f8ede80013e6dbad7c5fb2283e2"
+  integrity sha512-fUWthHO9k9DSdPCSPRqcu6TWhYyxTBg382vlNIttSe9M7XfsT06y0f24KHXtbnijPGGRIcVvdKHTNikOI6qiHA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/oauth@*":
   version "0.9.4"
   resolved "https://registry.npmjs.org/@types/oauth/-/oauth-0.9.4.tgz"
@@ -1397,6 +1404,11 @@ node@^20.10.0:
   integrity sha512-mIXfsYLNrafDq9es40WduIcwcGJLHVIa+itiKGcydM3qKx1HxymPWCKrG12PwG4oxsv4Jdke3uq2o4UiRgLYdQ==
   dependencies:
     node-bin-setup "^1.0.0"
+
+nodemailer@^6.9.8:
+  version "6.9.8"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.9.8.tgz#29601e80440f2af7aa62b32758fdac7c6b784143"
+  integrity sha512-cfrYUk16e67Ks051i4CntM9kshRYei1/o/Gi8K1d+R34OIs21xdFnW7Pt7EucmVKA0LKtqUGNcjMZ7ehjl49mQ==
 
 nodemon@^3.0.2:
   version "3.0.2"
