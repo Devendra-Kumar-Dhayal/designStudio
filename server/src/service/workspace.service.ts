@@ -364,9 +364,12 @@ export async function findProjectElement(input: GetProjectElementInput) {
 
 export async function searchWorkspace(query: SearchWorkspaceInput) {
   try {
+    console.log("first",query.workspace)
     const result = await WorkspaceModel.find({
-      name: { $regex: query.workspace, $options: "i" },
+      "meta.common.label": { $regex: query.workspace, $options: "i" },
     });
+    console.log("first", result);
+
     return result;
   } catch (error) {
     throw error;

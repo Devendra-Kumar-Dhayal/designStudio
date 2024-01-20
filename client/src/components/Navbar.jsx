@@ -29,6 +29,7 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   Avatar,
+  ScrollShadow,
 } from "@nextui-org/react";
 
 import { IoArrowBackCircleOutline } from "react-icons/io5";
@@ -62,6 +63,10 @@ const Navbarr = ({ user }) => {
     getAllProjects();
   }, []);
 
+  useEffect(()=>{
+    searchHandler()
+  },[search])
+
   const getAllProjects = async () => {
     try {
       const res = await axios.get(`${BASEURL}/api/project`, {
@@ -72,7 +77,19 @@ const Navbarr = ({ user }) => {
       console.log(error);
     }
   };
-
+  const searchHandler = async () => {
+    // e.preventDefault()
+    if (!search) return;
+    const resp = await axios.get(
+      `${BASEURL}/api/workspacesearch/?workspace=${search}`,
+      {
+        withCredentials: true,
+      }
+    );
+    // console.log(resp.data);
+    setSearchResult(resp.data);
+    // console.log(search)
+  }
   const handleCreateNewProject = async (onClose) => {
     try {
       const res = await axios.post(
@@ -111,7 +128,8 @@ const Navbarr = ({ user }) => {
 
     //
   };
-
+  
+  console.log(searchResult)
   return (
     <div className="flex justify-between py-2 my-4 items-center">
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -185,18 +203,26 @@ const Navbarr = ({ user }) => {
         <GiHamburgerMenu />
 
         {searchResult.length > 0 && (
-          <div className="absolute bg-white p-3 w-11/12 min-h-[300px] max-h-[600px] rounded-lg shadow-lg overflow-y-scroll top-[115%] z-50 ">
+          <ScrollShadow className="absolute bg-white p-3 w-11/12  max-h-[600px] rounded-lg shadow-lg  top-[115%] z-50 ">
             <div className="w-full h-full ">
               {searchResult.map((result, index) => (
                 <div
-                  className="w-full h-12 flex items-center justify-between border-b border-gray-200"
+                  className="w-full h-12 p-2 rounded-md flex items-center justify-between border-b border-gray-200 hover:bg-gray-300"
                   key={index}
+                  onClick={() => {
+                    navigate({
+                      pathname: "/workspace",
+                      search: `?wid=${result._id}`,
+                    });
+                  }}
                 >
-                  <p className="text-xs font-normal">{result.content}</p>
+                  <p className="text-xs font-normal">
+                    {result?.meta?.common?.label}
+                  </p>
                 </div>
               ))}
             </div>
-          </div>
+          </ScrollShadow>
         )}
       </div>
 
