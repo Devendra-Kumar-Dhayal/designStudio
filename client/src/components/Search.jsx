@@ -11,7 +11,7 @@ const Search = ({ projectId, onClick, wid }) => {
   const searchHandler = async () => {
     // e.preventDefault()
     if (!search) {
-      setSearch([]);
+      setResults([]);
       return;
     }
     const resp = await axios.get(
