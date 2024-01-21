@@ -5,9 +5,11 @@ Web-based editor to model the individual data flows
 between applications. Team of applications collaborating to make a business function smoothly 
 
 # Inspiration 
+
 The Data Flow Modeling Web Editor streamlines system understanding by providing an intuitive interface to visually model and document data flows between applications, enhancing collaboration and facilitating real-time communication for seamless integration and efficient project management.
 
 # User Stories 
+
 - Designer mode: to create, delete and modify flows
 - Viewer mode: to visualise flows 
 
@@ -20,6 +22,7 @@ The Data Flow Modeling Web Editor streamlines system understanding by providing 
 - Security and Documentation
 
 ## Tech Stack
+
 ![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E) ![Node.js](https://img.shields.io/badge/NodeJs-1572B6?style=for-the-badge&logo=nodejs&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-323330?style=for-the-badge&logo=typescript&logoColor=F7DF1E) ![MongoDB](https://img.shields.io/badge/MongoDb-1572B6?style=for-the-badge&logo=mongodb&logoColor=white) ![Express](https://img.shields.io/badge/Express-1572B6?style=for-the-badge&logo=express&logoColor=white) ![React](https://img.shields.io/badge/React-1572B6?style=for-the-badge&logo=react&logoColor=white) ![Zod](https://img.shields.io/badge/Zod-1572B6?style=for-the-badge&logo=zod&logoColor=white) ![nextUi](https://img.shields.io/badge/nextUi-1572B6?style=for-the-badge&logo=nextui&logoColor=white) ![nextUi](https://img.shields.io/badge/mongoose-1572B6?style=for-the-badge&logo=mongoose&logoColor=white)
 
 ## Project Images
@@ -68,12 +71,14 @@ We've utilized Jenkins for our CI/CD processes, and the deployment has been succ
 # Security
 
 - Our application is fortified against risks such as XSS, ReDoS, and NoSQL injection by adopting best practices.
-- Additionally, we've utilized Snyk, a developer security platform, to enhance and safeguard our application's security measures.
+- We've bolstered our application's security with Snyk, a developer security platform, providing real-time vulnerability scanning and proactive risk mitigation. This integration underscores our commitment to maintaining a resilient and secure user experience, staying ahead of evolving cyber threats.
 
 
+# System Architecture
+
+![Data Flow Diagram (Physical) Example-2](./client/public/Data%20Flow%20Diagram%20(Physical)%20Example-2.png)
 
 ## Contributors
 <a href="https://github.com/gitatractivo/designStudio/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=gitatractivo/designStudio" />
-  
-</a>  
+</a>
