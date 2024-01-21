@@ -24,9 +24,7 @@ node('jenkins-slave') {
             sh(script: """
             
             
-            kubectl apply -f ./deployment/client/ -n jenkins
-
-            kubectl apply -f ./deployment/server/ -n jenkins
+            echo "hello"
            
            
         """)
