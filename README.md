@@ -74,12 +74,12 @@ We've utilized Jenkins for our CI/CD processes, and the deployment has been succ
 - We've bolstered our application's security with Snyk, a developer security platform, providing real-time vulnerability scanning and proactive risk mitigation. This integration underscores our commitment to maintaining a resilient and secure user experience, staying ahead of evolving cyber threats.
 
 
+# System Architecture
+
+![Data Flow Diagram (Physical) Example-2](./client/public/Data%20Flow%20Diagram%20(Physical)%20Example-2.png)
 
 ## Contributors
 <a href="https://github.com/gitatractivo/designStudio/graphs/contributors">
 
-## SystemArchitecture
-
-  <img src="./client/public/Data Flow Diagram (Physical) Example-2.png" />
   
 </a>  
