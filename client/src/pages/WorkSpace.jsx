@@ -856,8 +856,18 @@ const WorkSpace = () => {
           false
         );
       } else if (selectedElement.type === "rectangle") {
-        const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
-          selectedElement;
+        const {
+          id,
+          x1,
+          x2,
+          y1,
+          y2,
+          type,
+          offsetX,
+          offsetY,
+          options,
+          roughElement,
+        } = selectedElement;
         const width = x2 - x1;
         const height = y2 - y1;
         const newX1 = clientX - offsetX;
@@ -871,6 +881,7 @@ const WorkSpace = () => {
             y2: newY1 + height,
             type,
             options,
+            roughElement,
           },
         ];
         if (options?.depends) {
@@ -885,6 +896,7 @@ const WorkSpace = () => {
               y2: y,
               type: elements[item.element].type,
               options: elements[item.element].options,
+              roughElement: elements[item.element].roughElement,
             };
             if (item.start) {
               updated = {
@@ -899,6 +911,8 @@ const WorkSpace = () => {
           });
         }
 
+        console.log("elementsToUpdate",elementsToUpdate)
+
         updateElement(
           elementsToUpdate,
           elements,
@@ -911,7 +925,7 @@ const WorkSpace = () => {
         selectedElement.type === "kafka" ||
         selectedElement.type === "boomi"
       ) {
-        const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
+        const { id, x1, x2, y1, y2, type, offsetX, offsetY, options,roughElement} =
           selectedElement;
         const width = x2 - x1;
         const height = y2 - y1;
@@ -926,6 +940,7 @@ const WorkSpace = () => {
             y2: newY1 + height,
             type,
             options,
+            roughElement,
           },
         ];
         if (options?.depends) {
@@ -944,6 +959,7 @@ const WorkSpace = () => {
               y2: y,
               type: elements[item.element].type,
               options: elements[item.element].options,
+              roughElement: elements[item.element].roughElement,
             };
             if (item.start) {
               updated = {

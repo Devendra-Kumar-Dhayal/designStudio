@@ -1,13 +1,20 @@
 import { fixedHeight, fixedWidth } from "./constants";
 import createElement from "./createElement";
 
-const updateElement = async (elementsToUpdate,elements,setElements,selectedColor,overwrite=true) => {
+const updateElement = async (
+  elementsToUpdate,
+  elements,
+  setElements,
+  selectedColor,
+  overwrite = true
+) => {
   if (!elements) return;
 
   const elementsCopy = [...elements];
 
   elementsToUpdate.map((element) => {
     const { id, x1, y1, x2, y2, type, options } = element;
+    console.log(element, element.roughElement);
     switch (type) {
       case "line":
         const cel = createElement(
@@ -34,15 +41,13 @@ const updateElement = async (elementsToUpdate,elements,setElements,selectedColor
           x1 + fixedWidth,
           y1 + fixedHeight,
           type,
-          selectedColor,
+          element?.roughElement?.options?.fill ?? selectedColor,
           options
         );
         let object = {
           ...ce,
           options,
         };
-
-
 
         elementsCopy[id] = object;
         break;
@@ -54,7 +59,7 @@ const updateElement = async (elementsToUpdate,elements,setElements,selectedColor
           x1 + fixedWidth,
           y1 + fixedHeight,
           type,
-          selectedColor,
+          element?.roughElement?.options?.fill ?? selectedColor,
           options
         );
         let objectc = {
@@ -71,7 +76,7 @@ const updateElement = async (elementsToUpdate,elements,setElements,selectedColor
           x1 + fixedWidth,
           y1 + fixedHeight,
           type,
-          selectedColor,
+          element?.roughElement?.options?.fill ?? selectedColor,
           options
         );
         let objectk = {
@@ -88,7 +93,7 @@ const updateElement = async (elementsToUpdate,elements,setElements,selectedColor
           x1 + fixedWidth,
           y1 + fixedHeight,
           type,
-          selectedColor,
+          element?.roughElement?.options?.fill ?? selectedColor,
           options
         );
         let objectb = {
@@ -127,7 +132,7 @@ const updateElement = async (elementsToUpdate,elements,setElements,selectedColor
     }
   });
 
-  setElements(elementsCopy,overwrite);
+  setElements(elementsCopy, overwrite);
 };
 
 export default updateElement;
