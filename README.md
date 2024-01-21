@@ -77,6 +77,6 @@ We've utilized Jenkins for our CI/CD processes, and the deployment has been succ
 
 ## Contributors
 <a href="https://github.com/gitatractivo/designStudio/graphs/contributors">
-  <img src="./client/public/Data Flow Diagram (Physical) Example.png" />
+  <img src="./client/public/Data Flow Diagram (Physical) Example-2.png" />
   
 </a>  
