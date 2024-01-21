@@ -19,17 +19,19 @@ node('jenkins-slave') {
     }
     
     stage('Deploying React.js container to Kubernetes') {
-      steps {
+    steps {
         script {
             kubeconfig(credentialsId: '4ec4c6e5-71f4-4e4f-9533-c47800d985cc', serverUrl: 'https://kubernetes.default:443') {
-    // some block
-                kubernetesDeploy(configs: "./deployment/client/client-deployment.yaml", 
-                                         "./deployment/server/server-deployment.yaml")
+                // some block
+                kubernetesDeploy(configs: [
+                    kubeConfig: './deployment/client/client-deployment.yaml',
+                    deployConfig: './deployment/server/server-deployment.yaml'
+                ])
             }
-          
         }
-      }
     }
+}
+
      
     
     
