@@ -22,6 +22,17 @@ The Data Flow Modeling Web Editor streamlines system understanding by providing 
 ## Tech Stack
 ![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E) ![Node.js](https://img.shields.io/badge/NodeJs-1572B6?style=for-the-badge&logo=nodejs&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-323330?style=for-the-badge&logo=typescript&logoColor=F7DF1E) ![MongoDB](https://img.shields.io/badge/MongoDb-1572B6?style=for-the-badge&logo=mongodb&logoColor=white) ![Express](https://img.shields.io/badge/Express-1572B6?style=for-the-badge&logo=express&logoColor=white) ![React](https://img.shields.io/badge/React-1572B6?style=for-the-badge&logo=react&logoColor=white) ![Zod](https://img.shields.io/badge/Zod-1572B6?style=for-the-badge&logo=zod&logoColor=white) ![nextUi](https://img.shields.io/badge/nextUi-1572B6?style=for-the-badge&logo=nextui&logoColor=white) ![nextUi](https://img.shields.io/badge/mongoose-1572B6?style=for-the-badge&logo=mongoose&logoColor=white)
 
+## Project Images
+**_Login_:**
+![Login Page](https://i.pinimg.com/originals/11/c4/f7/11c4f7a2e0b0212f06c04735bfb280a7.png)
+
+**_Dashboard_:**
+![Dashboard](https://i.pinimg.com/originals/d5/f9/a0/d5f9a0ba570db1340e3970551a79529b.png)
+
+
+**_Canvas_:**
+![Canvas](https://i.pinimg.com/originals/59/58/d9/5958d99aed3c4102bcf811b78437d7e0.png)
+
 ## Quick start
 
 To setup using docker compose
@@ -64,4 +75,5 @@ We've utilized Jenkins for our CI/CD processes, and the deployment has been succ
 ## Contributors
 <a href="https://github.com/gitatractivo/designStudio/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=gitatractivo/designStudio" />
-</a>
+  
+</a>  
