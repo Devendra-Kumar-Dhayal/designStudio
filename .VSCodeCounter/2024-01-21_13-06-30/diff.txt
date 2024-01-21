@@ -1,0 +1,113 @@
+Date : 2024-01-21 13:06:30
+Directory : /Users/nevdread/dev/devAds/designStudio/client/src
+Total : 68 files,  2893 codes, -17 comments, 176 blanks, all 3052 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| JavaScript JSX |         25 |      3,601 |        174 |        340 |      4,115 |
+| JavaScript     |         16 |      1,247 |         65 |        232 |      1,544 |
+| CSS            |          1 |          3 |          0 |          2 |          5 |
+| TypeScript     |         26 |     -1,958 |       -256 |       -398 |     -2,612 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                       | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                          |         68 |      2,893 |        -17 |        176 |      3,052 |
+| . (Files)                                                                                  |          3 |         62 |          0 |          7 |         69 |
+| ..                                                                                         |         26 |     -1,958 |       -256 |       -398 |     -2,612 |
+| ../..                                                                                      |         26 |     -1,958 |       -256 |       -398 |     -2,612 |
+| ../../server                                                                               |         26 |     -1,958 |       -256 |       -398 |     -2,612 |
+| ../../server/src                                                                           |         26 |     -1,958 |       -256 |       -398 |     -2,612 |
+| ../../server/src (Files)                                                                   |          2 |       -214 |        -23 |        -41 |       -278 |
+| ../../server/src/controller                                                                |          3 |       -489 |        -33 |       -114 |       -636 |
+| ../../server/src/middleware                                                                |          4 |        -87 |         -2 |        -31 |       -120 |
+| ../../server/src/models                                                                    |          5 |       -225 |         -3 |        -41 |       -269 |
+| ../../server/src/schema                                                                    |          3 |       -219 |       -140 |        -42 |       -401 |
+| ../../server/src/service                                                                   |          3 |       -576 |        -43 |        -94 |       -713 |
+| ../../server/src/utils                                                                     |          6 |       -148 |        -12 |        -35 |       -195 |
+| components                                                                                 |         14 |        976 |         44 |        126 |      1,146 |
+| components (Files)                                                                         |          7 |        731 |         27 |         57 |        815 |
+| components/hooks                                                                           |          6 |        149 |         14 |         53 |        216 |
+| components/loyout                                                                          |          1 |         96 |          3 |         16 |        115 |
+| pages                                                                                      |         14 |      2,699 |        137 |        249 |      3,085 |
+| utils                                                                                      |         11 |      1,114 |         58 |        192 |      1,364 |
++--------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                                                   | language       | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| /Users/nevdread/dev/devAds/designStudio/client/src/App.jsx                                 | JavaScript JSX |         39 |          0 |          3 |         42 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/ElementMetaModal.jsx         | JavaScript JSX |        254 |          4 |         14 |        272 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/Modal.jsx                    | JavaScript JSX |         30 |          1 |          4 |         35 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/Navbar.jsx                   | JavaScript JSX |        243 |         13 |         16 |        272 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/ProjectContext.jsx           | JavaScript JSX |         18 |          0 |          5 |         23 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/Search.jsx                   | JavaScript JSX |         73 |          3 |          6 |         82 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/SearchIcon.jsx               | JavaScript JSX |         28 |          0 |          1 |         29 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/Sidebar.jsx                  | JavaScript JSX |         85 |          6 |         11 |        102 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/useDebounce.jsx        | JavaScript JSX |         14 |          0 |          6 |         20 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/useDebounce.test.js    | JavaScript     |         31 |          6 |         12 |         49 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/useHistory.jsx         | JavaScript JSX |         30 |          7 |          7 |         44 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/useHistory.test.js     | JavaScript     |         33 |          0 |         15 |         48 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/usePressedKeys.jsx     | JavaScript JSX |         24 |          0 |          7 |         31 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/usePressedKeys.test.js | JavaScript     |         17 |          1 |          6 |         24 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/components/loyout/ProtectedLayout.jsx   | JavaScript JSX |         96 |          3 |         16 |        115 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/index.css                               | CSS            |          3 |          0 |          2 |          5 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/index.js                                | JavaScript     |         20 |          0 |          2 |         22 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/Change.jsx                        | JavaScript JSX |         75 |          2 |         12 |         89 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/Forgot.jsx                        | JavaScript JSX |         68 |          2 |          9 |         79 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/GoogleAuth.jsx                    | JavaScript JSX |         50 |          0 |          3 |         53 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/Home.jsx                          | JavaScript JSX |        202 |          0 |         16 |        218 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/Icons.jsx                         | JavaScript JSX |         39 |          2 |          5 |         46 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/Icons.test.js                     | JavaScript     |         32 |          0 |          5 |         37 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/Login.jsx                         | JavaScript JSX |         82 |          2 |          7 |         91 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/Project.jsx                       | JavaScript JSX |        413 |         57 |         41 |        511 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/ReadmeViewer.jsx                  | JavaScript JSX |         11 |         11 |          7 |         29 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/Recents.jsx                       | JavaScript JSX |         44 |          0 |          5 |         49 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/Register.jsx                      | JavaScript JSX |         92 |          2 |          9 |        103 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/Submit.jsx                        | JavaScript JSX |         47 |          0 |          5 |         52 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/Verify.jsx                        | JavaScript JSX |         54 |          2 |          6 |         62 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/pages/WorkSpace.jsx                     | JavaScript JSX |      1,490 |         57 |        119 |      1,666 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/utils/attachShapes.js                   | JavaScript     |         59 |         18 |         21 |         98 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/utils/codestub.js                       | JavaScript     |        183 |          7 |         71 |        261 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/utils/constants.js                      | JavaScript     |          4 |          0 |          1 |          5 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/utils/createElement.js                  | JavaScript     |         93 |          0 |          8 |        101 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/utils/drawElement.js                    | JavaScript     |        169 |         17 |         23 |        209 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/utils/functions.js                      | JavaScript     |          6 |          0 |          3 |          9 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/utils/getGoogleUrl.js                   | JavaScript     |         17 |          0 |          6 |         23 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/utils/nodeFilterUpdater.js              | JavaScript     |        213 |         13 |         19 |        245 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/utils/positionFunctions.js              | JavaScript     |        184 |          1 |         20 |        205 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/utils/updateElement.js                  | JavaScript     |        132 |          0 |          7 |        139 |
+| /Users/nevdread/dev/devAds/designStudio/client/src/utils/validateElements.js               | JavaScript     |         54 |          2 |         13 |         69 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/app.ts                                  | TypeScript     |        -31 |        -17 |        -16 |        -64 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/controller/session.controller.ts        | TypeScript     |       -127 |        -18 |        -37 |       -182 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/controller/user.controller.ts           | TypeScript     |       -128 |        -12 |        -29 |       -169 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/controller/workspace.controller.ts      | TypeScript     |       -234 |         -3 |        -48 |       -285 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/middleware/deserializeUser.ts           | TypeScript     |        -47 |         -2 |        -16 |        -65 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/middleware/requireDesigner.ts           | TypeScript     |        -13 |          0 |         -7 |        -20 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/middleware/requireUser.ts               | TypeScript     |        -10 |          0 |         -5 |        -15 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/middleware/validateResource.ts          | TypeScript     |        -17 |          0 |         -3 |        -20 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/models/project.model.ts                 | TypeScript     |        -22 |          0 |         -7 |        -29 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/models/projectElements.model.ts         | TypeScript     |        -50 |         -1 |         -8 |        -59 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/models/session.model.ts                 | TypeScript     |        -21 |          0 |         -5 |        -26 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/models/user.model.ts                    | TypeScript     |       -100 |         -1 |        -14 |       -115 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/models/workspace.model.ts               | TypeScript     |        -32 |         -1 |         -7 |        -40 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/routes.ts                               | TypeScript     |       -183 |         -6 |        -25 |       -214 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/schema/session.schema.ts                | TypeScript     |        -12 |        -52 |         -4 |        -68 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/schema/user.schema.ts                   | TypeScript     |        -67 |        -38 |         -7 |       -112 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/schema/workspace.schema.ts              | TypeScript     |       -140 |        -50 |        -31 |       -221 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/service/session.service.ts              | TypeScript     |        -37 |          0 |        -16 |        -53 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/service/user.service.ts                 | TypeScript     |       -212 |        -16 |        -35 |       -263 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/service/workspace.service.ts            | TypeScript     |       -327 |        -27 |        -43 |       -397 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/utils/connect.ts                        | TypeScript     |        -14 |          0 |         -3 |        -17 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/utils/jwt.utils.ts                      | TypeScript     |        -27 |          0 |         -4 |        -31 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/utils/logger.ts                         | TypeScript     |        -14 |         -5 |         -4 |        -23 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/utils/mailter.ts                        | TypeScript     |        -29 |         -5 |         -8 |        -42 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/utils/metrics.ts                        | TypeScript     |        -25 |          0 |         -9 |        -34 |
+| /Users/nevdread/dev/devAds/designStudio/server/src/utils/swagger.ts                        | TypeScript     |        -39 |         -2 |         -7 |        -48 |
+| Total                                                                                      |                |      2,893 |        -17 |        176 |      3,052 |
++--------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+

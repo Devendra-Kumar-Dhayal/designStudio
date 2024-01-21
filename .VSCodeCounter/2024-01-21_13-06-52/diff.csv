@@ -1,0 +1,50 @@
+"filename", "language", "Markdown", "YAML", "JavaScript JSX", "JavaScript", "CSS", "comment", "blank", "total"
+"/Users/nevdread/dev/devAds/designStudio/client/src/App.jsx", "JavaScript JSX", 0, 0, -39, 0, 0, 0, -3, -42
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/ElementMetaModal.jsx", "JavaScript JSX", 0, 0, -254, 0, 0, -4, -14, -272
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/Modal.jsx", "JavaScript JSX", 0, 0, -30, 0, 0, -1, -4, -35
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/Navbar.jsx", "JavaScript JSX", 0, 0, -243, 0, 0, -13, -16, -272
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/ProjectContext.jsx", "JavaScript JSX", 0, 0, -18, 0, 0, 0, -5, -23
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/Search.jsx", "JavaScript JSX", 0, 0, -73, 0, 0, -3, -6, -82
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/SearchIcon.jsx", "JavaScript JSX", 0, 0, -28, 0, 0, 0, -1, -29
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/Sidebar.jsx", "JavaScript JSX", 0, 0, -85, 0, 0, -6, -11, -102
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/useDebounce.jsx", "JavaScript JSX", 0, 0, -14, 0, 0, 0, -6, -20
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/useDebounce.test.js", "JavaScript", 0, 0, 0, -31, 0, -6, -12, -49
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/useHistory.jsx", "JavaScript JSX", 0, 0, -30, 0, 0, -7, -7, -44
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/useHistory.test.js", "JavaScript", 0, 0, 0, -33, 0, 0, -15, -48
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/usePressedKeys.jsx", "JavaScript JSX", 0, 0, -24, 0, 0, 0, -7, -31
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/hooks/usePressedKeys.test.js", "JavaScript", 0, 0, 0, -17, 0, -1, -6, -24
+"/Users/nevdread/dev/devAds/designStudio/client/src/components/loyout/ProtectedLayout.jsx", "JavaScript JSX", 0, 0, -96, 0, 0, -3, -16, -115
+"/Users/nevdread/dev/devAds/designStudio/client/src/index.css", "CSS", 0, 0, 0, 0, -3, 0, -2, -5
+"/Users/nevdread/dev/devAds/designStudio/client/src/index.js", "JavaScript", 0, 0, 0, -20, 0, 0, -2, -22
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/Change.jsx", "JavaScript JSX", 0, 0, -75, 0, 0, -2, -12, -89
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/Forgot.jsx", "JavaScript JSX", 0, 0, -68, 0, 0, -2, -9, -79
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/GoogleAuth.jsx", "JavaScript JSX", 0, 0, -50, 0, 0, 0, -3, -53
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/Home.jsx", "JavaScript JSX", 0, 0, -202, 0, 0, 0, -16, -218
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/Icons.jsx", "JavaScript JSX", 0, 0, -39, 0, 0, -2, -5, -46
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/Icons.test.js", "JavaScript", 0, 0, 0, -32, 0, 0, -5, -37
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/Login.jsx", "JavaScript JSX", 0, 0, -82, 0, 0, -2, -7, -91
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/Project.jsx", "JavaScript JSX", 0, 0, -413, 0, 0, -57, -41, -511
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/ReadmeViewer.jsx", "JavaScript JSX", 0, 0, -11, 0, 0, -11, -7, -29
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/Recents.jsx", "JavaScript JSX", 0, 0, -44, 0, 0, 0, -5, -49
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/Register.jsx", "JavaScript JSX", 0, 0, -92, 0, 0, -2, -9, -103
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/Submit.jsx", "JavaScript JSX", 0, 0, -47, 0, 0, 0, -5, -52
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/Verify.jsx", "JavaScript JSX", 0, 0, -54, 0, 0, -2, -6, -62
+"/Users/nevdread/dev/devAds/designStudio/client/src/pages/WorkSpace.jsx", "JavaScript JSX", 0, 0, -1490, 0, 0, -57, -119, -1666
+"/Users/nevdread/dev/devAds/designStudio/client/src/utils/attachShapes.js", "JavaScript", 0, 0, 0, -59, 0, -18, -21, -98
+"/Users/nevdread/dev/devAds/designStudio/client/src/utils/codestub.js", "JavaScript", 0, 0, 0, -183, 0, -7, -71, -261
+"/Users/nevdread/dev/devAds/designStudio/client/src/utils/constants.js", "JavaScript", 0, 0, 0, -4, 0, 0, -1, -5
+"/Users/nevdread/dev/devAds/designStudio/client/src/utils/createElement.js", "JavaScript", 0, 0, 0, -93, 0, 0, -8, -101
+"/Users/nevdread/dev/devAds/designStudio/client/src/utils/drawElement.js", "JavaScript", 0, 0, 0, -169, 0, -17, -23, -209
+"/Users/nevdread/dev/devAds/designStudio/client/src/utils/functions.js", "JavaScript", 0, 0, 0, -6, 0, 0, -3, -9
+"/Users/nevdread/dev/devAds/designStudio/client/src/utils/getGoogleUrl.js", "JavaScript", 0, 0, 0, -17, 0, 0, -6, -23
+"/Users/nevdread/dev/devAds/designStudio/client/src/utils/nodeFilterUpdater.js", "JavaScript", 0, 0, 0, -213, 0, -13, -19, -245
+"/Users/nevdread/dev/devAds/designStudio/client/src/utils/positionFunctions.js", "JavaScript", 0, 0, 0, -184, 0, -1, -20, -205
+"/Users/nevdread/dev/devAds/designStudio/client/src/utils/updateElement.js", "JavaScript", 0, 0, 0, -132, 0, 0, -7, -139
+"/Users/nevdread/dev/devAds/designStudio/client/src/utils/validateElements.js", "JavaScript", 0, 0, 0, -54, 0, -2, -13, -69
+"/Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.deployment.yaml", "YAML", 0, 49, 0, 0, 0, 0, 1, 50
+"/Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.pv.yaml", "YAML", 0, 14, 0, 0, 0, 21, 0, 35
+"/Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.pvc.yaml", "YAML", 0, 11, 0, 0, 0, 13, 1, 25
+"/Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.rbac.yaml", "YAML", 0, 48, 0, 0, 0, 0, 2, 50
+"/Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.service.yaml", "YAML", 0, 21, 0, 0, 0, 0, 1, 22
+"/Users/nevdread/dev/devAds/designStudio/jenkins/readme.md", "Markdown", 10, 0, 0, 0, 0, 0, 13, 23
+"Total", "-", 10, 143, -3601, -1247, -3, -205, -556, -5459

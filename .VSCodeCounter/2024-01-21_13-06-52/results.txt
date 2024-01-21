@@ -1,0 +1,31 @@
+Date : 2024-01-21 13:06:52
+Directory : /Users/nevdread/dev/devAds/designStudio/jenkins
+Total : 6 files,  153 codes, 34 comments, 18 blanks, all 205 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| YAML     |          5 |        143 |         34 |          5 |        182 |
+| Markdown |          1 |         10 |          0 |         13 |         23 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                    | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                       |          6 |        153 |         34 |         18 |        205 |
++-------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                | language | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.deployment.yaml | YAML     |         49 |          0 |          1 |         50 |
+| /Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.pv.yaml         | YAML     |         14 |         21 |          0 |         35 |
+| /Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.pvc.yaml        | YAML     |         11 |         13 |          1 |         25 |
+| /Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.rbac.yaml       | YAML     |         48 |          0 |          2 |         50 |
+| /Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.service.yaml    | YAML     |         21 |          0 |          1 |         22 |
+| /Users/nevdread/dev/devAds/designStudio/jenkins/readme.md               | Markdown |         10 |          0 |         13 |         23 |
+| Total                                                                   |          |        153 |         34 |         18 |        205 |
++-------------------------------------------------------------------------+----------+------------+------------+------------+------------+

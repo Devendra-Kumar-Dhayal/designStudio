@@ -1,0 +1,8 @@
+"filename", "language", "Markdown", "YAML", "comment", "blank", "total"
+"/Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.deployment.yaml", "YAML", 0, 49, 0, 1, 50
+"/Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.pv.yaml", "YAML", 0, 14, 21, 0, 35
+"/Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.pvc.yaml", "YAML", 0, 11, 13, 1, 25
+"/Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.rbac.yaml", "YAML", 0, 48, 0, 2, 50
+"/Users/nevdread/dev/devAds/designStudio/jenkins/jenkins.service.yaml", "YAML", 0, 21, 0, 1, 22
+"/Users/nevdread/dev/devAds/designStudio/jenkins/readme.md", "Markdown", 10, 0, 0, 13, 23
+"Total", "-", 10, 143, 34, 18, 205
