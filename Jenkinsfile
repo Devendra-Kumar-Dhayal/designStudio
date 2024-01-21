@@ -4,14 +4,12 @@ pipeline {
     dockerImage = ""
   }
   agent any
-  
-    
-    stage('Deploying React.js container to Kubernetes') {
-      steps {
-        script {
-          kubernetesDeploy(configs: "deployment.yaml")
-        }
+  stage('Deploying React.js container to Kubernetes') {
+    steps {
+      script {
+        kubernetesDeploy(configs: "deployment.yaml")
       }
     }
+  }
 }
 
