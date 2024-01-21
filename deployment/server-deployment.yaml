@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      containers:
+      - name: server-container
+        image: nevdread/server:latest
+        ports:
+        - containerPort: 5000
+      resources:
+      limits:
+        memory: "1280Mi"
+        cpu: "500m"
