@@ -20,7 +20,7 @@ The Data Flow Modeling Web Editor streamlines system understanding by providing 
 - Security and Documentation
 
 ## Tech Stack
-![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E) ![Node.js](https://img.shields.io/badge/NodeJs-1572B6?style=for-the-badge&logo=nodejs&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-323330?style=for-the-badge&logo=typescript&logoColor=F7DF1E) ![MongoDB](https://img.shields.io/badge/MongoDb-1572B6?style=for-the-badge&logo=mongodb&logoColor=white) ![Express](https://img.shields.io/badge/Express-1572B6?style=for-the-badge&logo=express&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E) ![Node.js](https://img.shields.io/badge/NodeJs-1572B6?style=for-the-badge&logo=nodejs&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-323330?style=for-the-badge&logo=typescript&logoColor=F7DF1E) ![MongoDB](https://img.shields.io/badge/MongoDb-1572B6?style=for-the-badge&logo=mongodb&logoColor=white) ![Express](https://img.shields.io/badge/Express-1572B6?style=for-the-badge&logo=express&logoColor=white) ![React](https://img.shields.io/badge/React-1572B6?style=for-the-badge&logo=react&logoColor=white) ![Zod](https://img.shields.io/badge/Zod-1572B6?style=for-the-badge&logo=zod&logoColor=white) ![nextUi](https://img.shields.io/badge/nextUi-1572B6?style=for-the-badge&logo=nextui&logoColor=white) ![nextUi](https://img.shields.io/badge/mongoose-1572B6?style=for-the-badge&logo=mongoose&logoColor=white)
 
 ## Quick start
 
@@ -49,15 +49,6 @@ navigate to server folder;
 setup .env file using .env.example
 at client side add .env.local
 and for server side .env
-## Documentation
-
-[Documentation](https://linktodocumentation)
- 
-- Upon login, users access the workspace for CRUD operations.
-- Toolbar functionalities include creating boxes, adding services (e.g., Kafka, Boomi), and using a pencil for drawing.
-- A color palette is available for customization.
-- Submitted work is saved on the server for future access.
-- The dashboard features a "Recents" button to view recently submitted pages.
 
 # Deployment
 
@@ -70,7 +61,7 @@ We've utilized Jenkins for our CI/CD processes, and the deployment has been succ
 
 
 
-
+## Contributors
 <a href="https://github.com/gitatractivo/designStudio/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=gitatractivo/designStudio" />
 </a>
