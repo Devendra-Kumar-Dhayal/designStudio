@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+      - name: client-container
+        image: nevdread/client:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            memory: "2280Mi"
+            cpu: "500m"
+   

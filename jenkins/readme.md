@@ -14,7 +14,7 @@ kubectl get pods -n jenkins
 
 kubectl -n jenkins logs <jenkins-deployment> # there will be password in a singleline of the #formm
 
-a4cd29cbe347483da9a10486ff448f07
+89fece00efd6453caca6956cffa090d4
 
 
 kubectl -n jenkins port-forward <jenkins-deployement> 8080
