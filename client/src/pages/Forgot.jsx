@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Googleauth from "./GoogleAuth";
-import SideImg from "../assets/SideImg.png";
 import { Button, Input, Modal, ModalContent } from "@nextui-org/react";
 import axios from "axios";
 import { BASEURL } from "../utils/functions";
 import { toast } from "sonner";
+import SideImg from "../assets/Design Studio.svg";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -36,7 +37,13 @@ const Login = () => {
 
   return (
     <div className="flex  gap-2 ">
-      <img src={SideImg} alt="sideImg" className=" w-1/2 h-screen" />
+       <div className="w-1/2 h-screen bg-gradient-to-tr from-cyan-300 via-emerald-200 to-blue-300 flex items-center justify-center p-4">
+        <img
+          src={SideImg}
+          alt="sideImg"
+          className="max-w-[700px] drop-shadow-lg w-full"
+        />
+      </div>
       <div className="flex flex-col items-center justify-center w-1/2 h-screen">
         <div className="w-2/3 h-fit rounded-xl p-4 flex flex-col items-center justify-center shadow-medium gap-4">
           <h1 className="text-2xl font-semibold text-left ">Sign in</h1>

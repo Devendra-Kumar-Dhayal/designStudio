@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Googleauth from "./GoogleAuth";
-import SideImg from "../assets/SideImg.png";
+import SideImg from "../assets/Design Studio.svg";
 import { Button, Input, Modal, ModalContent } from "@nextui-org/react";
 import axios from "axios";
 import { BASEURL } from "../utils/functions";
@@ -42,7 +42,13 @@ const Register = () => {
 
   return (
     <div className="flex  gap-2 ">
-      <img src={SideImg} alt="sideImg" className=" w-1/2 h-screen" />
+      <div className="w-1/2 h-screen bg-gradient-to-tr from-cyan-300 via-emerald-200 to-blue-300 flex items-center justify-center p-4">
+        <img
+          src={SideImg}
+          alt="sideImg"
+          className="max-w-[700px] drop-shadow-lg w-full"
+        />
+      </div>
       <div className="flex flex-col items-center justify-center w-1/2 h-screen">
         <div className="w-2/3 h-fit rounded-xl p-4 flex flex-col items-center justify-center shadow-medium gap-4">
           <h1 className="text-2xl font-semibold text-left ">Sign Up</h1>
@@ -88,9 +94,12 @@ const Register = () => {
 
           <Googleauth />
 
-          <div className="flex text-lg text-gray-600 hover:text-slate-500 cursor-pointer   flex-start justify-start" onClick={() => {
-            navigate("/login")
-          }}>
+          <div
+            className="flex text-lg text-gray-600 hover:text-slate-500 cursor-pointer   flex-start justify-start"
+            onClick={() => {
+              navigate("/login");
+            }}
+          >
             Already have an account?
           </div>
         </div>

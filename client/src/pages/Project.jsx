@@ -142,8 +142,12 @@ const Project = () => {
             // workspaceId;
             response.data.forEach((element) => {
               element.workspaces.forEach((workspace) => {
-                if (workspace.workspaceId === wid) {
-                  arr.push(workspace.meta);
+                console.log(workspace)
+                if (workspace.workspaceId._id === wid) {
+                  arr.push({
+                    ...workspace.meta,
+                    currentWorkspace: workspace.workspaceId.meta.common,
+                  });
                 }
               });
             });
@@ -159,6 +163,7 @@ const Project = () => {
               });
             });
           }
+          console.log("arr",arr)
 
           setFinalElements(removeRepeatingValues(arr));
         } catch (error) {

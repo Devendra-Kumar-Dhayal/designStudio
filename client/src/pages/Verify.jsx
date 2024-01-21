@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Googleauth from "./GoogleAuth";
-import SideImg from "../assets/SideImg.png";
 import {
   Button,
   CircularProgress,
@@ -12,11 +11,11 @@ import {
 import axios from "axios";
 import { BASEURL } from "../utils/functions";
 import { toast } from "sonner";
+import SideImg from "../assets/Design Studio.svg";
+
 
 const Login = () => {
-
   const navigate = useNavigate();
-
   const handleSubmit = async (token) => {
     if (!token) {
       toast.error("Error");
@@ -50,7 +49,13 @@ const Login = () => {
 
   return (
     <div className="flex  gap-2 ">
-      <img src={SideImg} alt="sideImg" className=" w-1/2 h-screen" />
+      <div className="w-1/2 h-screen bg-gradient-to-tr from-cyan-300 via-emerald-200 to-blue-300 flex items-center justify-center p-4">
+        <img
+          src={SideImg}
+          alt="sideImg"
+          className="max-w-[700px] drop-shadow-lg w-full"
+        />
+      </div>
       <div className="flex flex-col items-center justify-center w-1/2 h-screen">
         <CircularProgress />
       </div>

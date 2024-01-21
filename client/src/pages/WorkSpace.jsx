@@ -1,11 +1,6 @@
 import { Button, useDisclosure } from "@nextui-org/react";
 import axios from "axios";
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState
-} from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BsFillCursorFill } from "react-icons/bs";
 import { FiArrowUpRight } from "react-icons/fi";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
@@ -354,7 +349,6 @@ const WorkSpace = () => {
 
     // Trigger PUT request when 'elements' state changes
   }, [debouncedElements, wid]);
- 
 
   useEffect(() => {
     document.addEventListener("dblclick", handleDoubleClick);
@@ -374,22 +368,26 @@ const WorkSpace = () => {
     context.save();
     context.translate(panOffset.x, panOffset.y);
     const gridSize = 20;
-    const canvasWidth = canvas.width * 100;
-    const canvasHeight = canvas.height * 100;
+
+    // Calculate the visible portion of the grid based on canvas size and panning offset
+    const startX = -panOffset.x % gridSize;
+    const startY = -panOffset.y % gridSize;
+    const canvasWidth = canvas.width + gridSize;
+    const canvasHeight = canvas.height + gridSize;
 
     context.beginPath();
     context.strokeStyle = "rgba(0, 0, 0, 0.1)";
 
     // Vertical lines
-    for (let x = 0; x <= canvasWidth; x += gridSize) {
-      context.moveTo(x, 0);
-      context.lineTo(x, canvasHeight);
+    for (let x = startX; x <= canvasWidth; x += gridSize) {
+      context.moveTo(x, startY);
+      context.lineTo(x, startY+ canvasHeight);
     }
 
     // Horizontal lines
-    for (let y = 0; y <= canvasHeight; y += gridSize) {
-      context.moveTo(0, y);
-      context.lineTo(canvasWidth, y);
+    for (let y = startY; y <= canvasHeight; y += gridSize) {
+      context.moveTo(startX, y);
+      context.lineTo(startX+canvasWidth, y);
     }
 
     context.stroke();
@@ -399,7 +397,7 @@ const WorkSpace = () => {
       drawElement(context, roughCanvas, element, selectedIndex);
     });
     context.restore();
-  }, [elements, action, selectedElement, panOffset, selectedIndex]);
+  }, [elements, action, selectedElement, panOffset, selectedIndex, canvasSize]);
 
   const handleDoubleClick = (event) => {
     if (tool !== "selection") return;
@@ -434,10 +432,13 @@ const WorkSpace = () => {
   useEffect(() => {
     const panFunction = (event) => {
       if (event.ctrlKey) {
+        console.log("first");
         event.preventDefault();
+        console.log("second");
 
         // Change canvas zoom based on wheel delta
-        const zoomFactor = 1 + event.deltaY * 0.01; // Adjust the zoom factor as needed
+        const zoomFactor = 1 + event.deltaY * 0.01;
+        console.log(zoomFactor); // Adjust the zoom factor as needed
         // Adjust canvas width and height accordingly
         const newCanvasWidth = window.innerWidth * zoomFactor;
         const newCanvasHeight = window.innerHeight * zoomFactor;
@@ -447,13 +448,14 @@ const WorkSpace = () => {
         const canvasCenterY = window.innerHeight / 2;
         const offsetX = (canvasCenterX - panOffset.x) * (zoomFactor - 1);
         const offsetY = (canvasCenterY - panOffset.y) * (zoomFactor - 1);
-
+        console.log("third");
         setPanOffset((prevState) => ({
           x: prevState.x - offsetX,
           y: prevState.y - offsetY,
         }));
         // Update canvas size
-        setCanvasSize({ width: newCanvasWidth, height: newCanvasHeight });
+        // setCanvasSize({ width: newCanvasWidth, height: newCanvasHeight });
+        console.log("forth");
       } else if (event.shiftKey) {
         setPanOffset((prevState) => ({
           x: prevState.x - event.deltaY,
@@ -486,7 +488,7 @@ const WorkSpace = () => {
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
     window.addEventListener("resize", handleResize);
-    window.addEventListener("wheel", panFunction);
+    window.addEventListener("wheel", panFunction); //passive false
 
     //TODO: esc key drawing stop
     document.addEventListener("keydown", (event) => {
@@ -523,7 +525,6 @@ const WorkSpace = () => {
     for (const ele of elements) {
       if (!!ele?.options?.meta?.common?.label) {
         try {
-          
           const res = await axios.delete(
             `${BASEURL}/api/projectelement/?workspace=${wid}&projectId=${selectedProjectId}&name=${ele.options.meta.common.label}`,
             {
@@ -911,7 +912,7 @@ const WorkSpace = () => {
           });
         }
 
-        console.log("elementsToUpdate",elementsToUpdate)
+        console.log("elementsToUpdate", elementsToUpdate);
 
         updateElement(
           elementsToUpdate,
@@ -925,8 +926,18 @@ const WorkSpace = () => {
         selectedElement.type === "kafka" ||
         selectedElement.type === "boomi"
       ) {
-        const { id, x1, x2, y1, y2, type, offsetX, offsetY, options,roughElement} =
-          selectedElement;
+        const {
+          id,
+          x1,
+          x2,
+          y1,
+          y2,
+          type,
+          offsetX,
+          offsetY,
+          options,
+          roughElement,
+        } = selectedElement;
         const width = x2 - x1;
         const height = y2 - y1;
         const newX1 = clientX - offsetX;
@@ -1639,7 +1650,7 @@ const WorkSpace = () => {
         element={elements[selectedIdFormeta]}
         handleColorTypeUpdate={handleColorTypeUpdate}
       />
-      <div className="w-48 absolute z-50 top-3 right-1/4">
+      <div className="w-48 absolute z-50 top-3  left-36">
         <Search
           projectId={selectedProjectId}
           onClick={handleNewElement}
@@ -1655,6 +1666,7 @@ const WorkSpace = () => {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         style={{ position: "absolute", zIndex: 1 }}
+        className="w-screen h-screen"
       >
         Canvas
       </canvas>
