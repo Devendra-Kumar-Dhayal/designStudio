@@ -27,7 +27,7 @@ The Data Flow Modeling Web Editor streamlines system understanding by providing 
 
 ## Project Images
 **_Login_:**
-![Login Page](https://i.pinimg.com/originals/11/c4/f7/11c4f7a2e0b0212f06c04735bfb280a7.png)
+![Login Page](https://i.pinimg.com/originals/27/3d/68/273d68de9e5c2b69d7ab5db43da78f76.png)
 
 **_Dashboard_:**
 ![Dashboard](https://i.pinimg.com/originals/d5/f9/a0/d5f9a0ba570db1340e3970551a79529b.png)
