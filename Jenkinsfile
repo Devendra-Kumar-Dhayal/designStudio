@@ -1,45 +1,22 @@
 pipeline {
-    agent any
-    stage('gitclone pipeline') {
-        
-    // some block
-            sh(script: """
-            
-            echo "hello"
-            rm -rf ./designStudio
-            git clone https://github.com/Devendra-Kumar-Dhayal/designStudio.git
-            cd ./designStudio/
-            
-           
-           
-        """)
-        
-        
-        
+  environment {
+    dockerimagename = "nevdread/client"
+    dockerImage = ""
+  }
+  agent any
+  stages {
+    stage('Checkout Source') {
+      steps {
+        git 'https://github.com/Devendra-Kumar-Dhayal/designStudio.git'
+      }
     }
-    stages {
-        stage('Deploying React.js container to Kubernetes') {
-            steps {
-                script {
-                    kubeconfig(credentialsId: '4ec4c6e5-71f4-4e4f-9533-c47800d985cc', serverUrl: 'https://kubernetes.default:443') {
-                        // some block
-                        kubernetesDeploy(configs: [
-                            kubeConfig: './deployment/client/client-deployment.yaml',
-                            deployConfig: './deployment/server/server-deployment.yaml'
-                        ])
-                    }
-                }
-            }
+    
+    stage('Deploying React.js container to Kubernetes') {
+      steps {
+        script {
+          kubernetesDeploy(configs: "deployment.yaml")
         }
+      }
     }
+  }
 }
-
-
-
-     
-    
-    
-        
-    
-
-
