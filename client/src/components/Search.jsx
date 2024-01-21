@@ -10,7 +10,10 @@ const Search = ({ projectId, onClick, wid }) => {
 
   const searchHandler = async () => {
     // e.preventDefault()
-    if (!search) return;
+    if (!search) {
+      setSearch([]);
+      return;
+    }
     const resp = await axios.get(
       `${BASEURL}/api/elementsearch/?projectId=${projectId}&element=${search}`,
       {

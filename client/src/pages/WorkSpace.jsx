@@ -1,22 +1,23 @@
+import { Button, useDisclosure } from "@nextui-org/react";
 import axios from "axios";
 import React, {
-  useContext,
   useEffect,
   useLayoutEffect,
   useRef,
-  useState,
+  useState
 } from "react";
 import { BsFillCursorFill } from "react-icons/bs";
-import { CiText } from "react-icons/ci";
 import { FiArrowUpRight } from "react-icons/fi";
-import { IoIosRedo, IoIosUndo } from "react-icons/io";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { LuPencil } from "react-icons/lu";
-import { MdDelete } from "react-icons/md";
-import { TbCircle, TbRectangleFilled } from "react-icons/tb";
+import { MdDataObject, MdDelete } from "react-icons/md";
+import { TbRectangleFilled } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import rough from "roughjs/bundled/rough.esm";
-import Modal from "../components/Modal";
-import useHistory from "../components/hooks/useHistory";
+import { toast } from "sonner";
+import ElementMetaModal from "../components/ElementMetaModal";
+import Search from "../components/Search";
+import useDebounce from "../components/hooks/useDebounce";
 import usePressedKeys from "../components/hooks/usePressedKeys";
 import {
   attachLineToShape,
@@ -32,21 +33,11 @@ import {
   nearEuclidean,
 } from "../utils/positionFunctions";
 import updateElement from "../utils/updateElement";
-import useDebounce from "../components/hooks/useDebounce";
-import { set } from "lodash";
-import { IconKafka, IconBoomi, IconApp_C, IconApp_R } from "./Icons";
-import { MdDataObject } from "react-icons/md";
-import { Button, Input, useDisclosure } from "@nextui-org/react";
-import { ProjectContext } from "../components/ProjectContext";
-import ElementMetaModal from "../components/ElementMetaModal";
-import { toast } from "sonner";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
 import {
   connectLinesProperly,
   validateElements,
 } from "../utils/validateElements";
-import { SearchIcon } from "../components/SearchIcon";
-import Search from "../components/Search";
+import { IconBoomi, IconKafka } from "./Icons";
 
 const color = ["#69C6BC", "#2A95A5", "#EDE7C7", "#DC7179", "#BB3A69"];
 
@@ -363,10 +354,7 @@ const WorkSpace = () => {
 
     // Trigger PUT request when 'elements' state changes
   }, [debouncedElements, wid]);
-  useEffect(() => {
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-  }, []);
+ 
 
   useEffect(() => {
     document.addEventListener("dblclick", handleDoubleClick);
@@ -535,6 +523,7 @@ const WorkSpace = () => {
     for (const ele of elements) {
       if (!!ele?.options?.meta?.common?.label) {
         try {
+          
           const res = await axios.delete(
             `${BASEURL}/api/projectelement/?workspace=${wid}&projectId=${selectedProjectId}&name=${ele.options.meta.common.label}`,
             {
@@ -885,7 +874,7 @@ const WorkSpace = () => {
           },
         ];
         if (options?.depends) {
-          options.depends.map((item) => {
+          options.depends.forEach((item) => {
             const line = elements[item?.element];
             const { x, y } = attachLineToShape(elements[id], line, item.start);
             let updated = {
@@ -940,7 +929,7 @@ const WorkSpace = () => {
           },
         ];
         if (options?.depends) {
-          options.depends.map((item) => {
+          options.depends.forEach((item) => {
             const line = elements[item?.element];
             const { x, y } = attachLineToShapeCircle(
               elements[id],

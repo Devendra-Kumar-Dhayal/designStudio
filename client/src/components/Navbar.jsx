@@ -43,6 +43,7 @@ import axios from "axios";
 import { BASEURL } from "../utils/functions";
 import { set } from "lodash";
 import { toast } from "sonner";
+import { SearchIcon } from "./SearchIcon";
 
 const Navbarr = ({ user }) => {
   const [search, setsearch] = useState("");
@@ -54,8 +55,7 @@ const Navbarr = ({ user }) => {
   console.log("user", user);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const navigate = useNavigate();
-    const cookies = new Cookies();
-  
+  const cookies = new Cookies();
 
   const selected = selectedProjectId ? [selectedProjectId] : [];
 
@@ -63,9 +63,9 @@ const Navbarr = ({ user }) => {
     getAllProjects();
   }, []);
 
-  useEffect(()=>{
-    searchHandler()
-  },[search])
+  useEffect(() => {
+    searchHandler();
+  }, [search]);
 
   const getAllProjects = async () => {
     try {
@@ -79,7 +79,10 @@ const Navbarr = ({ user }) => {
   };
   const searchHandler = async () => {
     // e.preventDefault()
-    if (!search) return;
+    if (!search) {
+      setSearchResult([]);
+      return;
+    }
     const resp = await axios.get(
       `${BASEURL}/api/workspacesearch/?workspace=${search}`,
       {
@@ -89,7 +92,7 @@ const Navbarr = ({ user }) => {
     // console.log(resp.data);
     setSearchResult(resp.data);
     // console.log(search)
-  }
+  };
   const handleCreateNewProject = async (onClose) => {
     try {
       const res = await axios.post(
@@ -115,9 +118,7 @@ const Navbarr = ({ user }) => {
     }
   };
 
-  const handleLogout = async() => {
-
-
+  const handleLogout = async () => {
     const resp = await axios.get(`${BASEURL}/api/logout`, {
       withCredentials: true,
     });
@@ -128,8 +129,8 @@ const Navbarr = ({ user }) => {
 
     //
   };
-  
-  console.log(searchResult)
+
+  console.log(searchResult);
   return (
     <div className="flex justify-between py-2 my-4 items-center">
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -183,24 +184,41 @@ const Navbarr = ({ user }) => {
           </Button>
         </SelectItem>
       </Select>
-      <div className="relative flex ml-2  rounded-full bg py-2 px-5 bg-[#D8EEFF] w-[56%] justify-between items-center">
-        <FaSearch className="w-[17px] h-[17px]" />
-        <input
-          type="text"
-          style={{
-            padding: "0.5rem",
-            backgroundColor: "inherit",
-            width: "100%",
-            border: "none",
-            outline: "none",
-            borderBottom: "none",
-            boxShadow: "none",
-          }}
-          placeholder="Search"
+      <div className="relative flex ml-2  rounded-full  w-[56%] justify-between items-center">
+        {/* <FaSearch className="w-[17px] h-[17px]" /> */}
+        <Input
+          label="Search"
+          isClearable
+          radius="lg"
           value={search}
-          onChange={(e) => setsearch(e.target.value)}
+          onValueChange={setsearch}
+          classNames={{
+            label: "text-black/50 dark:text-white/90",
+            input: [
+              "bg-transparent rounded-2xl",
+              "text-black/90 dark:text-white/90",
+              "placeholder:text-default-700/50 dark:placeholder:text-white/60 ",
+            ],
+            innerWrapper: "bg-transparent",
+            inputWrapper: [
+              "shadow-xl",
+              "bg-default-200/50",
+              "dark:bg-default/60",
+              "backdrop-blur-xl",
+              "backdrop-saturate-200",
+              "hover:bg-default-200/70",
+              "dark:hover:bg-default/70",
+              "group-data-[focused=true]:bg-default-200/50",
+              "dark:group-data-[focused=true]:bg-default/60",
+              "!cursor-text",
+            ],
+          }}
+          placeholder="Type to search..."
+          startContent={
+            <SearchIcon className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0" />
+          }
         />
-        <GiHamburgerMenu />
+        {/* <GiHamburgerMenu /> */}
 
         {searchResult.length > 0 && (
           <ScrollShadow className="absolute bg-white p-3 w-11/12  max-h-[600px] rounded-lg shadow-lg  top-[115%] z-50 ">

@@ -203,6 +203,9 @@ export async function findProjectElements({
   try {
     const project = await ProjectElementModel.find({
       project: projectId,
+    }).populate({
+      path: "workspaces.workspaceId",
+      select: "_id meta",
     });
     //@ts-ignore
     const projectElements = [];
