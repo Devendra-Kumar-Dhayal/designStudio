@@ -1,4 +1,4 @@
-name: CD Pipeline
+name: CDK Pipeline
 
 on:
   workflow_run:
