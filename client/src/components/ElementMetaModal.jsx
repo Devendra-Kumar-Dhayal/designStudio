@@ -127,6 +127,10 @@ const ElementMetaModal = ({
 
     }
   };
+  const obj = {
+    description: meta?.common?.description,
+    owner: meta?.common?.owner,
+  };
 
   return (
     <Modal
@@ -183,7 +187,7 @@ const ElementMetaModal = ({
               </Button>
             </div>
             {meta.common &&
-              Object.entries(meta?.common).map(([key, value]) => (
+              Object.entries(obj).map(([key, value]) => (
                 <div className="w-full flex gap-2">
                   <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
                     {key.toUpperCase()}:

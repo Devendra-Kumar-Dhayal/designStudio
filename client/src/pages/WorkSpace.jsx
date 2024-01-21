@@ -152,7 +152,7 @@ const WorkSpace = () => {
         withCredentials: true,
       });
       if (!user) navigate("/login");
-      if (user.data.user.role !== "designer") {
+      if (user.data.user.role === "viewer" ) {
         setisDesigner(false);
       }
     } catch (error) {
