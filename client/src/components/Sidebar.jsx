@@ -40,9 +40,7 @@ const Sidebar = () => {
     <>
       <nav className="box-border border-box h-full bg-inherit flex flex-col gap-7 w-[17vw]">
         <div className="flex flex-col pt-[30px] mb-6 px-10">
-          
-          <IconDesignStudio/>
-          
+          <IconDesignStudio />
         </div>
 
         <ul className="mx-auto w-4/5">
@@ -88,20 +86,12 @@ const Sidebar = () => {
               Please check our docs
             </span>
           </div>
-          <button
-            className={`w-full h-[40px] self-center bg-white rounded-xl  cursor-pointer ${
-              selectedItem === "documentation"
-                ? "active:scale-95 transition-all duration-20 ease-in-out shadow-md"
-                : ""
-            }`}
-            onClick={() => {
-              navigate("/docs");
-            }}
+          <a
+            className={`w-full text-black text-[12px] font-semibold h-[40px] self-center bg-white rounded-xl flex items-center justify-center cursor-pointer`}
+            href="https://github.com/gitatractivo/designStudio"
           >
-            <span className="text-black text-[12px] font-semibold">
-              DOCUMENTATION
-            </span>
-          </button>
+            DOCUMENTATION
+          </a>
         </div>
       </nav>
     </>
