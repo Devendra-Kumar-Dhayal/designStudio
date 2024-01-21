@@ -6,6 +6,8 @@ import {
   GetProjectElementInput,
   GetProjectInput,
   RemoveProjectElementInput,
+  SearchWorkspaceElementInput,
+  SearchWorkspaceInput,
   UpdateProjectElementInput,
   UpdateWorkspaceInput,
 } from "../schema/workspace.schema";
@@ -23,7 +25,9 @@ import {
   createOrUpdateProjectElement,
   convertWorkspace,
   findProjectElements,
-  removeWorkspaceFromProjectElement, // New service function for fetching all workspaces
+  removeWorkspaceFromProjectElement,
+  searchWorkspace,
+  searchWorkspaceElement, // New service function for fetching all workspaces
 } from "../service/workspace.service"; // Adjusted service functions for workspace
 
 export async function createWorkspaceHandler(
@@ -233,6 +237,42 @@ export async function getProjectElementHandler(
   // const projectId = req.params.projectId;
   try {
     const project = await findProjectElement(req.query);
+
+    if (!project) {
+      return res.sendStatus(200);
+    }
+
+    return res.status(200).send(project);
+  } catch (error) {
+    return res.status(404);
+  }
+}
+
+
+export async function WorkspaceSearchHandler(
+  req: Request<{}, {}, {}, SearchWorkspaceInput>,
+  res: Response
+) {
+  // const projectId = req.params.projectId;
+  try {
+    const project = await searchWorkspace(req.query);
+
+    if (!project) {
+      return res.sendStatus(200);
+    }
+
+    return res.status(200).send(project);
+  } catch (error) {
+    return res.status(404);
+  }
+}
+export async function WorkspaceElementSearchHandler(
+  req: Request<{}, {}, {}, SearchWorkspaceElementInput>,
+  res: Response
+) {
+  // const projectId = req.params.projectId;
+  try {
+    const project = await searchWorkspaceElement(req.query);
 
     if (!project) {
       return res.sendStatus(200);

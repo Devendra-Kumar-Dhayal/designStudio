@@ -88,6 +88,16 @@ export const getWorkspaceSchema = object({
   ...params,
 });
 
+export const searchWorkspaceSchema = object({
+  query: object({
+    workspace: string({
+      required_error: "q is required",
+    }),
+  }),
+});
+
+
+
 const projectPayload = {
   body: object({
     workspaces: object({}).array().optional(),
@@ -165,6 +175,18 @@ const projectElementQuery = {
   }),
 };
 
+
+export const searchWorkspaceElementSchema = object({
+  query: object({
+    element: string({
+      required_error: "element is required",
+    }),
+    projectId: string({
+      required_error: "projectId is required",
+    }),
+  }),
+});
+
 export const createProjectElementSchema = object({
   ...projectElementPayload
 })
@@ -192,3 +214,8 @@ export type CreateProjectElementInput = TypeOf<typeof createProjectElementSchema
 export type GetProjectElementInput = TypeOf<typeof getProjectElementSchema>["query"];
 export type UpdateProjectElementInput = TypeOf<typeof updateProjectElementSchema>["body"];
 export type RemoveProjectElementInput = TypeOf<typeof removeProjectElementSchema>["query"];
+export type SearchWorkspaceInput = TypeOf<typeof searchWorkspaceSchema>["query"];
+export type SearchWorkspaceElementInput = TypeOf<
+  typeof searchWorkspaceElementSchema
+>["query"]
+;

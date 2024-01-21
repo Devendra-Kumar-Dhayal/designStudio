@@ -1,22 +1,23 @@
+import { Button, useDisclosure } from "@nextui-org/react";
 import axios from "axios";
 import React, {
-  useContext,
   useEffect,
   useLayoutEffect,
   useRef,
-  useState,
+  useState
 } from "react";
 import { BsFillCursorFill } from "react-icons/bs";
-import { CiText } from "react-icons/ci";
 import { FiArrowUpRight } from "react-icons/fi";
-import { IoIosRedo, IoIosUndo } from "react-icons/io";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { LuPencil } from "react-icons/lu";
-import { MdDelete } from "react-icons/md";
-import { TbCircle, TbRectangleFilled } from "react-icons/tb";
+import { MdDataObject, MdDelete } from "react-icons/md";
+import { TbRectangleFilled } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import rough from "roughjs/bundled/rough.esm";
-import Modal from "../components/Modal";
-import useHistory from "../components/hooks/useHistory";
+import { toast } from "sonner";
+import ElementMetaModal from "../components/ElementMetaModal";
+import Search from "../components/Search";
+import useDebounce from "../components/hooks/useDebounce";
 import usePressedKeys from "../components/hooks/usePressedKeys";
 import {
   attachLineToShape,
@@ -32,19 +33,11 @@ import {
   nearEuclidean,
 } from "../utils/positionFunctions";
 import updateElement from "../utils/updateElement";
-import useDebounce from "../components/hooks/useDebounce";
-import { set } from "lodash";
-import { IconKafka, IconBoomi, IconApp_C, IconApp_R } from "./Icons";
-import { MdDataObject } from "react-icons/md";
-import { Button, Input, useDisclosure } from "@nextui-org/react";
-import { ProjectContext } from "../components/ProjectContext";
-import ElementMetaModal from "../components/ElementMetaModal";
-import { toast } from "sonner";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
 import {
   connectLinesProperly,
   validateElements,
 } from "../utils/validateElements";
+import { IconBoomi, IconKafka } from "./Icons";
 
 const color = ["#69C6BC", "#2A95A5", "#EDE7C7", "#DC7179", "#BB3A69"];
 
@@ -229,6 +222,48 @@ const WorkSpace = () => {
   const handleDiscard = async () => {
     setMeta(elements[selectedIdFormeta].options?.meta || {});
   };
+  console.log("elements:", elements);
+
+  const handleNewElement = async (element) => {
+    console.log("element:", element);
+    //create element here and make an api call
+    const id = elements.length;
+    let startX = canvasSize.width / 2 - 100;
+    let startY = canvasSize.height / 2 - 100;
+    const newElement = createElement(
+      id,
+      startX,
+      startY,
+      startX + fixedWidth,
+      startY + fixedWidth,
+      element.type,
+      element.color,
+      {
+        meta: {
+          common: {
+            label: element.name,
+          },
+        },
+      }
+    );
+    const currentWorkspaces = element?.workspaces ?? [];
+    currentWorkspaces.push({ workspaceId: wid });
+
+    const res = await axios.put(
+      `${BASEURL}/api/projectelement`,
+      {
+        projectId: selectedProjectId,
+        name: element.name,
+        workspaces: currentWorkspaces,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    if (res.status === 200) {
+      setElements((prev) => [...prev, newElement]);
+    }
+  };
 
   const handleSubmit = async () => {
     setIsLoadingSubmit(true);
@@ -319,10 +354,7 @@ const WorkSpace = () => {
 
     // Trigger PUT request when 'elements' state changes
   }, [debouncedElements, wid]);
-  useEffect(() => {
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-  }, []);
+ 
 
   useEffect(() => {
     document.addEventListener("dblclick", handleDoubleClick);
@@ -368,8 +400,6 @@ const WorkSpace = () => {
     });
     context.restore();
   }, [elements, action, selectedElement, panOffset, selectedIndex]);
-
-
 
   const handleDoubleClick = (event) => {
     if (tool !== "selection") return;
@@ -489,7 +519,24 @@ const WorkSpace = () => {
     }
   }, [action, selectedElement]);
 
-  const handleClear = () => {
+  const handleClear = async () => {
+    for (const ele of elements) {
+      if (!!ele?.options?.meta?.common?.label) {
+        try {
+          
+          const res = await axios.delete(
+            `${BASEURL}/api/projectelement/?workspace=${wid}&projectId=${selectedProjectId}&name=${ele.options.meta.common.label}`,
+            {
+              withCredentials: true,
+            }
+          );
+          // Handle the response if needed
+        } catch (error) {
+          console.error("Error deleting project element:", error);
+          // Handle the error if needed
+        }
+      }
+    }
     setElements([]);
     localStorage.removeItem("canvasElements");
   };
@@ -600,17 +647,90 @@ const WorkSpace = () => {
     } else if (tool === "meta") return;
     else {
       const id = elements.length;
+      let startX = clientX;
+      let startY = clientY;
+      let options = {};
+      const elementsCopy = elements;
+      if (tool === "line") {
+        const element = getElementAtPosition(clientX, clientY, elements);
+
+        if (element) {
+          // setSelectedIndex(element?.id);
+          if (element.type === "line") {
+            // const { x, y } = attachLineToShape(elements[id], line, true);
+          } else if (element.type === "rectangle") {
+            const line = { x1: startX, y1: startY, x2: clientX, y2: clientY };
+            const { x, y } = attachLineToShape(element, line, true);
+            startX = x;
+            startY = y;
+            options = {
+              depending: [
+                {
+                  element: element.id,
+                  start: true,
+                },
+              ],
+            };
+            const ele = elementsCopy[element.id];
+            elementsCopy[element.id] = {
+              ...ele,
+              options: {
+                ...ele?.options,
+                depends: [
+                  ...(ele?.options?.depends ?? []),
+                  {
+                    element: id,
+                    start: true,
+                  },
+                ],
+              },
+            };
+          } else {
+            const line = { x1: startX, y1: startY, x2: clientX, y2: clientY };
+            const { x, y } = attachLineToShapeCircle(element, line, true);
+            startX = x;
+            startY = y;
+            options = {
+              depending: [
+                {
+                  element: element.id,
+                  start: true,
+                },
+              ],
+            };
+            const ele = elementsCopy[element.id];
+            elementsCopy[element.id] = {
+              ...ele,
+              options: {
+                ...ele?.options,
+                depends: [
+                  ...(ele?.options?.depends ?? []),
+                  {
+                    element: id,
+                    start: true,
+                  },
+                ],
+              },
+            };
+          }
+        }
+        // else setSelectedIndex(null);
+      }
+      console.log("options", options);
       const element = createElement(
         id,
-        clientX,
-        clientY,
+        startX,
+        startY,
         clientX,
         clientY,
         tool,
-        selectedColor
+        selectedColor,
+        options
       );
+      console.log("elementformed", element);
+      elementsCopy.push(element);
 
-      setElements((prevState) => [...prevState, element]);
+      setElements(elementsCopy);
       localStorage.setItem(
         "canvasElements",
         JSON.stringify([...elements, element])
@@ -622,9 +742,8 @@ const WorkSpace = () => {
     }
   };
   const handleMouseMove = (event) => {
-    
     const { clientX, clientY } = getMouseCoordinates(event);
-    
+
     if (action === "panning") {
       const deltaX = clientX - startPanMousePosition.x;
       const deltaY = clientY - startPanMousePosition.y;
@@ -653,7 +772,7 @@ const WorkSpace = () => {
 
     if (action === "drawing") {
       const index = elements.length - 1;
-      const { x1, y1, type } = elements[index];
+      const { x1, y1, type, options } = elements[index];
       updateElement(
         [
           {
@@ -664,7 +783,7 @@ const WorkSpace = () => {
             y2: clientY,
             type,
             tool,
-            options: {},
+            options,
           },
         ],
         elements,
@@ -737,8 +856,18 @@ const WorkSpace = () => {
           false
         );
       } else if (selectedElement.type === "rectangle") {
-        const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
-          selectedElement;
+        const {
+          id,
+          x1,
+          x2,
+          y1,
+          y2,
+          type,
+          offsetX,
+          offsetY,
+          options,
+          roughElement,
+        } = selectedElement;
         const width = x2 - x1;
         const height = y2 - y1;
         const newX1 = clientX - offsetX;
@@ -752,10 +881,11 @@ const WorkSpace = () => {
             y2: newY1 + height,
             type,
             options,
+            roughElement,
           },
         ];
         if (options?.depends) {
-          options.depends.map((item) => {
+          options.depends.forEach((item) => {
             const line = elements[item?.element];
             const { x, y } = attachLineToShape(elements[id], line, item.start);
             let updated = {
@@ -766,6 +896,7 @@ const WorkSpace = () => {
               y2: y,
               type: elements[item.element].type,
               options: elements[item.element].options,
+              roughElement: elements[item.element].roughElement,
             };
             if (item.start) {
               updated = {
@@ -780,6 +911,8 @@ const WorkSpace = () => {
           });
         }
 
+        console.log("elementsToUpdate",elementsToUpdate)
+
         updateElement(
           elementsToUpdate,
           elements,
@@ -792,7 +925,7 @@ const WorkSpace = () => {
         selectedElement.type === "kafka" ||
         selectedElement.type === "boomi"
       ) {
-        const { id, x1, x2, y1, y2, type, offsetX, offsetY, options } =
+        const { id, x1, x2, y1, y2, type, offsetX, offsetY, options,roughElement} =
           selectedElement;
         const width = x2 - x1;
         const height = y2 - y1;
@@ -807,10 +940,11 @@ const WorkSpace = () => {
             y2: newY1 + height,
             type,
             options,
+            roughElement,
           },
         ];
         if (options?.depends) {
-          options.depends.map((item) => {
+          options.depends.forEach((item) => {
             const line = elements[item?.element];
             const { x, y } = attachLineToShapeCircle(
               elements[id],
@@ -825,6 +959,7 @@ const WorkSpace = () => {
               y2: y,
               type: elements[item.element].type,
               options: elements[item.element].options,
+              roughElement: elements[item.element].roughElement,
             };
             if (item.start) {
               updated = {
@@ -926,12 +1061,12 @@ const WorkSpace = () => {
         onOpen();
         setSelectedIdFormeta(id);
         setMeta({ common: { ...SammpleObject } });
-        const { x1, y1, x2, y2 } = elements[index];
+        const { x1, y1, x2, y2, options } = elements[index];
 
         if (selectedIndex === null) {
           setAction("none");
           updateElement(
-            [{ id, x1, y1, x2, y2, type, options: {} }],
+            [{ id, x1, y1, x2, y2, type, options }],
             elements,
             setElements,
             selectedColor
@@ -1504,6 +1639,13 @@ const WorkSpace = () => {
         element={elements[selectedIdFormeta]}
         handleColorTypeUpdate={handleColorTypeUpdate}
       />
+      <div className="w-48 absolute z-50 top-3 right-1/4">
+        <Search
+          projectId={selectedProjectId}
+          onClick={handleNewElement}
+          wid={wid}
+        />
+      </div>
 
       <canvas
         id="canvas"
