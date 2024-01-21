@@ -61,7 +61,7 @@ We've utilized Jenkins for our CI/CD processes, and the deployment has been succ
 
 
 
-
+## Contributors
 <a href="https://github.com/gitatractivo/designStudio/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=gitatractivo/designStudio" />
 </a>
