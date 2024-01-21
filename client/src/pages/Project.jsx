@@ -5,7 +5,7 @@ import {
   ModalContent,
   Tab,
   Tabs,
-  useDisclosure
+  useDisclosure,
 } from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useLayoutEffect, useState } from "react";
@@ -142,7 +142,7 @@ const Project = () => {
             // workspaceId;
             response.data.forEach((element) => {
               element.workspaces.forEach((workspace) => {
-                console.log(workspace)
+                console.log(workspace);
                 if (workspace.workspaceId._id === wid) {
                   arr.push({
                     ...workspace.meta,
@@ -163,7 +163,7 @@ const Project = () => {
               });
             });
           }
-          console.log("arr",arr)
+          console.log("arr", arr);
 
           setFinalElements(removeRepeatingValues(arr));
         } catch (error) {
@@ -273,15 +273,15 @@ const Project = () => {
     context.strokeStyle = "rgba(0, 0, 0, 0.1)";
 
     // Vertical lines
-    for (let x = 0; x <= canvasWidth; x += gridSize) {
-      context.moveTo(x, 0);
-      context.lineTo(x, canvasHeight);
+    for (let x = -4*canvasWidth; x <= 4*canvasWidth; x += gridSize) {
+      context.moveTo(x, -4*canvasHeight);
+      context.lineTo(x, 4*canvasHeight);
     }
 
     // Horizontal lines
-    for (let y = 0; y <= canvasHeight; y += gridSize) {
-      context.moveTo(0, y);
-      context.lineTo(canvasWidth, y);
+    for (let y = -4*canvasHeight; y <= 4*canvasHeight; y += gridSize) {
+      context.moveTo(-4*canvasWidth, y);
+      context.lineTo(4*canvasWidth, y);
     }
 
     context.stroke();
@@ -491,7 +491,6 @@ const Project = () => {
                   </div>
                 )
               )} */}
-            
           </div>
         </ModalContent>
       </Modal>

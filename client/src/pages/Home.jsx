@@ -39,6 +39,9 @@ const Home = () => {
     };
     selectedProjectId && getRecents();
   }, [selectedProjectId]);
+  useEffect(()=>{
+    if(!isDesigner) navigate("/submit")
+  },[isDesigner])
 
   const handleNew = async () => {
     if (!selectedProjectId) {
@@ -150,21 +153,29 @@ const Home = () => {
         </div>
       </Modal>
       <h1 className="text-3xl font-medium text-black">Templates</h1>
-      <div className="min-h-[238px]   max-w-[1213px] bg-white gap-9 p-7 flex flex-row rounded-2xl">
-        {Array.from(Array(1)).map((_, index) => {
-          return (
-            <div
-              className="w-[160px] h-[200px] bg-[#F8F9FA] p-3 rounded-xl flex flex-col justify-between shadow-md hover:bg-slate-100 cursor-pointer "
-              onClick={handleNew}
-              key={index}
-            >
-              {" "}
-              <div className="bg-white w-full h-[80%] rounded-lg shadow-md"></div>
-              Template {index + 1}
-            </div>
-          );
-        })}
-      </div>
+      {selectedProjectId?(
+        <div className="min-h-[238px]   max-w-[1213px] bg-white gap-9 p-7 flex flex-row rounded-2xl">
+          {Array.from(Array(1)).map((_, index) => {
+            return (
+              <div
+                className="w-[160px] h-[200px] bg-[#F8F9FA] p-3 rounded-xl flex flex-col justify-between shadow-md hover:bg-slate-100 cursor-pointer "
+                onClick={handleNew}
+                key={index}
+              >
+                {" "}
+                <div className="bg-white w-full h-[80%] rounded-lg shadow-md"></div>
+                Template {index + 1}
+              </div>
+            );
+          })}
+        </div>
+      ):(
+        <div className="min-h-[238px] justify-center items-center text-2xl   max-w-[1213px] bg-white gap-9 p-7 flex flex-row rounded-2xl">
+          
+            Select Project
+        </div>
+      
+      )}
       {selectedProjectId && (
         <div>
           <Button
@@ -186,11 +197,10 @@ const Home = () => {
             <div
               className="w-full h-[50px] bg-[#F8F9FA] p-3 rounded-xl flex flex-col justify-between shadow-md hover:bg-slate-100 cursor-pointer "
               onClick={() => {
-                 navigate({
-                      pathname: "/workspace",
-                      search: `?wid=${recent._id}`,
-                    })
-                 
+                navigate({
+                  pathname: "/workspace",
+                  search: `?wid=${recent._id}`,
+                });
               }}
               key={index}
             >

@@ -101,7 +101,7 @@ const ProtectedLayout = () => {
       </Modal>
       <div className="h-full min-h-screen w-full min-w-screen p-0 box-border overflow-y-scroll bg-[#F8F9FA] flex lg:gap-0 ">
         <div className="hidden lg:block">
-          <Sidebar className="" />
+          <Sidebar className="" isDesigner={isDesigner} />
         </div>
         <div className="min-h-screen mt-4 w-0 border-l  border-gray-300"></div>
         <div className="flex w-full flex-col  gap-6  md:mb-auto h-fit px-4">

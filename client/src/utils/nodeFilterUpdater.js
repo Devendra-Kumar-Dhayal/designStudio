@@ -218,7 +218,11 @@ export function updateLine(arr, uniqueArray, seen) {
             }
           }
         }
-        uniqueArray.push(element);
+        const elementToPush = {
+          ...element,
+          diff: [{ ...element.currentWorkspace, meta: element.options }],
+        };
+        uniqueArray.push(elementToPush);
         seen[element.options.meta.common.label] = true;
       }
     }
