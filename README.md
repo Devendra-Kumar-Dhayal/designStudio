@@ -71,7 +71,7 @@ We've utilized Jenkins for our CI/CD processes, and the deployment has been succ
 # Security
 
 - Our application is fortified against risks such as XSS, ReDoS, and NoSQL injection by adopting best practices.
-- Additionally, we've utilized Snyk, a developer security platform, to enhance and safeguard our application's security measures.
+- We've bolstered our application's security with Snyk, a developer security platform, providing real-time vulnerability scanning and proactive risk mitigation. This integration underscores our commitment to maintaining a resilient and secure user experience, staying ahead of evolving cyber threats.
 
 
 
