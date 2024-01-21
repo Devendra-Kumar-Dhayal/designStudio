@@ -78,6 +78,13 @@ We've utilized Jenkins for our CI/CD processes, and the deployment has been succ
 
 ![Data Flow Diagram (Physical) Example-2](./client/public/Data%20Flow%20Diagram%20(Physical)%20Example-2.png)
 
+## Future Prospects
+- Implementing the canvas in webassembly(wasm)
+- Implementing Websockets
+- Simplifying diagram using ML
+- Genrative AI to genrate the Flow of existing system from github.
+- We can use rust for server side.
+
 ## Contributors
 <a href="https://github.com/gitatractivo/designStudio/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=gitatractivo/designStudio" />
