@@ -31,6 +31,7 @@ const Sidebar = () => {
       text: "Submitted",
       path: "/submit"
     }
+    
 
   ];
 

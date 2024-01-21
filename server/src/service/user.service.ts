@@ -260,3 +260,14 @@ export async function changePassword(id: string, password: string) {
     return omit(updatedUser, ["password", "token"]);
   } catch (error) {}
 }
+
+
+
+export async function getRoleUser() {
+  try {
+    const users = await UserModel.find().select("_id name email role");
+    return users;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+}

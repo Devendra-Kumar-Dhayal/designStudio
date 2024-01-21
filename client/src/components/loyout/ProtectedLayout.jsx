@@ -38,7 +38,9 @@ const ProtectedLayout = () => {
 
      }
      else{
-      setIsDesigner(user.data.user.role === "designer");
+      setIsDesigner(
+        user.data.user.role === "designer" || user.data.user.role === "admin"
+      );
      }
 
 

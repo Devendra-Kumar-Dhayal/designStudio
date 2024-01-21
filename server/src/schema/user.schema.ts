@@ -60,6 +60,7 @@ export const createUserSchema = object({
 });
 export const chooseRoleSchema = object({
   body: object({
+    
     role: string({
       required_error: "Role is required",
     }).refine((value) => value === "viewer" || value === "designer", {
@@ -68,6 +69,23 @@ export const chooseRoleSchema = object({
     }),
   }),
 });
+
+
+export const chooseRoleAdminSchema = object({
+  body: object({
+    userId:string({
+      required_error: "User Id is required",
+    }),
+    role: string({
+      required_error: "Role is required",
+    }).refine((value) => value === "viewer" || value === "designer", {
+      message: "Invalid role",
+      path: ["role"],
+    }),
+  }),
+});
+
+
 
 export const forgotPassword = object({
   body: object({
@@ -109,3 +127,4 @@ export type VerifyEmailForgotPasswordInput = TypeOf<
   typeof verifyEmailForgotPassword
 >["query"];
 export type ChangePasswordInput = TypeOf<typeof changePassword>["body"];
+export type ChooseRoleAdminInput = TypeOf<typeof chooseRoleAdminSchema>["body"];

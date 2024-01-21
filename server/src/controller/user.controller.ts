@@ -2,17 +2,26 @@ import { Request, Response } from "express";
 import { omit } from "lodash";
 import {
   ChangePasswordInput,
+  ChooseRoleAdminInput,
   ChooseUserRoleInput,
   CreateUserInput,
   ForgotPasswordInput,
   VerifyEmailForgotPasswordInput,
   chooseRoleSchema,
 } from "../schema/user.schema";
-import { changePassword, chooseRole, createNewToken, createUser, findUser, verifyForgotUser } from "../service/user.service";
+import {
+  changePassword,
+  chooseRole,
+  createNewToken,
+  createUser,
+  findUser,
+  getRoleUser,
+  verifyForgotUser,
+} from "../service/user.service";
 import logger from "../utils/logger";
 import { use } from "passport";
 import { createSessionFromUser } from "./session.controller";
-import  config from "config";
+import config from "config";
 import { signJwt } from "../utils/jwt.utils";
 import sendEmail from "../utils/mailter";
 // import { createCompleteSession } from "../service/session.service";
@@ -58,7 +67,6 @@ export async function setUserRole(
   }
 }
 
-
 //forgot password
 
 export const forgotPasswordUserHandler = async (
@@ -66,7 +74,7 @@ export const forgotPasswordUserHandler = async (
   res: Response
 ) => {
   try {
-    console.log("handler forgot")
+    console.log("handler forgot");
     const user = await findUser({ email: req.body.email });
     if (!user) {
       return res.status(401).json({ message: "User not found" });
@@ -103,32 +111,29 @@ export const forgotPasswordUserHandler = async (
   }
 };
 
-
 //verify token
 export const verifyForgotPasswordUserHandler = async (
   req: Request<{}, {}, {}, VerifyEmailForgotPasswordInput>,
   res: Response
 ) => {
   try {
-
-    console.log("verifyhandler")
+    console.log("verifyhandler");
     if (!req.query.token) {
       return res.status(401).json({ message: "Invalid or expired request" });
     }
-    console.log("one")
+    console.log("one");
 
     //verify token
     const user = await verifyForgotUser(req.query.token);
-    console.log("first", user)
+    console.log("first", user);
     if (!user) {
       return res
         .status(401)
         .json({ message: "Something went wrong try again" });
     }
-    console.log("second", user)
+    console.log("second", user);
     const session = await createSessionFromUser(user, req, res);
-    console.log("second", session)
-
+    console.log("second", session);
 
     // return res.status(200).send({ message: "User verified successfully" });
   } catch (error: any) {
@@ -136,7 +141,6 @@ export const verifyForgotPasswordUserHandler = async (
     return res.status(409).json({ error: error.message });
   }
 };
-
 
 //change password
 
@@ -161,6 +165,41 @@ export const changePasswordUserHandler = async (
   }
 };
 
+export const getRoleUserHandler = async (req: Request, res: Response) => {
+  try {
+    const user = res.locals.user;
+    console.log("user", user);
+    if (!user) {
+      return res.status(401).json({ message: "Invalid or expired request" });
+    }
+    const users = await getRoleUser();
+    console.log("user", users);
+    return res.status(200).send({ users: users });
+  } catch (error: any) {
+    logger.error(error.message);
+    return res.status(409).json({ error: error.message });
+  }
+};
+
+export const changeRoleUserHandler = async (
+  req: Request<{}, {}, ChooseRoleAdminInput>,
+  res: Response
+) => {
+
+  try {
+    const user = res.locals.user;
+    console.log("user", user);
+    if (!user) {
+      return res.status(401).json({ message: "Invalid or expired request" });
+    }
+    const users = await chooseRole(req.body.userId, req.body.role);
+    console.log("user", users);
+    return res.status(200).send({ user: users });
+  } catch (error: any) {
+    logger.error(error.message);
+    return res.status(409).json({ error: error.message });
+  }
+};
 
 export type TokenData = {
   userId: string; // Change this to the appropriate type for user IDs
