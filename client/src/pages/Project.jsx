@@ -1,31 +1,25 @@
-import axios from "axios";
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
-import rough from "roughjs/bundled/rough.esm";
 import {
-  attachLineToShape,
-  attachLineToShapeCircle,
-} from "../utils/attachShapes";
-import createElement from "../utils/createElement";
-import { drawElement } from "../utils/drawElement";
-import { BASEURL, cn } from "../utils/functions";
-import { getElementAtPosition } from "../utils/positionFunctions";
-import { GoCopy } from "react-icons/go";
-import {
+  Button,
   Card,
-  CardBody,
-  Input,
   Modal,
   ModalContent,
   Tab,
   Tabs,
-  code,
-  useDisclosure,
-  Button,
+  useDisclosure
 } from "@nextui-org/react";
+import axios from "axios";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { GoCopy } from "react-icons/go";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import rough from "roughjs/bundled/rough.esm";
+import createElement from "../utils/createElement";
+import { drawElement } from "../utils/drawElement";
+import { BASEURL, cn } from "../utils/functions";
+import { getElementAtPosition } from "../utils/positionFunctions";
 
+import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import {
   codeFlask,
   codeGo,
@@ -37,9 +31,7 @@ import {
   codeReact,
   codeSpring,
 } from "../utils/codestub";
-import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { removeRepeatingValues } from "../utils/nodeFilterUpdater";
-
 
 const codeLanguage = [
   {
@@ -89,22 +81,17 @@ const codeLanguageBoomi = [
     support: "go",
     code: codeGoHandler,
   },
- 
 ];
-
-
 
 const Project = () => {
   const navigate = useNavigate();
   const [isDesigner, setisDesigner] = useState(true);
-  const [elements, setElements] = useState([]);
   const [projectId, setProjectId] = useState("");
   const [finalElements, setFinalElements] = useState();
   const [canvasSize, setCanvasSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
-  // const [wid, setWid] = useState(null);
   const [action, setAction] = useState("none");
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -116,7 +103,7 @@ const Project = () => {
     const clientY = event.clientY - panOffset.y;
     return { clientX, clientY };
   };
-  console.log(elements)
+  // console.log(elements);
   const getUser = async () => {
     try {
       const user = await axios.get(`${BASEURL}/api/auth/user/me`, {
@@ -135,9 +122,9 @@ const Project = () => {
     getUser();
 
     const searchParams = new URLSearchParams(window.location.search);
-  
+
     const projectId = searchParams.get("pid");
-    const wid = searchParams.get("wid")
+    const wid = searchParams.get("wid");
     if (projectId) {
       setProjectId(projectId);
       const fetchWorkspaceData = async () => {
@@ -150,27 +137,28 @@ const Project = () => {
           );
 
           const arr = [];
-          // console.log(response.data)
 
-          if(wid){
+          if (wid) {
             // workspaceId;
             response.data.forEach((element) => {
               element.workspaces.forEach((workspace) => {
-                if(workspace.workspaceId === wid){
+                if (workspace.workspaceId === wid) {
                   arr.push(workspace.meta);
                 }
               });
             });
-          }
-          else{
+          } else {
+            console.log(response.data);
 
             response.data.forEach((element) => {
               element.workspaces.forEach((workspace) => {
-                arr.push(workspace.meta);
+                arr.push({
+                  ...workspace.meta,
+                  currentWorkspace: workspace.workspaceId.meta.common,
+                });
               });
             });
           }
-
 
           setFinalElements(removeRepeatingValues(arr));
         } catch (error) {
@@ -260,7 +248,7 @@ const Project = () => {
       document.removeEventListener("keyup", handleKeyUp);
       window.removeEventListener("resize", handleResize);
     };
-  }, [ elements]);
+  }, [finalElements]);
 
   useLayoutEffect(() => {
     if (!finalElements) return;
@@ -327,7 +315,7 @@ const Project = () => {
     (ele) => ele.type === "boomi"
   );
 
-  const handleMouseMove = (event)=>{
+  const handleMouseMove = (event) => {
     // if (action === "panning") {
     //   const deltaX = clientX - startPanMousePosition.x;
     //   const deltaY = clientY - startPanMousePosition.y;
@@ -338,8 +326,8 @@ const Project = () => {
     //   document.body.style.cursor = "grab ";
     //   return;
     // }
-  }
-  // console.log(bool);
+  };
+  console.log(selectedElement);
 
   return (
     <>
@@ -365,8 +353,113 @@ const Project = () => {
       >
         <ModalContent>
           <div className="w-full rounded-lg border border-gray-400 flex flex-col gap-2 shadow-sm py-4 px-6">
-            <h1 className="text-base font-bold">Meta</h1>
-            <div className="flex flex-col gap-4">
+            <h1 className="text-base font-bold">Meta Data</h1>
+            <Tabs aria-label="Workspaces">
+              {selectedElement?.diff.map((work) => {
+                const bool = work?.meta?.connected?.some(
+                  (ele) => ele.type === "kafka"
+                );
+                const boolBoomi = work?.meta?.connected?.some(
+                  (ele) => ele.type === "boomi"
+                );
+                return (
+                  <Tab
+                    key={work.label}
+                    title={work.label}
+                    className="flex w-full flex-col overflow-y-hidden h-1/2"
+                  >
+                    {work.label}
+                    {work?.meta?.meta?.other &&
+                      Object.entries(work?.meta?.meta?.other).map(
+                        ([key, value]) => (
+                          <div className="w-full flex gap-2">
+                            <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
+                              {key}
+                            </h2>
+                            <p className="w-4/5 bg-gray-300 p-2 rounded-lg">
+                              {value}
+                            </p>
+                          </div>
+                        )
+                      )}
+
+                    <Tabs aria-label="Options" className="mt-4">
+                      {bool && (
+                        <Tab
+                          key="kafka"
+                          title="kafka"
+                          className="flex w-full flex-col overflow-y-hidden h-1/2"
+                        >
+                          <Tabs aria-label="Options">
+                            {codeLanguage.map((code) => (
+                              <Tab
+                                key={code.language}
+                                title={code.language}
+                                className="relative"
+                              >
+                                <Button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(code.code);
+                                  }}
+                                  className="absolute top-10 right-5 z-50"
+                                >
+                                  <GoCopy />
+                                </Button>
+                                <Card>
+                                  <SyntaxHighlighter
+                                    language={code.support}
+                                    style={darcula}
+                                    className="!max-h-[550px]"
+                                  >
+                                    {code.code}
+                                  </SyntaxHighlighter>
+                                </Card>
+                              </Tab>
+                            ))}
+                          </Tabs>
+                        </Tab>
+                      )}
+                      {boolBoomi && (
+                        <Tab
+                          key="boomi"
+                          title="boomi"
+                          className="flex w-full flex-col overflow-y-hidden h-1/2"
+                        >
+                          <Tabs aria-label="Options">
+                            {codeLanguageBoomi.map((code) => (
+                              <Tab
+                                key={code.language}
+                                title={code.language}
+                                className="relative"
+                              >
+                                <Button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(code.code);
+                                  }}
+                                  className="absolute top-10 right-5 z-50"
+                                >
+                                  <GoCopy />
+                                </Button>
+                                <Card>
+                                  <SyntaxHighlighter
+                                    language={code.support}
+                                    style={darcula}
+                                    className="!max-h-[550px]"
+                                  >
+                                    {code.code}
+                                  </SyntaxHighlighter>
+                                </Card>
+                              </Tab>
+                            ))}
+                          </Tabs>
+                        </Tab>
+                      )}
+                    </Tabs>
+                  </Tab>
+                );
+              })}
+            </Tabs>
+            {/* <div className="flex flex-col gap-4">
               {selectedElement?.options?.meta?.common &&
                 Object.entries(selectedElement?.options?.meta?.common).map(
                   ([key, value]) => (
@@ -392,79 +485,8 @@ const Project = () => {
                     <p className="w-4/5 bg-gray-300 p-2 rounded-lg">{value}</p>
                   </div>
                 )
-              )}
-            <Tabs aria-label="Options">
-              {bool && (
-                <Tab
-                  key="kafka"
-                  title="kafka"
-                  className="flex w-full flex-col overflow-y-hidden h-1/2"
-                >
-                  <Tabs aria-label="Options">
-                    {codeLanguage.map((code) => (
-                      <Tab
-                        key={code.language}
-                        title={code.language}
-                        className="relative"
-                      >
-                        <Button
-                          onClick={() => {
-                            navigator.clipboard.writeText(code.code);
-                          }}
-                          className="absolute top-10 right-5 z-50"
-                        >
-                          <GoCopy />
-                        </Button>
-                        <Card>
-                          <SyntaxHighlighter
-                            language={code.support}
-                            style={darcula}
-                            className="!max-h-[550px]"
-                          >
-                            {code.code}
-                          </SyntaxHighlighter>
-                        </Card>
-                      </Tab>
-                    ))}
-                  </Tabs>
-                </Tab>
-              )}
-              {boolBoomi && (
-                <Tab
-                  key="boomi"
-                  title="boomi"
-                  className="flex w-full flex-col overflow-y-hidden h-1/2"
-                >
-                  <Tabs aria-label="Options">
-                    {codeLanguageBoomi.map((code) => (
-                      <Tab
-                        key={code.language}
-                        title={code.language}
-                        className="relative"
-                      >
-                        <Button
-                          onClick={() => {
-                            navigator.clipboard.writeText(code.code);
-                          }}
-                          className="absolute top-10 right-5 z-50"
-                        >
-                          <GoCopy />
-                        </Button>
-                        <Card>
-                          <SyntaxHighlighter
-                            language={code.support}
-                            style={darcula}
-                            className="!max-h-[550px]"
-                          >
-                            {code.code}
-                          </SyntaxHighlighter>
-                        </Card>
-                      </Tab>
-                    ))}
-                  </Tabs>
-                </Tab>
-              )}
-            </Tabs>
+              )} */}
+            
           </div>
         </ModalContent>
       </Modal>

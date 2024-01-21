@@ -1,10 +1,9 @@
 import { Button, Input, Modal, ModalContent } from "@nextui-org/react";
 import axios from "axios";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import useDebounce from "./hooks/useDebounce";
-import { ProjectContext } from "./ProjectContext";
-import { BASEURL } from "../utils/functions";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { BASEURL } from "../utils/functions";
+import useDebounce from "./hooks/useDebounce";
 
 const ElementMetaModal = ({
   meta,
@@ -27,7 +26,6 @@ const ElementMetaModal = ({
 
   const [show, setShow] = useState(false);
   const [toShow, setToShow] = useState({});
-  const ref = useRef();
 
   console.log(element, element?.roughElement?.options?.fill);
 
