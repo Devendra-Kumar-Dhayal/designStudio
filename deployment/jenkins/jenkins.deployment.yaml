@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jenkins
+  name: mongo
   labels:
-    app: jenkins
+    app: mongo
 spec:
   selector:
     matchLabels:
-      app: jenkins
+      app: mongo
   replicas: 1
   strategy:
     type: RollingUpdate
@@ -17,24 +17,23 @@ spec:
   template:
     metadata:
       labels:
-        app: jenkins
+        app: mongo
     spec:
-      serviceAccountName: jenkins
+      serviceAccountName: mongo
       containers:
-      - name: jenkins
-        image: jenkins/jenkins:lts
+      - name: mongo
+        image: mongo
         imagePullPolicy: IfNotPresent
         env:
         - name: JAVA_OPTS
           value: -Xmx2048m -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85
         ports:
-        - containerPort: 8080
+        - containerPort: 27017
           protocol: TCP
-        - containerPort: 50000
-          protocol: TCP
+        
         volumeMounts:
-        - mountPath: /var/jenkins_home
-          name: jenkins
+        - mountPath: /var/mongo_home
+          name: mongo
         resources:
           limits:
             memory: "1280Mi"
@@ -44,6 +43,6 @@ spec:
         runAsUser: 0
       terminationGracePeriodSeconds: 30
       volumes:
-      - name: jenkins
+      - name: mongo
         persistentVolumeClaim:
-          claimName: jenkins-claim
+          claimName: mongo-claim

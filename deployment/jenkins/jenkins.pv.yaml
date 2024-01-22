@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: jenkins
+  name: mongo
   labels:
     type: local
 spec:
@@ -15,7 +15,7 @@ spec:
 # apiVersion: v1
 # kind: PersistentVolume
 # metadata:
-#   name: jenkins
+#   name: mongo
 #   #annotations: 
 #    #pv.beta.kubernetes.io/gid: "1000"
 # spec:
@@ -25,11 +25,11 @@ spec:
 #   - ReadWriteOnce
 #   azureFile:
 #     secretName: storage-connection
-#     secretNamespace: jenkins
-#     shareName: {{ .Values.jenkins.azurefileshare }}
+#     secretNamespace: mongo
+#     shareName: {{ .Values.mongo.azurefileshare }}
 #     readOnly: false
 #   claimRef:
-#     name: jenkins-pvc
+#     name: mongo-pvc
 #     kind: PersistenVolumeClaim
-#     namespace: jenkins
+#     namespace: mongo
 #   persistentVolumeReclaimPolicy: Retain
