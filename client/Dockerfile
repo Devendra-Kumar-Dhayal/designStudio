@@ -9,7 +9,7 @@ WORKDIR /frontend
 COPY package*.json ./
 
 # Install dependencies
-RUN yarn 
+RUN npm install --force 
 # RUN npm install axios
 
 # Copy app files

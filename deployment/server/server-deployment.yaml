@@ -15,6 +15,7 @@ spec:
       containers:
       - name: server-container
         image: nevdread/server:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         resources:
