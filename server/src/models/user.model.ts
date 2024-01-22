@@ -10,6 +10,7 @@ import { randomBytes, pbkdf2Sync } from "crypto";
 export enum UserRole {
   Viewer = "viewer",
   Designer = "designer",
+  Admin="admin"
 }
 
 export interface UserInput {

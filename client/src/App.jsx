@@ -13,6 +13,7 @@ import WorkSpace from "./pages/WorkSpace";
 import { Toaster, toast } from "sonner";
 import Project from "./pages/Project";
 import ReadmeViewer from "./pages/ReadmeViewer";
+import Admin from "./pages/Admin";
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
         <Route exact path="/verify" element={<Verify />} />
         <Route exact path="/change" element={<Change />} />
         <Route exact path="/register" element={<Register />} />
+        <Route exact path="/admin" element={<Admin />} />
         <Route exact path="/docs" element={<ReadmeViewer />} />
       </Routes>
     </div>

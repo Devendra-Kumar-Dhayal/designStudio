@@ -7,9 +7,11 @@ import {
 } from "./controller/session.controller";
 import {
   changePasswordUserHandler,
+  changeRoleUserHandler,
   createUserHandler,
   forgotPasswordUserHandler,
   getCurrentUser,
+  getRoleUserHandler,
   setUserRole,
   verifyForgotPasswordUserHandler,
 } from "./controller/user.controller";
@@ -38,6 +40,7 @@ import validateResource from "./middleware/validateResource";
 import { createSessionSchema } from "./schema/session.schema";
 import {
   changePassword,
+  chooseRoleAdminSchema,
   chooseRoleSchema,
   createUserSchema,
   forgotPassword,
@@ -57,6 +60,7 @@ import {
   updateWorkspaceSchema,
 } from "./schema/workspace.schema";
 import validate from "./middleware/validateResource";
+import requireAdmin from "./middleware/requireAdmin";
 
 const router = express.Router();
 
@@ -98,6 +102,13 @@ router.post(
   "/api/verify",
   validateResource(verifyEmailForgotPassword),
   verifyForgotPasswordUserHandler
+);
+
+router.get("/api/getRoleUser", [requireAdmin], getRoleUserHandler);
+router.put(
+  "/api/getRoleUser",
+  [requireAdmin, validateResource(chooseRoleAdminSchema)],
+  changeRoleUserHandler
 );
 router.post(
   "/api/changepassword",
@@ -160,7 +171,6 @@ router.get(
   [requireUser, validate(searchWorkspaceSchema)],
   WorkspaceSearchHandler
 );
-
 
 router.get(
   "/api/project/:projectId",

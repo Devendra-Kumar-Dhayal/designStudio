@@ -8,10 +8,14 @@ const requireDesigner = async (req: Request, res: Response, next: NextFunction) 
   const userDatabase = await findUser({ _id: user._id });
   
 
-  if ( !userDatabase|| userDatabase.role !== "designer") {
-    console.log("forb design",userDatabase)
-    return res.sendStatus(403);
-  }
+if (
+  !userDatabase ||
+  (userDatabase.role !== "designer" && userDatabase.role !== "admin")
+) {
+  console.log("forbidden: designer or admin role required", userDatabase);
+  return res.sendStatus(403);
+}
+
 
   return next();
 };

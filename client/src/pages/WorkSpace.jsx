@@ -152,7 +152,7 @@ const WorkSpace = () => {
         withCredentials: true,
       });
       if (!user) navigate("/login");
-      if (user.data.user.role !== "designer") {
+      if (user.data.user.role === "viewer" ) {
         setisDesigner(false);
       }
     } catch (error) {
@@ -379,17 +379,16 @@ const WorkSpace = () => {
     context.strokeStyle = "rgba(0, 0, 0, 0.1)";
 
     // Vertical lines
-    for (let x = startX; x <= canvasWidth; x += gridSize) {
-      context.moveTo(x, startY);
-      context.lineTo(x, startY+ canvasHeight);
+    for (let x = -4 * canvasWidth; x <= 4 * canvasWidth; x += gridSize) {
+      context.moveTo(x, -4 * canvasHeight);
+      context.lineTo(x, 4 * canvasHeight);
     }
 
     // Horizontal lines
-    for (let y = startY; y <= canvasHeight; y += gridSize) {
-      context.moveTo(startX, y);
-      context.lineTo(startX+canvasWidth, y);
+    for (let y = -4 * canvasHeight; y <= 4 * canvasHeight; y += gridSize) {
+      context.moveTo(-4 * canvasWidth, y);
+      context.lineTo(4 * canvasWidth, y);
     }
-
     context.stroke();
 
     elements?.map((element) => {
@@ -1649,6 +1648,7 @@ const WorkSpace = () => {
         wid={wid}
         element={elements[selectedIdFormeta]}
         handleColorTypeUpdate={handleColorTypeUpdate}
+        isDesigner={isDesigner}
       />
       <div className="w-48 absolute z-50 top-3  left-36">
         <Search

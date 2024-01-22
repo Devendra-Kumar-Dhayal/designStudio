@@ -17,6 +17,7 @@ const ElementMetaModal = ({
   wid,
   element,
   handleColorTypeUpdate,
+  isDesigner,
 }) => {
   const [name, setName] = useState("");
   const [key, setkey] = useState("");
@@ -124,14 +125,18 @@ const ElementMetaModal = ({
         res.data.type,
         toShow.name
       );
-
     }
+  };
+  const obj = {
+    description: meta?.common?.description,
+    owner: meta?.common?.owner,
   };
 
   return (
     <Modal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
+      size="5xl"
       // classes={"p-4 flex flex-col gap-4"}
     >
       <ModalContent>
@@ -142,127 +147,148 @@ const ElementMetaModal = ({
               <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
                 Name:
               </h2>
+              <div className="w-48 p-2 bg-gray-200 justify-center items-center rounded-lg">
+                {meta?.common?.label ?? ""}
+              </div>
 
-              <Input
-                value={name}
-                onValueChange={setName}
-                type="text"
-                label="Name"
-              />
-              {
-                <div
-                  className={`${
-                    !show && "hidden"
-                  } absolute   z-50 bg-gray-500 shadow-lg opacity-90 px-2.5 py-1 rounded-lg  transition-all   !duration-1000 delay-300 outline-none  translate-y-[60px] w-[60%] left-[17%]`}
-                  // ref={ref}
-                >
-                  <div className="px-1 py-2 overflow-scroll max-h-[300px] flex flex-col">
-                    {toShow && (
-                      <div
-                        className="flex text-xs flex-col gap-2"
-                        onClick={handleNameAdd}
-                      >
-                        <div className="flex flex-row gap-1">
-                          <div className="w-1/5 bg-gray-400 rounded-lg p-1  ">
-                            Name:
+              {isDesigner && (
+                <>
+                  <Input
+                    value={name}
+                    onValueChange={setName}
+                    type="text"
+                    label="Name"
+                  />
+                  {
+                    <div
+                      className={`${
+                        !show && "hidden"
+                      } absolute   z-50 bg-gray-500 shadow-lg opacity-90 px-2.5 py-1 rounded-lg  transition-all   !duration-1000 delay-300 outline-none  translate-y-[60px] w-[60%] left-[17%]`}
+                      // ref={ref}
+                    >
+                      <div className="px-1 py-2 overflow-scroll max-h-[300px] flex flex-col">
+                        {toShow && (
+                          <div
+                            className="flex text-xs flex-col gap-2"
+                            onClick={handleNameAdd}
+                          >
+                            <div className="flex flex-row gap-1">
+                              <div className="w-1/5 bg-gray-400 rounded-lg p-1  ">
+                                Name:
+                              </div>
+                              <div className="w-4/5  py-1">{toShow.name}</div>
+                            </div>
                           </div>
-                          <div className="w-4/5  py-1">{toShow.name}</div>
-                        </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </div>
-              }
-              <Button
-                color="primary"
-                className="my-auto"
-                onPress={handleNameCreate}
-                isLoading={isLoading}
-              >
-                Create
-              </Button>
+                    </div>
+                  }
+                  <Button
+                    color="primary"
+                    className="my-auto"
+                    onPress={handleNameCreate}
+                    isLoading={isLoading}
+                  >
+                    Create
+                  </Button>
+                </>
+              )}
             </div>
             {meta.common &&
-              Object.entries(meta?.common).map(([key, value]) => (
+              Object.entries(obj).map(([key, value]) => (
                 <div className="w-full flex gap-2">
                   <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
                     {key.toUpperCase()}:
                   </h2>
 
-                  <input
-                    value={value}
-                    placeholder={`${key}`}
-                    onChange={(e) => {
-                      setMeta((prevState) => ({
-                        ...prevState,
-                        common: {
-                          ...prevState.common,
-                          [key]: e.target.value,
-                        },
-                      }));
-                    }}
-                    className="w-4/5 p-5 bg-gray-300  rounded-lg"
-                  />
+                  {isDesigner ? (
+                    <input
+                      value={value}
+                      placeholder={`${key}`}
+                      onChange={(e) => {
+                        // if (!isDesigner) return;
+                        setMeta((prevState) => ({
+                          ...prevState,
+                          common: {
+                            ...prevState.common,
+                            [key]: e.target.value,
+                          },
+                        }));
+                      }}
+                      className="w-4/5 p-5 bg-gray-300  rounded-lg"
+                    />
+                  ) : (
+                    <div className="w-48 p-2 bg-gray-200 justify-center items-center rounded-lg">
+                      {value ?? ""}
+                    </div>
+                  )}
                 </div>
               ))}
           </div>
+          {isDesigner && (
+            <div className="flex flex-row gap-4">
+              <input
+                type="text"
+                placeholder="Key"
+                className="w-1/3 rounded-lg border border-gray-400 p-4"
+                value={key}
+                onChange={(e) => setkey(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Value"
+                className="w-2/3 rounded-lg border border-gray-400 p-4"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+              />
+              <button
+                className="bg-blue-600 text-white rounded-lg p-2"
+                onClick={() => {
+                  setMeta((prevState) => ({
+                    ...prevState,
+                    other: {
+                      ...prevState.other,
+                      [key]: value,
+                    },
+                  }));
+                  setkey("");
+                  setValue("");
+                }}
+              >
+                Add
+              </button>
+            </div>
+          )}
+          <h1>Meta</h1>
           <div className="flex flex-row gap-4">
-            <input
-              type="text"
-              placeholder="Key"
-              className="w-1/3 rounded-lg border border-gray-400 p-4"
-              value={key}
-              onChange={(e) => setkey(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Value"
-              className="w-2/3 rounded-lg border border-gray-400 p-4"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
-            <button
-              className="bg-blue-600 text-white rounded-lg p-2"
-              onClick={() => {
-                setMeta((prevState) => ({
-                  ...prevState,
-                  other: {
-                    ...prevState.other,
-                    [key]: value,
-                  },
-                }));
-                setkey("");
-                setValue("");
-              }}
-            >
-              Add
-            </button>
+            {meta.other &&
+              Object.entries(meta?.other).map(([key, value]) => (
+                <div className="w-full flex gap-2">
+                  <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
+                    {key}
+                  </h2>
+                  <p className="w-4/5 bg-gray-300 p-2 rounded-lg">{value}</p>
+                </div>
+              ))}
           </div>
         </div>
-        {meta.other &&
-          Object.entries(meta?.other).map(([key, value]) => (
-            <div className="w-full flex gap-2">
-              <h2 className="text-white bg-slate-600 p-2 w-1/5 rounded-lg border-white outline-2 outline-slate-600">
-                {key}
-              </h2>
-              <p className="w-4/5 bg-gray-300 p-2 rounded-lg">{value}</p>
-            </div>
-          ))}
 
-        <div className="flex flex-row gap-3 p-4">
-          <button
-            onClick={handleSave}
-            className="p-2 bg-blue-500 hover:bg-blue-600 rounded-lg"
-          >
-            Save
-          </button>
-          <button
-            onClick={handleDiscard}
-            className="p-2 bg-red-500 hover:bg-red-600 rounded-lg"
-          >
-            Discard
-          </button>
-        </div>
+        {isDesigner && (
+          <div className="flex flex-row gap-3 p-4">
+            <button
+              onClick={handleSave}
+              className="p-2 bg-blue-500 hover:bg-blue-600 rounded-lg"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleDiscard}
+              className="p-2 bg-red-500 hover:bg-red-600 rounded-lg"
+            >
+              Discard
+            </button>
+          </div>
+        )}
       </ModalContent>
     </Modal>
   );

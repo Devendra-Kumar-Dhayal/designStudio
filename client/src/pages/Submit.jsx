@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProjectContext } from "../components/ProjectContext";
+import { Button } from "@nextui-org/react";
 
 const Recents = () => {
   const [recents, setRecents] = useState([]);
@@ -24,6 +25,20 @@ const Recents = () => {
   }, [selectedProjectId]);
   return (
     <div className="w-full flex flex-col gap-4 ">
+      {selectedProjectId && (
+        <div>
+          <Button
+            onPress={() => {
+              navigate({
+                pathname: "/project",
+                search: `?pid=${selectedProjectId}`,
+              });
+            }}
+          >
+            Project View
+          </Button>
+        </div>
+      )}
       <h1 className="text-3xl font-medium text-black">Workspaces</h1>
       <div className="min-h-[238px]   max-w-[1213px] bg-white gap-9 p-7 flex flex-col rounded-2xl">
         {recents.map((recent, index) => {

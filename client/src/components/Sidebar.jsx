@@ -6,7 +6,7 @@ import { MdDashboardCustomize } from "react-icons/md";
 import { IconDesignStudio } from "../pages/Icons";
 
 
-const Sidebar = () => {
+const Sidebar = ({isDesigner}) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,17 +20,22 @@ const Sidebar = () => {
       icon: MdDashboardCustomize,
       text: "Dashboard",
       path: "/",
+      isDesigner:true,
     },
     {
       icon: MdDashboardCustomize,
       text: "Spaces",
-      path: "/recents"
+      path: "/recents",
+      isDesigner:true,
+
     },
     {
       icon: MdDashboardCustomize,
       text: "Submitted",
-      path: "/submit"
+      path: "/submit",
+      isDesigner:false
     }
+    
 
   ];
 
@@ -46,6 +51,7 @@ const Sidebar = () => {
         <ul className="mx-auto w-4/5">
           {menuItems.map((item, index) => {
             const active = location.pathname === item.path;
+            if(item.isDesigner && !isDesigner) return null;
             return (
               <li
                 key={index}
