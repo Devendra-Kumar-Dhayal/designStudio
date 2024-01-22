@@ -16,7 +16,7 @@ spec:
       - name: server-container
         image: nevdread/server:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 5000
         resources:
           limits:
             memory: "2280Mi"
