@@ -9,7 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@tldraw/tldraw": "^2.0.0-canary.f6e7793f49d2",
     "axios": "^1.6.4",
-    "clsx": "^2.0.0",
+    "clsx": "^2.1.0",
     "framer-motion": "^10.18.0",
     "lodash": "^4.17.21",
     "nth-check": "^2.0.1",
