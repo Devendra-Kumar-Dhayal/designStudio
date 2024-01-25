@@ -41,7 +41,7 @@ const updateElement = async (
           x1 + fixedWidth,
           y1 + fixedHeight,
           type,
-          element?.roughElement?.options?.fill ?? selectedColor,
+           selectedColor,
           options
         );
         let object = {
@@ -59,7 +59,7 @@ const updateElement = async (
           x1 + fixedWidth,
           y1 + fixedHeight,
           type,
-          element?.roughElement?.options?.fill ?? selectedColor,
+           selectedColor,
           options
         );
         let objectc = {
@@ -76,7 +76,7 @@ const updateElement = async (
           x1 + fixedWidth,
           y1 + fixedHeight,
           type,
-          element?.roughElement?.options?.fill ?? selectedColor,
+           selectedColor,
           options
         );
         let objectk = {
@@ -93,7 +93,7 @@ const updateElement = async (
           x1 + fixedWidth,
           y1 + fixedHeight,
           type,
-          element?.roughElement?.options?.fill ?? selectedColor,
+           selectedColor,
           options
         );
         let objectb = {

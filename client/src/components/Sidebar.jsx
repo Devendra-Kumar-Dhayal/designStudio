@@ -95,6 +95,7 @@ const Sidebar = ({isDesigner}) => {
           <a
             className={`w-full text-black text-[12px] font-semibold h-[40px] self-center bg-white rounded-xl flex items-center justify-center cursor-pointer`}
             href="https://github.com/gitatractivo/designStudio"
+            target="_blank"
           >
             DOCUMENTATION
           </a>

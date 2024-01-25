@@ -342,7 +342,8 @@ const Project = () => {
             " bg-white p-1 w-full text-xs flex justify-center flex-col rounded-lg items-center text-black"
           )}
           onClick={() => {
-            navigate(-1);
+            navigate("/");
+
           }}
         >
           <IoArrowBackCircleOutline className="w-5  h-5 " />
