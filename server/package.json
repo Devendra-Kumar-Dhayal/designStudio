@@ -31,7 +31,7 @@
     "pino": "^8.17.2",
     "pino-pretty": "^10.3.1",
     "prom-client": "^14.0.0",
-    "response-time": "^2.3.2",
+    "response-time": "^2.3.4",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6",
     "yarn": "^1.22.21",
