@@ -20,7 +20,7 @@
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.21.1",
     "react-scripts": "^5.0.1",
-    "react-syntax-highlighter": "^15.5.0",
+    "react-syntax-highlighter": "^16.0.0",
     "roughjs": "^4.6.6",
     "sonner": "^1.3.1",
     "tailwind-merge": "^2.2.0",
